@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-"""兽医知识库 SQL 种子数据生成器 — 从 YAML 数据源生成
+"""兽医知识库 SQL 种子数据生成器 — 从 Markdown+Frontmatter 数据源生成
 
-读取 data/ 下所有 YAML 文件，生成 src-tauri/data/seed/001_initial.sql
-添加新数据只需编辑 YAML 文件，然后重新运行此脚本即可。
+读取 data/{diseases,symptoms,drugs,tests,cases}/*.md 的 frontmatter，
+加上 data/relations.yaml 和 data/treatment_rules.yaml，
+生成 src-tauri/data/seed/001_initial.sql。
+
+添加新数据只需编辑对应目录下的 MD 文件，然后重新运行此脚本即可。
 """
 
 import os
+import glob
 import datetime
+import json
 import yaml
+import frontmatter
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
@@ -31,12 +37,63 @@ def V(v):
     return S(v)
 
 
+def parse_list_text(text):
+    """将 '- item1\n- item2' 格式的文本解析为列表"""
+    if not isinstance(text, str):
+        return text
+    lines = text.strip().split('\n')
+    items = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith('- '):
+            items.append(stripped[2:].strip())
+        elif stripped.startswith('* '):
+            items.append(stripped[2:].strip())
+    return items if items else text
+
+
+def parse_species_dict(text):
+    """将 '**犬**: xxx\n**猫**: xxx' 或 '犬：xxx；猫：xxx' 格式解析为字典"""
+    if not isinstance(text, str):
+        return text
+    result = {}
+    # 格式1: **犬**: xxx\n**猫**: xxx
+    import re
+    bold_pattern = re.compile(r'\*\*(犬|猫|其他)\*\*[：:]\s*(.+?)(?=\n\*\*|$)', re.DOTALL)
+    matches = bold_pattern.findall(text)
+    if matches:
+        for species, content in matches:
+            result[species] = content.strip()
+        return result if result else text
+    # 格式2: 犬：xxx；猫：xxx
+    colon_pattern = re.compile(r'(犬|猫)[：:]\s*(.+?)(?=；(?:犬|猫)[：:]|$)', re.DOTALL)
+    matches = colon_pattern.findall(text)
+    if matches:
+        for species, content in matches:
+            result[species] = content.strip()
+        return result if result else text
+    return text
+
+
 def to_json(v):
     """Python 列表/字典 → JSON 字符串（交给 V() 处理转义）"""
     if v is None:
-        return None  # V(None) → 'NULL'
-    import json
-    return json.dumps(v, ensure_ascii=False)
+        return None
+    if isinstance(v, str):
+        # 尝试解析为列表
+        if '\n- ' in v or v.startswith('- '):
+            parsed = parse_list_text(v)
+            if isinstance(parsed, list):
+                return json.dumps(parsed, ensure_ascii=False)
+        # 尝试解析为物种字典
+        if '**犬**' in v or '**猫**' in v or \
+           (('犬：' in v or '犬:' in v) and ('猫：' in v or '猫:' in v)):
+            parsed = parse_species_dict(v)
+            if isinstance(parsed, dict):
+                return json.dumps(parsed, ensure_ascii=False)
+    if isinstance(v, (list, dict)):
+        return json.dumps(v, ensure_ascii=False)
+    return v
 
 
 def INSERT_ROW(table, columns, values):
@@ -46,34 +103,96 @@ def INSERT_ROW(table, columns, values):
     return f"INSERT INTO {table} ({cols}) VALUES ({vals});"
 
 
-# ── 加载 YAML ──────────────────────────────────────────
+def parse_body_sections(content):
+    """从 MD body 中解析 ## 章节，返回 {标题: 内容} 字典"""
+    import re
+    sections = {}
+    # 匹配 ## 标题 + 内容（直到下一个 ## 或文件末尾）
+    pattern = re.compile(r'^##\s+(.+?)\n(.*?)(?=\n##\s+|\Z)', re.MULTILINE | re.DOTALL)
+    for m in pattern.finditer(content):
+        title = m.group(1).strip()
+        body = m.group(2).strip()
+        sections[title] = body
+    return sections
 
-with open(os.path.join(DATA_DIR, 'diseases.yaml'), 'r', encoding='utf-8') as f:
-    diseases_list = yaml.safe_load(f)
 
-with open(os.path.join(DATA_DIR, 'symptoms.yaml'), 'r', encoding='utf-8') as f:
-    symptoms_list = yaml.safe_load(f)
+def load_md_entities(pattern, body_fields=None):
+    """从 MD 文件目录加载所有实体，返回列表（按文件名排序）。
 
+    body_fields: [(section_key, frontmatter_key), ...]
+        指定从 MD body 的哪个章节提取内容，合并到 frontmatter 字段。
+        例如 [("概述", "overview"), ("病因", "etiology")]
+    """
+    if body_fields is None:
+        body_fields = []
+    entities = []
+    for path in sorted(glob.glob(pattern)):
+        post = frontmatter.load(path)
+        meta = dict(post.metadata)
+        if body_fields:
+            sections = parse_body_sections(post.content)
+            for section_key, fm_key in body_fields:
+                if section_key in sections:
+                    meta[fm_key] = sections[section_key]
+        entities.append(meta)
+    return entities
+
+
+# ── 加载数据 ──────────────────────────────────────────
+
+# 疾病：body 章节 → frontmatter 字段映射
+diseases_list = load_md_entities(os.path.join(DATA_DIR, 'diseases', '*.md'), [
+    ('概述', 'overview'),
+    ('病因', 'etiology'),
+    ('病理生理', 'pathophysiology'),
+    ('预后', 'prognosis'),
+])
+
+# 症状：body 章节
+symptoms_list = load_md_entities(os.path.join(DATA_DIR, 'symptoms', '*.md'), [
+    ('定义', 'definition'),
+    ('物种特异性', 'species_notes'),
+])
+
+# 药物：body 章节
+drugs_list = load_md_entities(os.path.join(DATA_DIR, 'drugs', '*.md'), [
+    ('适应症', 'indications'),
+    ('禁忌症', 'contraindications'),
+    ('不良反应', 'side_effects'),
+    ('物种剂量', 'species_dosing'),
+])
+
+# 检查：body 章节
+tests_list = load_md_entities(os.path.join(DATA_DIR, 'tests', '*.md'), [
+    ('参考范围', 'reference_ranges'),
+    ('结果解读', 'interpretation'),
+])
+
+# 病例：body 章节
+cases_list = load_md_entities(os.path.join(DATA_DIR, 'cases', '*.md'), [
+    ('主诉', 'chief_complaint'),
+    ('病史', 'history'),
+    ('体格检查', 'physical_exam'),
+    ('实验室检查', 'lab_results'),
+    ('影像学', 'imaging'),
+    ('诊断', 'diagnosis'),
+    ('治疗', 'treatment'),
+    ('转归', 'outcome'),
+    ('学习要点', 'learning_points'),
+])
+
+# 关系数据仍用 YAML
 with open(os.path.join(DATA_DIR, 'relations.yaml'), 'r', encoding='utf-8') as f:
     relations = yaml.safe_load(f)
 
-with open(os.path.join(DATA_DIR, 'drugs.yaml'), 'r', encoding='utf-8') as f:
-    drugs_list = yaml.safe_load(f)
-
-with open(os.path.join(DATA_DIR, 'diagnostic_tests.yaml'), 'r', encoding='utf-8') as f:
-    tests_list = yaml.safe_load(f)
-
 with open(os.path.join(DATA_DIR, 'treatment_rules.yaml'), 'r', encoding='utf-8') as f:
     treatment_rules = yaml.safe_load(f)
-
-with open(os.path.join(DATA_DIR, 'cases.yaml'), 'r', encoding='utf-8') as f:
-    cases_list = yaml.safe_load(f)
 
 # ── 生成 SQL ───────────────────────────────────────────
 
 L = []
 L.append('-- ============================================')
-L.append('-- 兽医知识库 种子数据 v2.0 (YAML 驱动)')
+L.append('-- 兽医知识库 种子数据 v2.0 (Markdown+Frontmatter 驱动)')
 L.append(f'-- {len(diseases_list)} 疾病 + {len(symptoms_list)} 症状 + {len(drugs_list)} 药物 + {len(tests_list)} 检查 + {len(cases_list)} 病例 + 完整关联关系')
 L.append(f'-- 生成时间: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
 L.append('-- ============================================')
@@ -229,23 +348,22 @@ L.append('')
 
 # ===== 病例-疾病关联 =====
 L.append('-- ===== 病例-疾病关联 =====')
-# 病例到疾病的映射
 case_disease_map = {
-    'case_001': ['dis_009'],   # 胰腺炎
-    'case_002': ['dis_019'],   # 猫甲亢
-    'case_003': ['dis_014'],   # DCM
-    'case_004': ['dis_025'],   # 犬细小
-    'case_005': ['dis_004'],   # 气管塌陷
-    'case_006': ['dis_015'],   # 猫HCM
-    'case_007': ['dis_029'],   # GDV
-    'case_008': ['dis_018'],   # 库欣
-    'case_009': ['dis_028'],   # FIP
-    'case_010': ['dis_031'],   # 癫痫
-    'case_011': ['dis_008'],   # 猫下尿路疾病/FIC
-    'case_012': ['dis_018'],   # 库欣
-    'case_013': ['dis_029'],   # GDV
-    'case_014': ['dis_028'],   # FIP
-    'case_015': ['dis_032'],   # 免疫介导性多关节炎
+    'case_001': ['dis_009'],
+    'case_002': ['dis_019'],
+    'case_003': ['dis_014'],
+    'case_004': ['dis_025'],
+    'case_005': ['dis_004'],
+    'case_006': ['dis_015'],
+    'case_007': ['dis_029'],
+    'case_008': ['dis_018'],
+    'case_009': ['dis_028'],
+    'case_010': ['dis_031'],
+    'case_011': ['dis_008'],
+    'case_012': ['dis_018'],
+    'case_013': ['dis_029'],
+    'case_014': ['dis_028'],
+    'case_015': ['dis_032'],
 }
 cd_count = 0
 for case_id, disease_ids in case_disease_map.items():
