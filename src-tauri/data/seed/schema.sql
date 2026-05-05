@@ -121,13 +121,12 @@ CREATE VIRTUAL TABLE IF NOT EXISTS drugs_fts USING fts5(
     name_zh, name_en, drug_class, content='drugs', content_rowid='rowid'
 );
 
--- Schema 版本管理（支持未来迁移）
+-- Schema 版本管理
 CREATE TABLE IF NOT EXISTS schema_migrations (
     version INTEGER PRIMARY KEY,
     applied_at TEXT DEFAULT (datetime('now')),
     description TEXT
 );
-INSERT OR IGNORE INTO schema_migrations (version, description) VALUES (2, 'Add urgency_level, is_pathognomonic, evidence_level, species to relation tables');
 
 -- 学习进度
 CREATE TABLE IF NOT EXISTS learning_progress (
@@ -140,6 +139,26 @@ CREATE TABLE IF NOT EXISTS learning_progress (
     PRIMARY KEY (entity_type, entity_id)
 );
 
+-- 闪卡系统
+CREATE TABLE IF NOT EXISTS flashcards (
+    id TEXT PRIMARY KEY,
+    front TEXT NOT NULL,
+    back TEXT NOT NULL,
+    card_type TEXT NOT NULL CHECK(card_type IN ('disease', 'symptom', 'drug', 'custom')),
+    entity_id TEXT,
+    difficulty REAL DEFAULT 0.5 CHECK(difficulty BETWEEN 0 AND 1),
+    created_at TEXT DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS flashcard_reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    card_id TEXT NOT NULL REFERENCES flashcards(id) ON DELETE CASCADE,
+    quality INTEGER NOT NULL CHECK(quality BETWEEN 0 AND 5),
+    reviewed_at TEXT DEFAULT (datetime('now')),
+    interval_days REAL DEFAULT 0,
+    ease_factor REAL DEFAULT 2.5,
+    next_review TEXT NOT NULL
+);
+
 -- 索引
 CREATE INDEX IF NOT EXISTS idx_disease_symptom_d ON disease_symptom(disease_id);
 CREATE INDEX IF NOT EXISTS idx_disease_symptom_s ON disease_symptom(symptom_id);
@@ -147,3 +166,4 @@ CREATE INDEX IF NOT EXISTS idx_disease_ddx ON disease_ddx(disease_id);
 CREATE INDEX IF NOT EXISTS idx_disease_treatment ON disease_treatment(disease_id);
 CREATE INDEX IF NOT EXISTS idx_disease_diagnostic ON disease_diagnostic(disease_id);
 CREATE INDEX IF NOT EXISTS idx_case_species ON cases(species);
+CREATE INDEX IF NOT EXISTS idx_flashcard_reviews_next ON flashcard_reviews(card_id, next_review);
