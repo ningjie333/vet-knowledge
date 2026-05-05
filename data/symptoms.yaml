@@ -1,0 +1,246 @@
+# 兽医知识库 — 症状数据
+# 添加新症状：复制一个完整块，修改 id 和字段值即可
+
+- id: sym_001
+  name_zh: 咳嗽
+  name_en: Cough
+  definition: 呼吸道受到刺激时产生的保护性反射动作，特征为突然的呼气性爆发声
+  species_notes:
+    犬: 区分干咳(气管/支气管)和湿咳(肺实质)
+    猫: 需与吐毛球鉴别
+
+- id: sym_002
+  name_zh: 呼吸困难
+  name_en: Dyspnea
+  definition: 呼吸做功增加的表现，包括张口呼吸、腹式呼吸、头颈伸展
+  species_notes:
+    犬: 静息张口呼吸为急症信号
+    猫: 张口呼吸在猫几乎总是急症
+
+- id: sym_003
+  name_zh: 呼吸急促
+  name_en: Tachypnea
+  definition: 呼吸频率异常增快。犬>30次/分，猫>40次/分为异常
+
+- id: sym_004
+  name_zh: 鼻液
+  name_en: Nasal Discharge
+  definition: 鼻腔分泌物的异常增多，可分为浆液性、黏液性、脓性或血性
+
+- id: sym_005
+  name_zh: 呕吐
+  name_en: Vomiting
+  definition: 胃内容物经口腔强力排出的复杂反射动作。需与反流鉴别
+
+- id: sym_006
+  name_zh: 腹泻
+  name_en: Diarrhea
+  definition: 粪便含水量增加、排便频率增加或排便量增加
+
+- id: sym_007
+  name_zh: 腹痛
+  name_en: Abdominal Pain
+  definition: 腹部不适或疼痛，可表现为弓背、回避触诊、祈祷姿势
+  species_notes:
+    犬: 祈祷姿势高度提示胰腺炎
+    猫: 表现隐蔽，可能仅表现为躲藏
+
+- id: sym_008
+  name_zh: 厌食
+  name_en: Anorexia
+  definition: 食欲完全丧失，是许多疾病的非特异性但重要体征
+
+- id: sym_009
+  name_zh: 体重下降
+  name_en: Weight Loss
+  definition: 非意愿性体重减轻，超过体重10%为临床显著
+
+- id: sym_010
+  name_zh: 黄疸
+  name_en: Icterus
+  definition: 胆红素沉积导致皮肤、黏膜和巩膜黄染
+
+- id: sym_011
+  name_zh: 多饮多尿
+  name_en: PU/PD
+  definition: 饮水量和/或尿量异常增多。犬>45ml/kg/day为多饮
+  species_notes:
+    犬: 鉴别：糖尿病、CKD、库欣
+    猫: 鉴别：糖尿病、CKD、甲亢
+
+- id: sym_012
+  name_zh: 少尿/无尿
+  name_en: Oliguria/Anuria
+  definition: 尿量显著减少(<1ml/kg/h)或无尿
+
+- id: sym_013
+  name_zh: 尿频
+  name_en: Pollakiuria
+  definition: 排尿次数增加但每次尿量减少
+
+- id: sym_014
+  name_zh: 血尿
+  name_en: Hematuria
+  definition: 尿液中存在红细胞
+
+- id: sym_015
+  name_zh: 腹水
+  name_en: Ascites
+  definition: 腹腔内液体积聚，可由右心衰、低白蛋白血症、肿瘤等引起
+
+- id: sym_016
+  name_zh: 晕厥
+  name_en: Syncope
+  definition: 短暂性脑血流不足导致的意识丧失
+
+- id: sym_017
+  name_zh: 运动不耐受
+  name_en: Exercise Intolerance
+  definition: 运动能力下降，轻微活动即出现疲劳或呼吸困难
+
+- id: sym_018
+  name_zh: 发热
+  name_en: Fever
+  definition: 体温升高超过正常范围。犬>39.2C，猫>39.4C为发热
+
+- id: sym_019
+  name_zh: 嗜睡
+  name_en: Lethargy
+  definition: 精神状态抑制，活动减少
+
+- id: sym_020
+  name_zh: 脱水
+  name_en: Dehydration
+  definition: 体液丢失超过摄入，可通过皮肤弹性、黏膜干燥度评估
+
+- id: sym_021
+  name_zh: 多食
+  name_en: Polyphagia
+  definition: 食欲异常亢进，常见于糖尿病、甲亢(猫)、库欣
+  species_notes:
+    猫: 老年猫多食伴体重下降高度怀疑甲亢
+
+- id: sym_022
+  name_zh: 流涎
+  name_en: Drooling
+  definition: 唾液过度分泌或吞咽障碍导致的唾液外流
+
+- id: sym_023
+  name_zh: 黏膜苍白
+  name_en: Pale Mucous Membranes
+  definition: 黏膜颜色苍白提示贫血或外周血管收缩(休克)，CRT>2秒为异常
+
+- id: sym_024
+  name_zh: 后肢瘫痪
+  name_en: Paraplegia
+  definition: 后肢运动功能丧失。在猫需高度警惕动脉血栓(鞍血栓)
+  species_notes:
+    猫: 突发后肢瘫痪+皮温低+无脉搏高度怀疑主动脉鞍血栓
+
+- id: sym_025
+  name_zh: 瘙痒
+  name_en: Pruritus
+  definition: 引起搔抓、舔舐或摩擦欲望的感觉
+  species_notes:
+    犬: 注意分布模式
+    猫: 常表现为过度理毛而非搔抓
+
+- id: sym_026
+  name_zh: 癫痫发作
+  name_en: Seizure
+  definition: 大脑神经元异常过度放电导致的突发性临床事件
+- id: sym_027
+  name_zh: 瞳孔散大
+  name_en: Mydriasis
+  definition: 瞳孔异常扩大，对光反射减弱或消失，可见于青光眼、视网膜疾病或神经系统疾病。
+
+- id: sym_028
+  name_zh: 眼球震颤
+  name_en: Nystagmus
+  definition: 眼球不自主的节律性摆动，可为水平、垂直或旋转性，提示前庭系统或小脑病变。
+
+- id: sym_029
+  name_zh: 共济失调
+  name_en: Ataxia
+  definition: 运动协调障碍，步态不稳，可见于小脑病变、前庭疾病或脊髓压迫。
+
+- id: sym_030
+  name_zh: 跛行
+  name_en: Lameness
+  definition: 肢体负重异常导致的步态改变，可见于骨折、关节炎、韧带损伤或神经病变。
+
+- id: sym_031
+  name_zh: 后肢瘫痪
+  name_en: Hindlimb Paralysis
+  definition: 后肢自主运动功能丧失，可见于椎间盘疾病、脊髓损伤或血栓栓塞。
+
+- id: sym_032
+  name_zh: 皮肤红斑
+  name_en: Erythema
+  definition: 皮肤发红，由局部血管扩张引起，可见于过敏、感染或自身免疫性皮肤病。
+
+- id: sym_033
+  name_zh: 皮肤瘙痒
+  name_en: Pruritus
+  definition: 搔抓欲望，是犬猫皮肤病最常见的症状，主要病因为过敏和寄生虫。
+
+- id: sym_034
+  name_zh: 脱毛
+  name_en: Alopecia
+  definition: 毛发脱落，可为局灶性或全身性，可见于内分泌疾病、寄生虫或真菌感染。
+
+- id: sym_035
+  name_zh: 黄疸
+  name_en: Icterus/Jaundice
+  definition: 皮肤、黏膜和巩膜黄染，由胆红素升高引起，提示溶血、肝病或胆道梗阻。
+
+- id: sym_036
+  name_zh: 腹水
+  name_en: Ascites
+  definition: 腹腔内液体积聚，可见于右心衰、肝病、低蛋白血症或腹膜疾病。
+
+- id: sym_037
+  name_zh: 皮下肿块
+  name_en: Subcutaneous Mass
+  definition: 皮下可触及的肿物，可为脂肪瘤、肥大细胞瘤、囊肿或脓肿。
+
+- id: sym_038
+  name_zh: 角膜混浊
+  name_en: Corneal Opacity
+  definition: 角膜透明度下降，可见于角膜溃疡、青光眼、角膜水肿或角膜营养不良。
+
+- id: sym_039
+  name_zh: 眼部分泌物增多
+  name_en: Ocular Discharge
+  definition: 眼部分泌物增加，可为浆液性、黏液性或脓性，提示结膜炎、角膜溃疡或泪道阻塞。
+
+- id: sym_040
+  name_zh: 流涎
+  name_en: Ptyalism/Salivation
+  definition: 唾液分泌过多或吞咽困难导致唾液外流，可见于口腔疾病、中毒或恶心。
+
+- id: sym_041
+  name_zh: 里急后重
+  name_en: Tenesmus
+  definition: 排便困难或频繁尝试排便但排出量少，可见于结肠炎、便秘或直肠肿物。
+
+- id: sym_042
+  name_zh: 血便
+  name_en: Hematochezia/Melena
+  definition: 粪便中带血，鲜红色为下消化道出血（hematochezia），黑色为上消化道出血（melena）。
+
+- id: sym_043
+  name_zh: 多饮多尿
+  name_en: PU/PD
+  definition: 多饮（polydipsia）和多尿（polyuria）是多种内科疾病的非特异性症状，常见于肾病、糖尿病、库欣等。
+
+- id: sym_044
+  name_zh: 抽搐
+  name_en: Seizures
+  definition: 肌肉不自主强直或阵挛性收缩，可见于癫痫、中毒、代谢性脑病或颅内占位。
+
+- id: sym_045
+  name_zh: 前肢伸展/角弓反张
+  name_en: Opisthotonos
+  definition: 头颈后仰、四肢强直伸展，提示严重脑膜脑炎或破伤风。
+

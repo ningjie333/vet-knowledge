@@ -1,0 +1,314 @@
+# 兽医知识库 — 诊断检查数据
+# category: 血液学 / 生化 / 影像学 / 内分泌 / 微生物 / 尿液 / 其他
+# reference_ranges: 正常参考值范围（犬/猫分别标注）
+# interpretation: 结果解读要点
+# cost_estimate: 估算费用（人民币，仅供参考）
+# turnaround_time: 出结果时间（分钟）
+
+- id: test_001
+  name_zh: 全血细胞计数（CBC）
+  category: 血液学
+  reference_ranges: "犬RBC: 5.5-8.5×10⁶/μL, WBC: 6-17×10³/μL, PLT: 200-500×10³/μL | 猫RBC: 5.0-10.0×10⁶/μL, WBC: 5.5-19.5×10³/μL, PLT: 300-700×10³/μL"
+  interpretation: "贫血（RBC↓）、感染/炎症（WBC↑↓）、免疫介导性疾病、血小板减少症（PLT↓）。白细胞分类计数可区分细菌感染（中性粒↑）与病毒感染（淋巴↑/↓）"
+  cost_estimate: 80
+  turnaround_time: 15
+
+- id: test_002
+  name_zh: 血清生化全套
+  category: 生化
+  reference_ranges: "ALT犬:10-125 U/L,猫:12-130 U/L | ALP犬:23-212 U/L,猫:14-111 U/L | BUN犬:7-27 mg/dL,猫:10-30 mg/dL | CREA犬:0.5-1.8 mg/dL,猫:0.8-2.4 mg/dL | GLU犬:74-143 mg/dL,猫:74-159 mg/dL | TP犬:5.0-7.3 g/dL,猫:5.7-8.9 g/dL | ALB犬:2.3-4.0 g/dL,猫:2.1-3.3 g/dL"
+  interpretation: "ALT/ALP评估肝功能；BUN/CREA评估肾功能（肾小球滤过率）；GLU筛查糖尿病/低血糖；TP/ALB评估营养/肝合成/渗出性丢失；电解质（K/Na/Cl）评估内分泌/肾/胃肠疾病"
+  cost_estimate: 200
+  turnaround_time: 30
+
+- id: test_003
+  name_zh: 尿液分析（UA）
+  category: 尿液
+  reference_ranges: "犬尿比重:1.015-1.045 | 猫尿比重:1.035-1.060 | pH:5.5-7.5 | 蛋白:阴性~微量 | 糖:阴性 | 沉渣:偶见上皮细胞"
+  interpretation: "尿比重低+氮质血症=肾功能不全；糖尿+高血糖=糖尿病；脓尿+菌尿=尿路感染；管型=肾实质损伤；结晶=结石风险"
+  cost_estimate: 60
+  turnaround_time: 20
+
+- id: test_004
+  name_zh: 甲状腺素（T4）
+  category: 内分泌
+  reference_ranges: "犬总T4:1.0-4.0 μg/dL | 猫总T4:0.8-4.0 μg/dL"
+  interpretation: "猫T4>4.0 μg/dL高度提示甲亢（老年猫最常见内分泌病）；犬T4降低提示甲亢（罕见）或甲状腺功能减退。确诊甲亢可加测fT4（游离T4）"
+  cost_estimate: 150
+  turnaround_time: 60
+
+- id: test_005
+  name_zh: 胰腺脂肪酶免疫反应性（fPLI/cPLI）
+  category: 生化
+  reference_ranges: "犬cPLI:≤200 μg/L（正常）, >400 μg/L高度提示胰腺炎 | 猫fPLI:≤3.5 μg/L（正常）, >5.4 μg/L提示胰腺炎"
+  interpretation: "犬cPLI>400 μg/L对胰腺炎敏感性82%、特异性95%；猫fPLI>5.4 μg/L提示胰腺炎。需结合临床表现和影像学。慢性轻度升高可见于CKD/IBD"
+  cost_estimate: 250
+  turnaround_time: 120
+
+- id: test_006
+  name_zh: 胸部X线摄影
+  category: 影像学
+  reference_ranges: "正常：心脏轮廓清晰，肺野透亮度正常，气管居中，横膈位置正常（犬：后缘约T11-13）"
+  interpretation: "心影增大=心肌病/心包积液；肺间质/肺泡浸润=肺炎/肺水肿；气管狭窄=气管塌陷；气胸=肺野透亮度增加+肺回缩；纵隔移位=占位性病变"
+  cost_estimate: 150
+  turnaround_time: 30
+
+- id: test_007
+  name_zh: 腹部超声
+  category: 影像学
+  reference_ranges: "正常：肝脏回声均匀，肾脏皮髓质分界清晰，膀胱壁光滑，胰腺回声均匀，胃肠道壁层次清晰"
+  interpretation: "肾脏缩小+被膜不平=CKD；肾脏增大+回声增强=AKI/淋巴瘤；胆囊淤胆=胆管阻塞；胰腺增大+周围脂肪回声增强=胰腺炎；游离液体=腹水/出血；异物=强回声+声影"
+  cost_estimate: 300
+  turnaround_time: 45
+
+- id: test_008
+  name_zh: 超声心动图
+  category: 影像学
+  reference_ranges: "犬LA/Ao<1.6（正常左房大小）| IVSd<0.6 cm（室间隔厚度）| LVIDd（左室舒张内径）因体重而异 | FS%正常:25-45%"
+  interpretation: "左房扩大（LA/Ao>1.6）=MMVD/DCM；室壁增厚（IVSd>0.6猫）=HCM；左室扩张+收缩力↓=DCM；瓣膜增厚/脱垂=MMVD；心包液暗区=心包积液"
+  cost_estimate: 400
+  turnaround_time: 45
+
+- id: test_009
+  name_zh: 血压测量
+  category: 其他
+  reference_ranges: "犬收缩压:110-160 mmHg | 猫收缩压:120-170 mmHg"
+  interpretation: "高血压（犬>160,猫>170）=继发于CKD/甲亢（猫）/嗜铬细胞瘤/原发性；低血压（<90）=休克/脱水/心律失常。猫白大衣效应显著，需安静环境下多次测量"
+  cost_estimate: 50
+  turnaround_time: 15
+
+- id: test_010
+  name_zh: 血气分析
+  category: 生化
+  reference_ranges: "pH:7.35-7.45 | HCO₃⁻:18-24 mEq/L（犬）,16-24 mEq/L（猫）| pCO₂:35-45 mmHg | Na:140-155 mEq/L | K:3.5-5.5 mEq/L"
+  interpretation: "代谢性酸中毒（HCO₃⁻↓）=DKA/肾衰/乙二醇中毒；代谢性碱中毒（HCO₃⁻↑）=呕吐/利尿剂；呼吸性酸中毒（pCO₂↑）=通气不足；低钾=呕吐/利尿/无尿期后"
+  cost_estimate: 150
+  turnaround_time: 10
+
+- id: test_011
+  name_zh: ACTH刺激试验
+  category: 内分泌
+  reference_ranges: "犬基础皮质醇:1-5 μg/dL,刺激后:5-20 μg/dL | 猫基础皮质醇:0.5-5 μg/dL,刺激后:5-15 μg/dL"
+  interpretation: "刺激后皮质醇>20 μg/dL=库欣综合征（垂体依赖或肾上腺瘤）；刺激后<2 μg/dL= Addison病（肾上腺皮质功能减退）。需结合临床症状和电解质（Na/K比）"
+  cost_estimate: 300
+  turnaround_time: 120
+
+- id: test_012
+  name_zh: 犬细小病毒抗原检测（SNAP）
+  category: 微生物
+  reference_ranges: "阴性=正常"
+  interpretation: "阳性=CPV-2感染。假阴性可见于感染早期（排毒量少）或疫苗接种后近期（疫苗病毒干扰）。需结合临床表现（出血性肠炎+白细胞↓↓）综合判断"
+  cost_estimate: 100
+  turnaround_time: 15
+
+- id: test_013
+  name_zh: 猫泛白细胞减少病毒抗原检测（SNAP）
+  category: 微生物
+  reference_ranges: "阴性=正常"
+  interpretation: "阳性=FPV感染。幼猫未免疫+出血性肠炎+泛白细胞减少高度提示。需与犬细小鉴别（FPV不感染犬）"
+  cost_estimate: 100
+  turnaround_time: 15
+
+- id: test_014
+  name_zh: 凝血功能检查（PT/APTT）
+  category: 血液学
+  reference_ranges: "PT:5-10秒 | APTT:10-18秒（犬）；10-20秒（猫）"
+  interpretation: "PT延长=外源性凝血途径障碍（肝病/维生素K缺乏/灭鼠药中毒）；APTT延长=内源性途径障碍（DIC/血友病）；两者均延长=共同途径障碍/DIC/严重肝病"
+  cost_estimate: 120
+  turnaround_time: 20
+
+- id: test_015
+  name_zh: 尿液培养+药敏
+  category: 微生物
+  reference_ranges: "阴性=正常 | >10⁵ CFU/mL=有意义菌尿"
+  interpretation: "确诊尿路感染的金标准。菌落计数>10⁵ CFU/mL+脓尿=确诊UTI。药敏结果指导抗生素选择。注意采样方法（膀胱穿刺最可靠）"
+  cost_estimate: 200
+  turnaround_time: 2880
+
+- id: test_016
+  name_zh: 腹腔穿刺液分析
+  category: 其他
+  reference_ranges: "正常：少量清亮淡黄色液体，蛋白<2.5 g/dL,细胞数<5000/μL"
+  interpretation: "渗出液（蛋白>2.5,细胞>5000）=FIP/感染/肿瘤；漏出液（蛋白<2.5,细胞<1000）=低白蛋白/门脉高压；血性=创伤/肿瘤/凝血障碍；乳糜液=淋巴管破裂"
+  cost_estimate: 150
+  turnaround_time: 30
+
+- id: test_017
+  name_zh: 阴道细胞学/开放子宫蓄脓诊断组合
+  category: 其他
+  reference_ranges: "超声：子宫直径<1 cm（正常绝经后）| 无宫内积液"
+  interpretation: "超声见子宫扩张（直径>1-2 cm）+宫内积液+临床症状（多饮多尿/呕吐/外阴分泌物）=子宫蓄脓。需与妊娠鉴别（可见胎囊/胎心）"
+  cost_estimate: 300
+  turnaround_time: 30
+
+- id: test_018
+  name_zh: 血常规涂片镜检
+  category: 血液学
+  reference_ranges: "正常：成熟中性粒细胞为主，偶见杆状核（<10%），无原始细胞"
+  interpretation: "核左移（杆状粒↑）=严重感染；中毒性变化=严重炎症/败血症；原始细胞=白血病；棘红细胞=脾功能异常；海因茨小体=氧化损伤（猫：洋葱/对乙酰氨基酚中毒）"
+  cost_estimate: 50
+  turnaround_time: 20
+
+- id: test_019
+  name_zh: 腹部X线平片
+  category: 影像学
+  reference_ranges: "正常：胃肠道内适量气体，无扩张肠袢，肾脏轮廓可见（右肾T13-L1，左肾L2-4），膀胱充盈"
+  interpretation: "小肠扩张（直径>肋骨宽度或>12mm猫）=梗阻；线性异物=皱褶样肠管；异物=高密度影；胃扩张=GDV（幽门右移+胃分隔征）；输尿管结石=高密度影"
+  cost_estimate: 120
+  turnaround_time: 20
+
+- id: test_020
+  name_zh: FIP抗体/冠状病毒抗体滴度
+  category: 微生物
+  reference_ranges: "阴性或低滴度（<1:100）=正常范围"
+  interpretation: "高滴度（≥1:1600）+临床表现（发热/腹水/眼部病变/神经症状）支持FIP诊断，但非确诊。猫群中普遍阳性（FCoV携带），需结合腹腔液分析（渗出液+高球蛋白）综合判断"
+  cost_estimate: 200
+  turnaround_time: 1440
+
+- id: test_021
+  name_zh: 心丝虫抗原检测
+  category: 微生物
+  reference_ranges: "阴性=正常"
+  interpretation: "阳性=犬心丝虫病确诊（检测成虫体壁抗原）。Knott试验可查微丝蚴。需结合影像学（肺动脉扩张）综合评估感染严重度"
+  cost_estimate: 150
+  turnaround_time: 60
+
+- id: test_022
+  name_zh: 皮肤细胞学
+  category: 细胞学
+  reference_ranges: "正常：无细菌/少量角化细胞"
+  interpretation: "脓皮症：中性粒细胞+球菌（葡萄球菌）或杆菌。酵母菌感染：马拉色菌（花生形）。需与真菌培养鉴别"
+  cost_estimate: 80
+  turnaround_time: 30
+
+- id: test_023
+  name_zh: 淋巴结细针穿刺
+  category: 细胞学
+  reference_ranges: "正常：小淋巴细胞为主，可见少量中淋巴细胞"
+  interpretation: "淋巴瘤：单一形态的大淋巴细胞大量增生，核质比增大。需与反应性增生鉴别（混合细胞群）。确诊后需分期（血常规/生化/超声/骨髓）"
+  cost_estimate: 120
+  turnaround_time: 60
+
+- id: test_024
+  name_zh: 关节液分析
+  category: 细胞学
+  reference_ranges: "正常：WBC<1.5×10³/μL，以单核细胞为主，黏稠度高"
+  interpretation: "炎症性（WBC>5×10³/μL，中性粒为主）=感染性或免疫介导性。需做细菌培养排除感染。IMPA：炎症性+无细菌。感染性关节炎：炎症性+细菌培养阳性"
+  cost_estimate: 100
+  turnaround_time: 30
+
+- id: test_025
+  name_zh: 超声心动图
+  category: 影像学
+  reference_ranges: "正常：LVIDd犬<55mm，FS% 25-45%，LA/Ao<1.5"
+  interpretation: "DCM：LVIDd↑+FS%↓。HCM：室壁增厚（>6mm）+左房扩大。心包积液：心包腔内液暗区。动脉血栓：左心耳内回声团"
+  cost_estimate: 300
+  turnaround_time: 45
+
+- id: test_026
+  name_zh: MRI（磁共振成像）
+  category: 影像学
+  reference_ranges: "正常：脑实质信号均匀，无占位性病变"
+  interpretation: "癫痫：排除结构性病变（肿瘤/脑炎/脑积水）。神经定位：脊髓压迫/椎间盘突出。软组织分辨率优于CT"
+  cost_estimate: 1500
+  turnaround_time: 1440
+- id: test_027
+  name_zh: 眼压测量
+  name_en: Tonometry
+  category: 眼科检查
+  definition: 测量眼内压，用于诊断青光眼（眼压升高）和葡萄膜炎（眼压降低）。
+  reference_ranges: "犬：15-25 mmHg；猫：15-27 mmHg"
+  interpretation: ">25mmHg提示青光眼；<10mmHg提示葡萄膜炎或眼球萎缩"
+  cost_estimate: 80
+  turnaround_time: 0
+
+- id: test_028
+  name_zh: 荧光素染色
+  name_en: Fluorescein Staining
+  category: 眼科检查
+  definition: 荧光素钠染色角膜，在蓝光下观察角膜上皮缺损，用于诊断角膜溃疡。
+  reference_ranges: "阴性（无荧光素着染）"
+  interpretation: "阳性（绿色荧光着染）提示角膜上皮缺损/溃疡"
+  cost_estimate: 50
+  turnaround_time: 0
+
+- id: test_029
+  name_zh: 脑脊液分析
+  name_en: CSF Analysis
+  category: 神经系统检查
+  definition: 采集脑脊液进行细胞学、生化和微生物分析，用于诊断脑膜炎、脑炎和肿瘤。
+  reference_ranges: "犬：蛋白<30mg/dL，细胞<5个/μL；猫：蛋白<25mg/dL"
+  interpretation: "细胞数升高提示炎症或感染；蛋白升高提示血脑屏障破坏"
+  cost_estimate: 300
+  turnaround_time: 1440
+
+- id: test_030
+  name_zh: 抗核抗体检测
+  name_en: ANA Test
+  category: 免疫学检查
+  definition: 检测血清中的抗核抗体，用于筛查系统性红斑狼疮等自身免疫性疾病。
+  reference_ranges: "阴性或滴度<1:40"
+  interpretation: "阳性（滴度≥1:160有临床意义）提示可能为SLE或其他自身免疫病"
+  cost_estimate: 150
+  turnaround_time: 2880
+
+- id: test_031
+  name_zh: 细针抽吸细胞学
+  name_en: Fine Needle Aspiration
+  category: 细胞学检查
+  definition: 用细针穿刺肿块获取细胞进行形态学检查，是肿瘤初步诊断的微创方法。
+  reference_ranges: "因组织类型而异"
+  interpretation: "可区分炎症与肿瘤，但常不能确定肿瘤类型和分级"
+  cost_estimate: 120
+  turnaround_time: 1440
+
+- id: test_032
+  name_zh: 凝血功能检测
+  name_en: Coagulation Panel
+  category: 血液学检查
+  definition: 包括PT、aPTT、纤维蛋白原和D-二聚体，评估凝血功能。
+  reference_ranges: "犬PT：11-14s；犬aPTT：90-120s"
+  interpretation: "PT/aPTT延长提示凝血因子缺乏或抗凝物质增多；D-二聚体升高提示纤溶亢进/DIC"
+  cost_estimate: 200
+  turnaround_time: 60
+
+- id: test_033
+  name_zh: Coombs试验
+  name_en: Coombs Test
+  category: 免疫学检查
+  definition: 直接抗球蛋白试验，检测结合在红细胞表面的抗体或补体，用于诊断IMHA。
+  reference_ranges: "阴性"
+  interpretation: "阳性提示自身抗体或补体结合于红细胞表面，支持IMHA诊断"
+  cost_estimate: 120
+  turnaround_time: 1440
+
+- id: test_034
+  name_zh: 甲状腺功能检测
+  name_en: Thyroid Panel
+  category: 内分泌检查
+  definition: 检测总T4、游离T4和TSH，用于诊断甲状腺功能亢进或减退。
+  reference_ranges: "犬TT4：15-50nmol/L；猫TT4：10-50nmol/L"
+  interpretation: "TT4降低+TSH升高=甲减；TT4升高=甲亢（猫）"
+  cost_estimate: 180
+  turnaround_time: 1440
+
+- id: test_035
+  name_zh: 尿蛋白/肌酐比
+  name_en: UPC Ratio
+  category: 尿液检查
+  definition: 定量评估尿蛋白排泄量，不受尿液浓缩稀释影响，是CKD蛋白尿监测的金标准。
+  reference_ranges: "犬<0.5；猫<0.4"
+  interpretation: "0.5-2.0（犬）为蛋白尿；>2.0为显著蛋白尿，提示肾小球疾病"
+  cost_estimate: 80
+  turnaround_time: 60
+
+- id: test_036
+  name_zh: 血压测量
+  name_en: Blood Pressure
+  category: 心血管检查
+  definition: 间接测量动脉血压，用于筛查高血压（猫甲亢/CKD相关）和低血压。
+  reference_ranges: "犬：收缩压110-160mmHg；猫：收缩压120-170mmHg"
+  interpretation: ">160mmHg（犬）或>170mmHg（猫）提示高血压；<90mmHg提示低血压"
+  cost_estimate: 50
+  turnaround_time: 0
+

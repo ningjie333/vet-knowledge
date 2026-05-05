@@ -1,0 +1,39 @@
+/* 全局样式已在 App.vue 中定义，此处为补充 */
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+.page {
+  max-width: 1200px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px;
+  color: var(--color-text-secondary);
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

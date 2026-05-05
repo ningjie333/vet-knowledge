@@ -1,0 +1,651 @@
+# 兽医知识库 — 药物数据
+# 数据来源：Merck Veterinary Manual、Plumb's Veterinary Drug Handbook
+# 剂量单位：mg/kg（除非另有说明），给药途径缩写：PO=口服, SC=皮下, IV=静脉, IM=肌肉, Top=外用
+# species_dosing 格式：{"犬": {"dose": "...", "route": "...", "frequency": "..."}, "猫": {...}}
+
+- id: drug_001
+  name_zh: 阿莫西林-克拉维酸
+  name_en: Amoxicillin-Clavulanate
+  drug_class: 抗生素（β-内酰胺类）
+  indications: ["尿路感染", "皮肤感染", "软组织感染", "牙周感染", "呼吸道感染"]
+  contraindications: ["青霉素过敏", "严重肾功能不全（需调整剂量）"]
+  side_effects: ["胃肠道反应（呕吐、腹泻）", "过敏反应", "肠道菌群失调"]
+  species_dosing:
+    犬: {dose: "12.5-25 mg/kg", route: PO, frequency: "q12h"}
+    猫: {dose: "12.5-25 mg/kg", route: PO, frequency: "q12h"}
+
+- id: drug_002
+  name_zh: 恩诺沙星
+  name_en: Enrofloxacin
+  drug_class: 抗生素（氟喹诺酮类）
+  indications: ["尿路感染", "皮肤感染", "呼吸道感染", "前列腺炎", "革兰阴性菌感染"]
+  contraindications: ["幼龄动物（软骨毒性）", "猫高剂量（视网膜毒性）", "癫痫病史"]
+  side_effects: ["胃肠道反应", "中枢神经系统兴奋", "幼畜软骨损伤", "猫视网膜病变（高剂量）"]
+  species_dosing:
+    犬: {dose: "5-20 mg/kg", route: PO/IV/SC, frequency: "q24h"}
+    猫: {dose: "2.5-5 mg/kg", route: PO, frequency: "q24h（不超过5mg/kg）"}
+
+- id: drug_003
+  name_zh: 呋塞米
+  name_en: Furosemide
+  drug_class: 利尿剂（袢利尿剂）
+  indications: ["充血性心力衰竭", "肺水肿", "胸腔积液", "急性肾损伤（促进利尿）", "高钙血症"]
+  contraindications: ["脱水", "无尿", "低钾血症", "磺胺类过敏"]
+  side_effects: ["脱水", "低钾血症", "低钠血症", "耳毒性（高剂量IV）", "肾前性氮质血症"]
+  species_dosing:
+    犬: {dose: "2-4 mg/kg", route: IV/IM/PO, frequency: "q8-12h（急性）；1-2 mg/kg q12-24h（维持）"}
+    猫: {dose: "1-2 mg/kg", route: IV/IM/PO, frequency: "q12-24h"}
+
+- id: drug_004
+  name_zh: 泼尼松龙
+  name_en: Prednisolone
+  drug_class: 糖皮质激素
+  indications: ["炎症性肠病", "过敏/特应性皮炎", "免疫介导性疾病", "猫哮喘", "肿瘤化疗辅助", "肾上腺皮质功能减退"]
+  contraindications: ["真菌感染", "消化性溃疡", "未控制的糖尿病", "库欣综合征", "妊娠"]
+  side_effects: ["多饮多尿多食", "胃肠道溃疡", "肌肉萎缩", "皮肤变薄", "免疫抑制", "医源性库欣"]
+  species_dosing:
+    犬: {dose: "0.5-1 mg/kg", route: PO, frequency: "q12h（抗炎）；0.1-0.25 mg/kg q48h（替代）"}
+    猫: {dose: "1-2 mg/kg", route: PO, frequency: "q12h（抗炎，猫需更高剂量）"}
+
+- id: drug_005
+  name_zh: 胰岛素（甘精胰岛素）
+  name_en: Insulin Glargine
+  drug_class: 胰岛素（长效）
+  indications: ["犬糖尿病（I型）", "猫糖尿病（II型，部分可缓解）", "糖尿病酮症酸中毒（急性期后）"]
+  contraindications: ["低血糖", "胰岛素瘤"]
+  side_effects: ["低血糖（最严重）", "注射部位反应", "体重增加", "Somogyi效应（反跳性高血糖）"]
+  species_dosing:
+    犬: {dose: "0.25-0.5 U/kg", route: SC, frequency: "q12h"}
+    猫: {dose: "0.25-0.5 U/kg", route: SC, frequency: "q12h（猫对胰岛素敏感，需谨慎调整）"}
+
+- id: drug_006
+  name_zh: 匹莫苯丹
+  name_en: Pimobendan
+  drug_class: 正性肌力药（PDE-3抑制剂+钙增敏剂）
+  indications: ["充血性心力衰竭（MMVD/DCM）", "扩张型心肌病", "二尖瓣关闭不全"]
+  contraindications: ["肥厚型心肌病（HCM）", "主动脉瓣下狭窄", "心包填塞"]
+  side_effects: ["心律失常", "食欲下降", "腹泻", "多动（正性肌力作用）"]
+  species_dosing:
+    犬: {dose: "0.2-0.3 mg/kg", route: PO, frequency: "q12h（餐前1h给药）"}
+    猫: {dose: "0.1-0.25 mg/kg", route: PO, frequency: "q12h（猫数据有限）"}
+
+- id: drug_007
+  name_zh: 甲巯咪唑
+  name_en: Methimazole
+  drug_class: 抗甲状腺药物（硫脲类）
+  indications: ["猫甲状腺功能亢进", "甲亢术前准备"]
+  contraindications: ["严重肝功能不全", "严重肾功能不全", "妊娠（猫）"]
+  side_effects: ["呕吐/厌食", "面部瘙痒（猫）", "血液学毒性（粒细胞减少）", "血小板减少", "肝毒性"]
+  species_dosing:
+    猫: {dose: "2.5 mg", route: PO/Transdermal, frequency: "q12h（猫用透皮耳膏更安全）"}
+    犬: {dose: "不适用（犬甲亢极罕见）", route: "-", frequency: "-"}
+
+- id: drug_008
+  name_zh: 左甲状腺素钠
+  name_en: Levothyroxine (T4)
+  drug_class: 甲状腺激素替代
+  indications: ["犬甲状腺功能减退"]
+  contraindications: ["甲状腺功能亢进", "肾上腺皮质功能减退（需先补充糖皮质激素）", "未纠正的肾上腺功能不全"]
+  side_effects: ["多动/焦虑", "多饮多尿", "心动过速", "体重下降（过量时）"]
+  species_dosing:
+    犬: {dose: "0.02 mg/kg", route: PO, frequency: "q12h"}
+    猫: {dose: "不适用（猫甲减极罕见）", route: "-", frequency: "-"}
+
+- id: drug_009
+  name_zh: 奥美拉唑
+  name_en: Omeprazole
+  drug_class: 质子泵抑制剂（PPI）
+  indications: ["胃酸相关疾病", "消化性溃疡", "NSAIDs胃保护", "胰腺炎辅助", "胃食管反流"]
+  contraindications: ["严重肝功能不全（需减量）"]
+  side_effects: ["胃肠道反应（少见）", "长期用可能影响钙吸收"]
+  species_dosing:
+    犬: {dose: "0.5-1 mg/kg", route: PO, frequency: "q24h（空腹给药）"}
+    猫: {dose: "0.7-1 mg/kg", route: PO, frequency: "q24h（空腹给药）"}
+
+- id: drug_010
+  name_zh: 马罗匹坦
+  name_en: Maropitant (Cerenia)
+  drug_class: NK-1受体拮抗剂（止吐药）
+  indications: ["急性呕吐", "晕动症（犬）", "化疗相关呕吐", "胰腺炎辅助止吐"]
+  contraindications: ["16周龄以下犬", "胃肠道梗阻", "严重肝功能不全"]
+  side_effects: ["注射部位疼痛（SC）", "流涎（犬）", "腹泻", "食欲下降"]
+  species_dosing:
+    犬: {dose: "1 mg/kg SC 或 2 mg/kg PO", route: "SC/PO", frequency: "q24h（不超过5天连续SC）"}
+    猫: {dose: "1 mg/kg", route: "SC/PO", frequency: "q24h（猫标签外使用）"}
+
+- id: drug_011
+  name_zh: 曲马多
+  name_en: Tramadol
+  drug_class: 阿片类镇痛药（弱）
+  indications: ["中度疼痛", "术后疼痛", "骨关节炎疼痛", "慢性疼痛管理"]
+  contraindications: ["癫痫病史", "与MAO抑制剂合用", "严重肝肾功能不全"]
+  side_effects: ["镇静", "恶心/呕吐", "便秘", "瞳孔缩小", "唾液分泌增加（猫）"]
+  species_dosing:
+    犬: {dose: "2-5 mg/kg", route: PO, frequency: "q8-12h"}
+    猫: {dose: "2-4 mg/kg", route: PO, frequency: "q12h（猫代谢个体差异大）"}
+
+- id: drug_012
+  name_zh: 美洛昔康
+  name_en: Meloxicam
+  drug_class: NSAIDs（COX-2选择性抑制剂）
+  indications: ["骨关节炎疼痛", "术后镇痛", "软组织损伤", "慢性炎症"]
+  contraindications: ["脱水/低血容量", "消化道溃疡", "肾功能不全", "肝功能不全", "与其他NSAIDs或糖皮质激素合用"]
+  side_effects: ["胃肠道溃疡/呕吐/腹泻", "肾毒性", "肝毒性", "凝血障碍"]
+  species_dosing:
+    犬: {dose: "0.1 mg/kg", route: PO, frequency: "q24h（首剂可0.2 mg/kg）"}
+    猫: {dose: "0.05 mg/kg", route: "PO/SC", frequency: "q24h（猫单次SC注射后转为口服，不超过3天）"}
+
+- id: drug_013
+  name_zh: 多西环素
+  name_en: Doxycycline
+  drug_class: 抗生素（四环素类）
+  indications: ["立克次体病（埃立克体、落基山斑疹热）", "支原体/衣原体感染", "莱姆病", "钩端螺旋体病", "心丝虫辅助"]
+  contraindications: ["妊娠", "8周龄以下幼畜（牙齿着色风险）", "严重肝功能不全"]
+  side_effects: ["食管狭窄（猫，给药后需冲水）", "呕吐/腹泻", "光敏反应", "肝毒性（罕见）"]
+  species_dosing:
+    犬: {dose: "5-10 mg/kg", route: PO, frequency: "q12h（首剂加倍）"}
+    猫: {dose: "5 mg/kg", route: PO, frequency: "q12h（给药后冲水防食管狭窄）"}
+
+- id: drug_014
+  name_zh: 甲硝唑
+  name_en: Metronidazole
+  drug_class: 抗生素/抗原虫（硝基咪唑类）
+  indications: ["厌氧菌感染", "贾第鞭毛虫", "炎症性肠病（免疫调节）", "肝性脑病", "坏死性肠炎"]
+  contraindications: ["妊娠（早期）", "严重肝病", "与华法林合用"]
+  side_effects: ["神经毒性（高剂量，共济失调/眼球震颤）", "食欲下降", "呕吐", "肝毒性（高剂量）"]
+  species_dosing:
+    犬: {dose: "10-15 mg/kg", route: PO, frequency: "q12h"}
+    猫: {dose: "10-15 mg/kg", route: PO, frequency: "q12h（猫更易出现神经毒性）"}
+
+- id: drug_015
+  name_zh: 地高辛
+  name_en: Digoxin
+  drug_class: 强心苷类正性肌力药
+  indications: ["充血性心力衰竭", "心房颤动（心室率控制）", "室上性心动过速"]
+  contraindications: ["心室颤动", "肥厚型心肌病", "二度/三度房室传导阻滞", "低钾血症", "肾功能不全（需减量）"]
+  side_effects: ["心律失常（治疗窗窄）", "厌食/呕吐/腹泻", "嗜睡", "视觉障碍"]
+  species_dosing:
+    犬: {dose: "0.0025-0.005 mg/kg", route: PO, frequency: "q12h（监测血药浓度）"}
+    猫: {dose: "0.001-0.002 mg/kg", route: PO, frequency: "q24-48h（猫极敏感）"}
+
+- id: drug_016
+  name_zh: 苯巴比妥
+  name_en: Phenobarbital
+  drug_class: 抗癫痫药（巴比妥类）
+  indications: ["癫痫（一线用药）", "特发性癫痫", "癫痫持续状态（IV地西泮控制后维持）"]
+  contraindications: ["严重肝病", "严重呼吸抑制"]
+  side_effects: ["镇静/共济失调（初期）", "多饮多尿多食", "肝毒性（长期）", "血液学毒性（罕见）"]
+  species_dosing:
+    犬: {dose: "2-5 mg/kg", route: PO, frequency: "q12h（需监测血药浓度）"}
+    猫: {dose: "2-3 mg/kg", route: PO, frequency: "q12h"}
+
+- id: drug_017
+  name_zh: 溴化钾
+  name_en: Potassium Bromide
+  drug_class: 抗癫痫药
+  indications: ["癫痫（单药或联合苯巴比妥）", "苯巴比妥不耐受的癫痫病例"]
+  contraindications: ["肾功能不全", "对溴化物过敏"]
+  side_effects: ["镇静/共济失调", "多饮多尿", "胰腺炎（犬）", "皮肤疹"]
+  species_dosing:
+    犬: {dose: "30-40 mg/kg", route: PO, frequency: "q24h（负荷剂量可加倍）"}
+    猫: {dose: "不适用（猫溴化物可致致命性肺炎）", route: "-", frequency: "-"}
+
+- id: drug_018
+  name_zh: 阿莫西林
+  name_en: Amoxicillin
+  drug_class: 抗生素（β-内酰胺类，氨基青霉素）
+  indications: ["尿路感染", "皮肤感染", "呼吸道感染", "牙科感染", "软组织感染"]
+  contraindications: ["青霉素过敏"]
+  side_effects: ["胃肠道反应", "过敏反应", "肠道菌群失调"]
+  species_dosing:
+    犬: {dose: "11-22 mg/kg", route: PO, frequency: "q12h"}
+    猫: {dose: "11-22 mg/kg", route: PO, frequency: "q12h"}
+
+- id: drug_019
+  name_zh: 头孢氨苄
+  name_en: Cefalexin
+  drug_class: 抗生素（第一代头孢菌素）
+  indications: ["皮肤感染", "尿路感染", "软组织感染", "骨关节感染"]
+  contraindications: ["青霉素/头孢菌素过敏", "严重肾功能不全（需调整剂量）"]
+  side_effects: ["胃肠道反应", "过敏反应", "注射部位疼痛（IM）"]
+  species_dosing:
+    犬: {dose: "22-30 mg/kg", route: PO, frequency: "q12h"}
+    猫: {dose: "22-30 mg/kg", route: PO, frequency: "q12h"}
+
+- id: drug_020
+  name_zh: 氟苯尼考
+  name_en: Florfenicol
+  drug_class: 抗生素（苯丙醇类）
+  indications: ["呼吸道感染（尤其牛呼吸道病）", "皮肤感染", "多药耐药菌感染"]
+  contraindications: ["妊娠", "疫苗接种期间", "家禽（禁用）"]
+  side_effects: ["胃肠道反应", "骨髓抑制（罕见）", "注射部位反应"]
+  species_dosing:
+    犬: {dose: "20 mg/kg", route: PO/SC, frequency: "q8-12h"}
+    猫: {dose: "标签外使用，数据有限", route: PO, frequency: "谨慎使用"}
+
+- id: drug_021
+  name_zh: 特比萘芬
+  name_en: Terbinafine
+  drug_class: 抗真菌药（丙烯胺类）
+  indications: ["皮肤真菌病（癣菌）", "甲真菌病", "马拉色菌感染"]
+  contraindications: ["严重肝功能不全"]
+  side_effects: ["胃肠道反应", "肝酶升高", "味觉障碍（罕见）"]
+  species_dosing:
+    犬: {dose: "30 mg/kg", route: PO, frequency: "q24h"}
+    猫: {dose: "20-40 mg/kg", route: PO, frequency: "q24h（猫对疗程要求更长）"}
+
+- id: drug_022
+  name_zh: 伊曲康唑
+  name_en: Itraconazole
+  drug_class: 抗真菌药（三唑类）
+  indications: ["深部真菌病（组织胞浆菌、球孢子菌、隐球菌）", "皮肤真菌病", "曲霉菌病"]
+  contraindications: ["严重肝病", "妊娠", "与某些心脏药物合用"]
+  side_effects: ["肝毒性", "胃肠道反应", "皮肤溃疡（犬脉冲疗法时）", "食欲下降"]
+  species_dosing:
+    犬: {dose: "5-10 mg/kg", route: PO, frequency: "q12-24h（与食物同服）"}
+    猫: {dose: "5-10 mg/kg", route: PO, frequency: "q24h（液体剂型优于胶囊）"}
+
+- id: drug_023
+  name_zh: 多拉西泮（安定）
+  name_en: Diazepam
+  drug_class: 苯二氮卓类
+  indications: ["癫痫持续状态（IV）", "焦虑/行为问题", "术前镇静", "骨骼肌痉挛", "猫特发性膀胱炎（急性期）"]
+  contraindications: ["严重肝功能不全（猫口服可致致命性肝坏死）", "重症肌无力", "严重呼吸抑制"]
+  side_effects: ["镇静/共济失调", "肝毒性（猫口服）", "兴奋性矛盾反应（猫）", "呼吸抑制（IV）"]
+  species_dosing:
+    犬: {dose: "0.5-2 mg/kg IV（癫痫持续状态）；0.2-0.5 mg/kg PO", route: "IV/PO", frequency: "按需"}
+    猫: {dose: "0.5-1 mg/kg IV（癫痫持续状态）", route: "IV", frequency: "按需（避免口服，肝毒性风险）"}
+
+- id: drug_024
+  name_zh: 阿替美唑
+  name_en: Atipamezole
+  drug_class: α-2肾上腺素能受体拮抗剂（右美托咪定拮抗剂）
+  indications: ["右美托咪定/美托咪定麻醉后逆转", "镇静逆转"]
+  contraindications: ["妊娠", "心脏病（相对）"]
+  side_effects: ["短暂性低血压", "呕吐", "兴奋/躁动", "心动过速"]
+  species_dosing:
+    犬: {dose: "与右美托咪定等量（mg）", route: IM, frequency: "单次"}
+    猫: {dose: "与右美托咪定等量（mg）", route: IM, frequency: "单次"}
+
+- id: drug_025
+  name_zh: 纳洛酮
+  name_en: Naloxone
+  drug_class: 阿片受体拮抗剂
+  indications: ["阿片类药物过量逆转", "术后阿片类药物残余效应"]
+  contraindications: ["阿片类药物依赖动物（可诱发戒断）"]
+  side_effects: ["疼痛反弹", "心动过速", "兴奋/躁动", "肺水肿（罕见，快速IV）"]
+  species_dosing:
+    犬: {dose: "0.01-0.04 mg/kg", route: IV/IM/SC, frequency: "可重复（作用时间短于阿片类）"}
+    猫: {dose: "0.01-0.04 mg/kg", route: IV/IM/SC, frequency: "可重复"}
+
+- id: drug_026
+  name_zh: 维生素K1
+  name_en: Phytonadione (Vitamin K1)
+  drug_class: 维生素/凝血因子合成辅助
+  indications: ["香豆素类灭鼠药中毒", "华法林过量", "严重肝病凝血障碍", "新生畜维生素K缺乏"]
+  contraindications: ["无特殊绝对禁忌"]
+  side_effects: ["过敏反应（IV）", "注射部位反应", "高铁血红蛋白血症（极高剂量）"]
+  species_dosing:
+    犬: {dose: "2-5 mg/kg", route: PO/SC, frequency: "q12-24h（随脂餐口服）；疗程2-4周（灭鼠药中毒）"}
+    猫: {dose: "2-5 mg/kg", route: PO/SC, frequency: "q12-24h（猫对灭鼠药更敏感）"}
+
+- id: drug_027
+  name_zh: 硫糖铝
+  name_en: Sucralfate
+  drug_class: 胃黏膜保护剂
+  indications: ["消化道溃疡", "NSAIDs相关胃损伤", "尿毒症胃炎", "食管炎"]
+  contraindications: ["严重肾功能不全（铝蓄积风险）"]
+  side_effects: ["便秘", "铝蓄积（长期/肾衰）", "影响其他药物吸收（需间隔2h）"]
+  species_dosing:
+    犬: {dose: "0.5-1 g", route: PO, frequency: "q8-12h（空腹）"}
+    猫: {dose: "0.25 g", route: PO, frequency: "q8-12h（空腹）"}
+
+- id: drug_028
+  name_zh: 多库酯钠
+  name_en: Docusate Sodium (DSS)
+  drug_class: 粪便软化剂/灌肠剂
+  indications: ["便秘", "巨结肠（猫）", "粪便嵌塞", "灌肠（DSS灌肠液）"]
+  contraindications: ["肠梗阻", "消化道穿孔"]
+  side_effects: ["腹泻", "电解质紊乱（长期口服）", "灌肠时黏膜刺激"]
+  species_dosing:
+    犬: {dose: "50-200 mg", route: PO, frequency: "q12-24h"}
+    猫: {dose: "50 mg", route: PO, frequency: "q24h"}
+
+- id: drug_029
+  name_zh: 乳酸林格液
+  name_en: Lactated Ringer's Solution
+  drug_class: 晶体液（等渗）
+  indications: ["脱水补液", "围手术期液体支持", "低血容量休克", "电解质紊乱纠正", "维持输液"]
+  contraindications: ["高钙血症（含钙）", "严重乳酸酸中毒", "高钾血症"]
+  side_effects: ["液体过负荷", "低钾血症（稀释性）", "静脉炎（外周输注）"]
+  species_dosing:
+    犬: {dose: "10-30 ml/kg/h（急性休克）；40-60 ml/kg/day（维持）", route: "IV", frequency: "持续"}
+    猫: {dose: "3-5 ml/kg/h（急性）；2-4 ml/kg/h（维持）", route: "IV", frequency: "持续（猫易过负荷）"}
+
+- id: drug_030
+  name_zh: 活性炭
+  name_en: Activated Charcoal
+  drug_class: 吸附剂（解毒）
+  indications: ["中毒急救（吸附胃肠道毒物）", "某些药物过量", "乙二醇中毒辅助"]
+  contraindications: ["肠梗阻/穿孔", "腐蚀性物质中毒", "无保护气道（误吸风险）"]
+  side_effects: ["呕吐/误吸", "便秘/肠梗阻", "高钠血症（含山梨醇制剂）", "黑便"]
+  species_dosing:
+    犬: {dose: "1-4 g/kg（首剂）", route: PO, frequency: "q4-8h（含山梨醇制剂不超过2次）"}
+    猫: {dose: "1-4 g/kg（首剂）", route: PO, frequency: "q4-8h（猫需更小体积，注意误吸风险）"}
+
+- id: drug_031
+  name_zh: 托芬那酸
+  name_en: Tolfenamic Acid
+  drug_class: NSAIDs（芬那酸类）
+  indications: ["术后镇痛", "骨关节炎", "软组织炎症", "发热（猫）"]
+  contraindications: ["脱水/低血容量", "消化道溃疡", "肾功能不全", "肝功能不全", "妊娠"]
+  side_effects: ["胃肠道反应", "肾毒性", "肝毒性", "注射部位反应（SC）"]
+  species_dosing:
+    犬: {dose: "4 mg/kg", route: SC/PO, frequency: "单次SC或q24h PO（不超过3天）"}
+    猫: {dose: "4 mg/kg", route: SC, frequency: "单次（猫仅批准单次SC注射）"}
+
+- id: drug_032
+  name_zh: 加巴喷丁
+  name_en: Gabapentin
+  drug_class: 抗癫痫药/神经性镇痛药
+  indications: ["神经性疼痛", "慢性疼痛（联合NSAIDs）", "术后镇痛辅助", "焦虑（猫术前）", "难治性癫痫辅助"]
+  contraindications: ["严重肾功能不全（需减量）"]
+  side_effects: ["镇静/共济失调", "外周水肿", "含Xylitol的口服液（犬禁用）"]
+  species_dosing:
+    犬: {dose: "5-10 mg/kg", route: PO, frequency: "q8-12h（镇痛）；3-5 mg/kg q8h（起始）"}
+    猫: {dose: "5-10 mg/kg", route: PO, frequency: "q8-12h（镇痛/术前镇静）"}
+
+- id: drug_033
+  name_zh: 氯胺酮
+  name_en: Ketamine
+  drug_class: 分离麻醉剂（NMDA受体拮抗剂）
+  indications: ["诱导麻醉", "镇痛（亚麻醉剂量）", "癫痫持续状态", "安乐死（辅助）"]
+  contraindications: ["严重高血压", "颅内压升高", "严重肝病", "单独使用（需联合镇静剂）"]
+  side_effects: ["唾液分泌增加", "肌肉僵直", "精神性反应（猫）", "呼吸抑制（高剂量）", "惊厥阈值降低"]
+  species_dosing:
+    犬: {dose: "5-10 mg/kg IV（诱导，联合镇静剂）", route: "IV/IM", frequency: "按需"}
+    猫: {dose: "5-10 mg/kg IV（诱导）", route: "IV/IM", frequency: "按需（猫可单独用于制动）"}
+- id: drug_034
+  name_zh: 布托啡诺
+  name_en: Butorphanol
+  drug_class: 阿片类镇痛药（激动-拮抗剂）
+  indications: ["中度至重度疼痛", "术前镇痛", "术后镇痛", "内脏痛"]
+  contraindications: ["严重肝肾功能不全", "与纯阿片激动剂合用（可拮抗其作用）"]
+  side_effects: ["镇静", "流涎", "共济失调", "食欲下降", "呼吸抑制（高剂量）"]
+  species_dosing:
+    犬: {dose: "0.2-0.4 mg/kg", route: "IV/IM/SC", frequency: "q2-4h（镇痛）；0.25-0.5 mg/kg PO q6-8h"}
+    猫: {dose: "0.2-0.4 mg/kg", route: "IV/IM/SC", frequency: "q2-4h（猫对布托啡诺敏感，镇痛效果好）"}
+
+- id: drug_035
+  name_zh: 布地奈德
+  name_en: Budesonide
+  drug_class: 糖皮质激素（局部作用）
+  indications: ["炎症性肠病（IBD）", "慢性肠病", "结肠炎"]
+  contraindications: ["真菌感染", "妊娠", "对布地奈德过敏"]
+  side_effects: ["医源性库欣（长期高剂量）", "肾上腺抑制", "胃肠道反应（少见）"]
+  species_dosing:
+    犬: {dose: "1-3 mg/只（小型犬1mg，大型犬3mg）", route: "PO", frequency: "q24h（逐渐减量）"}
+    猫: {dose: "1 mg/只", route: "PO", frequency: "q24h（猫IBD治疗）"}
+
+- id: drug_036
+  name_zh: 司来吉兰
+  name_en: Selegiline (L-Deprenyl)
+  drug_class: 单胺氧化酶-B抑制剂（MAO-B抑制剂）
+  indications: ["犬库欣综合征（垂体依赖型）", "犬认知功能障碍综合征（CDS）"]
+  contraindications: ["与SSRI类抗抑郁药合用", "与哌替啶合用", "妊娠"]
+  side_effects: ["呕吐/厌食", "焦虑/兴奋", "心动过速", "嗜睡", "耳部瘙痒"]
+  species_dosing:
+    犬: {dose: "1 mg/kg", route: "PO", frequency: "q24h（库欣）；0.5-1 mg/kg q24h（CDS）"}
+    猫: {dose: "不适用（猫司来吉兰疗效未证实）", route: "-", frequency: "-"}
+
+- id: drug_037
+  name_zh: 曲唑酮
+  name_en: Trazodone
+  drug_class: 5-HT受体拮抗剂/再摄取抑制剂（SARI类）
+  indications: ["焦虑/行为问题", "术前镇静", "术后笼养镇静", "噪音恐惧症", "分离焦虑"]
+  contraindications: ["与MAO抑制剂合用", "严重肝功能不全", "已知QT延长"]
+  side_effects: ["镇静（最常见）", "共济失调", "胃肠道反应", "激越（少见）", "阴茎异常勃起（犬，未去势）"]
+  species_dosing:
+    犬: {dose: "2-5 mg/kg", route: "PO", frequency: "q8-12h（镇静/焦虑）；术前2-3h给予5-10 mg/kg"}
+    猫: {dose: "50-100 mg/只", route: "PO", frequency: "q24h（猫标签外使用，数据有限）"}
+
+- id: drug_038
+  name_zh: 贝那普利
+  name_en: Benazepril
+  drug_class: 血管紧张素转换酶抑制剂（ACEI）
+  indications: ["慢性肾病（减少蛋白尿）", "心力衰竭辅助", "高血压"]
+  contraindications: ["双侧肾动脉狭窄", "妊娠", "严重肾功能不全（需谨慎）", "低血压"]
+  side_effects: ["低血压", "高钾血症", "食欲下降", "呕吐/腹泻", "肾功能恶化（罕见）"]
+  species_dosing:
+    犬: {dose: "0.25-0.5 mg/kg", route: "PO", frequency: "q24h"}
+    猫: {dose: "0.25-0.5 mg/kg", route: "PO", frequency: "q24h（猫CKD蛋白尿管理）"}
+
+- id: drug_039
+  name_zh: 碳酸镧
+  name_en: Lanthanum Carbonate
+  drug_class: 磷酸盐结合剂
+  indications: ["高磷血症（CKD相关）", "慢性肾病矿物质代谢紊乱"]
+  contraindications: ["低磷血症", "肠梗阻"]
+  side_effects: ["胃肠道反应（恶心/呕吐）", "便秘", "电解质紊乱"]
+  species_dosing:
+    犬: {dose: "30-90 mg/kg", route: "PO", frequency: "q24h（与食物同服）"}
+    猫: {dose: "30-60 mg/kg", route: "PO", frequency: "q24h（与食物同服）"}
+
+- id: drug_040
+  name_zh: 乙酰丙嗪
+  name_en: Acepromazine
+  drug_class: 吩噻嗪类镇静剂
+  indications: ["术前镇静", "镇静/制动", "镇吐辅助", "化学保定"]
+  contraindications: ["癫痫（降低惊厥阈值）", "严重心血管疾病", "妊娠", "拳师犬（易晕厥）", "老年/体弱动物"]
+  side_effects: ["镇静", "低血压", "心动过缓", "低体温", "阴茎异常勃起/脱垂（未去势公犬，罕见但严重）"]
+  species_dosing:
+    犬: {dose: "0.02-0.05 mg/kg", route: "IV/IM/SC", frequency: "按需（镇静）；0.5-2.2 mg/kg PO q6-8h"}
+    猫: {dose: "0.02-0.05 mg/kg", route: "IV/IM/SC", frequency: "按需（镇静）；1-2 mg/kg PO q8-12h"}
+
+- id: drug_041
+  name_zh: 氯雷他定
+  name_en: Loratadine
+  drug_class: 抗组胺药（H1受体拮抗剂，第二代）
+  indications: ["过敏/特应性皮炎", "荨麻疹", "过敏性鼻炎", "跳蚤过敏性皮炎辅助"]
+  contraindications: ["严重肝功能不全（需减量）"]
+  side_effects: ["镇静（少见，第二代抗组胺药镇静作用轻）", "胃肠道反应", "口干"]
+  species_dosing:
+    犬: {dose: "0.5-1 mg/kg", route: "PO", frequency: "q24h"}
+    猫: {dose: "5 mg/只", route: "PO", frequency: "q24h（猫标签外使用）"}
+
+- id: drug_042
+  name_zh: 苯巴比妥
+  name_en: Phenobarbital
+  drug_class: 抗癫痫药（巴比妥类）
+  indications: ["犬特发性癫痫", "癫痫持续状态（IV）", "猫癫痫（二线）"]
+  contraindications: ["严重肝病", "妊娠", "与氯丙嗪合用（降低惊厥阈值）"]
+  side_effects: ["镇静/共济失调（起始期常见）", "多饮多尿多食", "肝毒性（长期）", "再生障碍性贫血（罕见）"]
+  species_dosing:
+    犬: {dose: "2-5 mg/kg", route: "PO", frequency: "q12h（维持）；20 mg/kg IV（癫痫持续状态）"}
+    猫: {dose: "2-3 mg/kg", route: "PO", frequency: "q12h（猫二线用药）"}
+
+- id: drug_043
+  name_zh: 溴化钾
+  name_en: Potassium Bromide
+  drug_class: 抗癫痫药（溴化物）
+  indications: ["犬难治性癫痫（联合苯巴比妥）", "苯巴比妥不耐受时的替代"]
+  contraindications: ["肾功能不全", "妊娠", "与含溴药物合用"]
+  side_effects: ["镇静/共济失调（起始期）", "多饮多尿多食", "胃肠道反应", "皮肤反应（罕见）"]
+  species_dosing:
+    犬: {dose: "30-40 mg/kg", route: "PO", frequency: "q24h（维持）；负荷剂量200-300 mg/kg 分5天给予"}
+    猫: {dose: "不适用（猫溴化物耐受差，可致支气管痉挛）", route: "-", frequency: "-"}
+
+- id: drug_044
+  name_zh: 硫唑嘌呤
+  name_en: Azathioprine
+  drug_class: 免疫抑制剂（嘌呤类似物）
+  indications: ["免疫介导性疾病（IMHA/IMPA）", "炎症性肠病（激素节约剂）", "自身免疫性皮肤病"]
+  contraindications: ["妊娠", "严重肝病", "与别嘌醇合用（毒性增加）"]
+  side_effects: ["骨髓抑制（WBC↓）", "胃肠道反应", "肝毒性", "胰腺炎（犬）"]
+  species_dosing:
+    犬: {dose: "2 mg/kg", route: "PO", frequency: "q24h（诱导）；q48h（维持）"}
+    猫: {dose: "0.3 mg/kg", route: "PO", frequency: "q48-72h（猫对硫唑嘌呤敏感，代谢慢）"}
+
+- id: drug_045
+  name_zh: 环磷酰胺
+  name_en: Cyclophosphamide
+  drug_class: 烷化剂（化疗药）
+  indications: ["淋巴瘤（CHOP方案）", "免疫介导性疾病（严重）", "肿瘤化疗"]
+  contraindications: ["妊娠", "严重骨髓抑制", "活动性感染", "严重肝病"]
+  side_effects: ["骨髓抑制", "胃肠道反应", "出血性膀胱炎（犬）", "脱发（有毛品种）"]
+  species_dosing:
+    犬: {dose: "50 mg/m²", route: "PO", frequency: "q48h（CHOP方案中）；200 mg/m² IV 每周一次"}
+    猫: {dose: "10 mg/kg", route: "IV", frequency: "每2-3周（猫CHOP方案剂量较低）"}
+
+- id: drug_046
+  name_zh: 长春新碱
+  name_en: Vincristine
+  drug_class: 植物碱类化疗药（长春花生物碱）
+  indications: ["淋巴瘤（CHOP方案）", "犬血小板减少症（ITP）"]
+  contraindications: ["妊娠", "严重骨髓抑制", "肝静脉闭塞病"]
+  side_effects: ["外周神经毒性", "胃肠道反应", "局部组织坏死（渗漏）", "骨髓抑制（较轻）"]
+  species_dosing:
+    犬: {dose: "0.5-0.75 mg/m²", route: "IV", frequency: "每周一次（CHOP方案）"}
+    猫: {dose: "0.5-0.7 mg/m²", route: "IV", frequency: "每周一次（猫CHOP方案）"}
+
+- id: drug_047
+  name_zh: 多柔比星
+  name_en: Doxorubicin
+  drug_class: 蒽环类化疗药
+  indications: ["淋巴瘤（CHOP方案）", "血管肉瘤", "骨肉瘤", "多种实体瘤"]
+  contraindications: ["心脏病（累积心脏毒性）", "严重肝病", "妊娠", "累积剂量限制"]
+  side_effects: ["骨髓抑制", "心脏毒性（累积剂量相关）", "胃肠道反应", "局部组织坏死（渗漏）", "脱毛"]
+  species_dosing:
+    犬: {dose: "30 mg/m²（≥10kg）或1 mg/kg（<10kg）", route: "IV", frequency: "每3周（累积上限180-240 mg/m²）"}
+    猫: {dose: "20-25 mg/m²", route: "IV", frequency: "每3周（猫剂量较低）"}
+
+- id: drug_048
+  name_zh: 美拉索明
+  name_en: Melarsomine
+  drug_class: 有机砷化合物（杀心丝虫药）
+  indications: ["犬心丝虫病（杀成虫）"]
+  contraindications: ["严重心丝虫病（IV期，手术取虫更安全）", "妊娠", "肝肾功能严重不全"]
+  side_effects: ["注射部位疼痛/肿胀", "肺血栓栓塞（死亡虫体）", "肝毒性", "发热/厌食"]
+  species_dosing:
+    犬: {dose: "2.5 mg/kg", route: "IM（深部腰肌注射）", frequency: "第1天1次→第2天2次（间隔24h）= 3次注射方案"}
+    猫: {dose: "不推荐（猫对美拉索明毒性大，无安全有效剂量）", route: "-", frequency: "-"}
+
+- id: drug_049
+  name_zh: 伊维菌素
+  name_en: Ivermectin
+  drug_class: 大环内酯类抗寄生虫药
+  indications: ["心丝虫预防", "疥螨", "耳螨", "肠道线虫", "微丝蚴清除"]
+  contraindications: ["柯利犬/牧羊犬MDR1基因突变（高剂量神经毒性）", "6周龄以下幼犬"]
+  side_effects: ["呕吐/腹泻", "镇静/共济失调（MDR1突变犬高剂量时）", "瞳孔散大"]
+  species_dosing:
+    犬: {dose: "6-12 μg/kg", route: "PO", frequency: "每月一次（心丝虫预防）"}
+    猫: {dose: "24 μg/kg", route: "PO", frequency: "每月一次（猫心丝虫预防剂量）"}
+- id: drug_050
+  name_zh: 多库酯钠/乳果糖
+  name_en: Docusate/Lactulose
+  definition: 轻泻剂，用于便秘治疗。乳果糖还可用于肝性脑病降低血氨。
+  drug_class: 消化系统用药
+  indications: ["便秘", "肝性脑病(乳果糖)"]
+  contraindications: ["肠梗阻"]
+  side_effects: ["腹泻", "电解质紊乱(长期使用)"]
+
+- id: drug_051
+  name_zh: 马罗匹坦
+  name_en: Maropitant
+  definition: NK-1受体拮抗剂，广谱止吐药，可阻断中枢和外周呕吐反射。
+  drug_class: 止吐药
+  indications: ["各种原因呕吐", "预防晕动症"]
+  contraindications: ["16周龄以下犬"]
+  side_effects: ["注射部位疼痛", "一过性心动过缓"]
+  species_dosing: "犬：口服2mg/kg q24h；皮下注射1mg/kg q24h（连用最多5天）；猫：口服1mg/kg q24h"
+
+- id: drug_052
+  name_zh: 加巴喷丁
+  name_en: Gabapentin
+  definition: 钙通道调节剂，用于神经性疼痛和癫痫辅助治疗，也可用于术前镇静。
+  drug_class: 抗癫痫药/镇痛药
+  indications: ["神经性疼痛", "癫痫辅助", "焦虑/应激"]
+  contraindications: ["严重肾功能不全"]
+  side_effects: ["镇静", "共济失调", "外周水肿"]
+  species_dosing: "犬：5-10mg/kg q8-12h；猫：5-10mg/kg q12h"
+
+- id: drug_053
+  name_zh: 曲马多
+  name_en: Tramadol
+  definition: 弱阿片受体激动剂，用于轻至中度疼痛管理。犬可产生活性代谢物，猫代谢差效果有限。
+  drug_class: 镇痛药
+  indications: ["轻至中度疼痛", "慢性疼痛"]
+  contraindications: ["MAO抑制剂合用", "癫痫患犬慎用"]
+  side_effects: ["镇静", "恶心", "便秘", "猫可能产生兴奋而非镇静"]
+  species_dosing: "犬：2-5mg/kg q8-12h；猫：效果不确切，2-4mg/kg q12h"
+
+- id: drug_054
+  name_zh: 托赛米
+  name_en: Torasemide
+  definition: 袢利尿剂，效力为呋塞米的10倍，半衰期更长，用于心衰利尿。
+  drug_class: 利尿剂
+  indications: ["心力衰竭", "其他需强利尿的情况"]
+  contraindications: ["低血容量", "低钾血症", "肝昏迷"]
+  side_effects: ["脱水", "电解质紊乱", "肾前性氮质血症"]
+  species_dosing: "犬：0.1-0.3mg/kg q24h（口服）；猫：0.1-0.2mg/kg q24h"
+
+- id: drug_055
+  name_zh: 贝那普利
+  name_en: Benazepril
+  definition: ACE抑制剂，降低肾小球内压，减少蛋白尿，用于CKD和心衰。
+  drug_class: ACE抑制剂
+  indications: ["CKD蛋白尿", "心力衰竭", "高血压"]
+  contraindications: ["双侧肾动脉狭窄", "妊娠"]
+  side_effects: ["低血压", "高钾血症", "肾功能恶化"]
+  species_dosing: "犬猫：0.25-0.5mg/kg q24h"
+
+- id: drug_056
+  name_zh: 氯吡格雷
+  name_en: Clopidogrel
+  definition: 抗血小板药物，抑制ADP受体，减少血栓形成。猫HCM合并血栓风险时使用。
+  drug_class: 抗血小板药
+  indications: ["血栓预防(猫HCM)", "动脉血栓栓塞"]
+  contraindications: ["活动性出血", "严重肝病"]
+  side_effects: ["出血倾向", "胃肠道不适"]
+  species_dosing: "猫：18.75mg/cat q24h；犬：1-2mg/kg q24h"
+
+- id: drug_057
+  name_zh: 阿替帕唑
+  name_en: Atipamezole
+  definition: α2-肾上腺素能受体拮抗剂，用于逆转美托咪定/右美托咪定的镇静作用。
+  drug_class: 拮抗剂
+  indications: ["逆转α2激动剂镇静"]
+  contraindications: []
+  side_effects: ["一过性低血压", "呕吐", "兴奋"]
+  species_dosing: "犬猫：给予美托咪定等量（mg:mg）IM"
+
+- id: drug_058
+  name_zh: 氟西汀
+  name_en: Fluoxetine
+  definition: SSRI抗抑郁药，用于犬猫的行为问题（分离焦虑、强迫行为）和喷尿标记。
+  drug_class: 行为调节药
+  indications: ["分离焦虑", "强迫行为", "猫喷尿标记"]
+  contraindications: ["MAO抑制剂合用", "癫痫病史"]
+  side_effects: ["食欲下降", "镇静", "胃肠道不适"]
+  species_dosing: "犬：1-2mg/kg q24h；猫：0.5-1mg/kg q24h"
+
+- id: drug_059
+  name_zh: 两性霉素B
+  name_en: Amphotericin B
+  definition: 多烯类抗真菌药，用于全身性真菌感染（组织胞浆菌、球孢子菌等）。脂质体剂型肾毒性较低。
+  drug_class: 抗真菌药
+  indications: ["全身性真菌感染"]
+  contraindications: ["严重肾功能不全(普通剂型)"]
+  side_effects: ["肾毒性(普通剂型)", "输液反应", "低钾血症"]
+  species_dosing: "犬：普通剂型0.25-0.5mg/kg IV 隔日；脂质体剂型1-3mg/kg IV 每周2-3次"
+
+- id: drug_060
+  name_zh: 伊曲康唑
+  name_en: Itraconazole
+  definition: 三唑类抗真菌药，用于皮肤真菌病和全身性真菌感染。猫口服溶液吸收优于胶囊。
+  drug_class: 抗真菌药
+  indications: ["皮肤真菌病", "全身性真菌感染"]
+  contraindications: ["严重肝病", "妊娠"]
+  side_effects: ["肝毒性", "食欲下降", "呕吐"]
+  species_dosing: "犬：5-10mg/kg q24h；猫：5-10mg/kg q24h（口服液）"
+
