@@ -24,9 +24,15 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis"],
     "icon": [
+      "icons/icon_32x32.png",
+      "icons/icon_128x128.png",
+      "icons/icon_256x256.png",
+      "icons/icon_512x512.png",
       "icons/icon.ico"
-    ]
+    ],
+    "publisher": "vet-knowledge",
+    "copyright": "© 2026 vet-knowledge"
   }
 }
