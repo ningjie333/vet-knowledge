@@ -1,8 +1,13 @@
 ---
-id: "drug_027"
-name_zh: "硫糖铝"
-name_en: "Sucralfate"
-drug_class: "胃黏膜保护剂"
+adverse_mechanism: 便秘最常见（约2-5%）。罕见铝蓄积（长期使用于肾功能不全动物）。可能影响其他药物吸收（需间隔2小时给药）。
+drug_class: 胃黏膜保护剂
+id: drug_027
+mechanism_of_action: 硫糖铝在胃酸（pH<4）作用下解离为带负电荷的八硫酸蔗糖，与溃疡面带正电荷的蛋白质结合形成粘稠凝胶，选择性粘附于溃疡组织形成保护屏障。促进内源性前列腺素E2和表皮生长因子合成，增强粘膜防御和修复。
+name_en: Sucralfate
+name_zh: 硫糖铝
+pk_pd: 口服后几乎不吸收（<5%），局部作用于胃黏膜。不被代谢，以原形随粪便排出。
+tags:
+- mech_inflammation
 ---
 
 ## 适应症

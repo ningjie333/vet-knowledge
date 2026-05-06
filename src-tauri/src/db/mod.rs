@@ -291,13 +291,94 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         .await?;
     }
 
+    // ── v7: 标签系统 + 四维度增强 + 治疗模块 ──
+    if current < 7 {
+        // diseases 新增字段
+        sqlx::query("ALTER TABLE diseases ADD COLUMN name_latin TEXT").execute(pool).await.ok();
+        sqlx::query("ALTER TABLE diseases ADD COLUMN pathogenic_type TEXT").execute(pool).await.ok();
+        sqlx::query("ALTER TABLE diseases ADD COLUMN epidemiology TEXT").execute(pool).await.ok();
+        sqlx::query("ALTER TABLE diseases ADD COLUMN body_system TEXT").execute(pool).await.ok();
+        sqlx::query("ALTER TABLE diseases ADD COLUMN physiological_basis TEXT").execute(pool).await.ok();
+
+        // symptoms 新增字段
+        sqlx::query("ALTER TABLE symptoms ADD COLUMN physiological_basis TEXT").execute(pool).await.ok();
+
+        // drugs 新增字段
+        sqlx::query("ALTER TABLE drugs ADD COLUMN mechanism_of_action TEXT").execute(pool).await.ok();
+        sqlx::query("ALTER TABLE drugs ADD COLUMN pk_pd TEXT").execute(pool).await.ok();
+        sqlx::query("ALTER TABLE drugs ADD COLUMN adverse_mechanism TEXT").execute(pool).await.ok();
+
+        // 标签系统
+        sqlx::query(
+            "CREATE TABLE IF NOT EXISTS tags (
+                id TEXT PRIMARY KEY,
+                name_zh TEXT NOT NULL UNIQUE,
+                name_en TEXT,
+                tag_group TEXT NOT NULL DEFAULT 'custom',
+                emergency_level TEXT CHECK(emergency_level IS NULL OR emergency_level IN ('red','orange','yellow','green')),
+                clinical_action TEXT,
+                textbook_logic TEXT,
+                typical_scenario TEXT,
+                color TEXT,
+                created_at TEXT DEFAULT (datetime('now'))
+            )"
+        ).execute(pool).await.ok();
+
+        sqlx::query(
+            "CREATE TABLE IF NOT EXISTS entity_tags (
+                entity_type TEXT NOT NULL CHECK(entity_type IN ('disease','symptom','drug','treatment','case')),
+                entity_id TEXT NOT NULL,
+                tag_id TEXT NOT NULL REFERENCES tags(id),
+                PRIMARY KEY (entity_type, entity_id, tag_id)
+            )"
+        ).execute(pool).await.ok();
+
+        // 治疗模块
+        sqlx::query(
+            "CREATE TABLE IF NOT EXISTS treatments (
+                id TEXT PRIMARY KEY,
+                name_zh TEXT NOT NULL,
+                name_en TEXT,
+                therapy_type TEXT CHECK(therapy_type IN ('药物疗法','手术疗法','急救重症','康复理疗','营养辅助','其他')),
+                principle TEXT,
+                procedure_text TEXT,
+                physiological_basis TEXT,
+                prognosis_assessment TEXT,
+                created_at TEXT DEFAULT (datetime('now'))
+            )"
+        ).execute(pool).await.ok();
+
+        sqlx::query(
+            "CREATE TABLE IF NOT EXISTS disease_treatment_map (
+                disease_id TEXT REFERENCES diseases(id),
+                treatment_id TEXT REFERENCES treatments(id),
+                line TEXT CHECK(line IN ('first','second','adjunctive')),
+                species TEXT,
+                notes TEXT,
+                PRIMARY KEY (disease_id, treatment_id, species)
+            )"
+        ).execute(pool).await.ok();
+
+        // 索引
+        sqlx::query("CREATE INDEX IF NOT EXISTS idx_entity_tags_type ON entity_tags(entity_type, entity_id)").execute(pool).await.ok();
+        sqlx::query("CREATE INDEX IF NOT EXISTS idx_entity_tags_tag ON entity_tags(tag_id)").execute(pool).await.ok();
+        sqlx::query("CREATE INDEX IF NOT EXISTS idx_tags_group ON tags(tag_group)").execute(pool).await.ok();
+
+        sqlx::query(
+            "INSERT OR IGNORE INTO schema_migrations (version, description)
+             VALUES (7, 'Tag system + disease/symptom/drug enhancements + treatments module')"
+        )
+        .execute(pool)
+        .await?;
+    }
+
     Ok(())
 }
 
 /// 种子数据导入：版本不匹配时全量重建。
 /// 使用 UPSERT（INSERT OR REPLACE）避免 DELETE 后再 INSERT 的外键问题。
 async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
-    const SEED_DATA_VERSION: i64 = 8;
+    const SEED_DATA_VERSION: i64 = 10;
 
     let stored: Option<i64> = sqlx::query_scalar(
         "SELECT value FROM app_meta WHERE key = 'seed_data_version'"

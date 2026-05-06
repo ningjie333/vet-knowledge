@@ -1,8 +1,13 @@
 ---
-id: "drug_052"
-name_zh: "加巴喷丁"
-name_en: "Gabapentin"
-drug_class: "抗癫痫药/镇痛药"
+adverse_mechanism: 镇静、共济失调。外周水肿。
+drug_class: 抗癫痫药/镇痛药
+id: drug_052
+mechanism_of_action: 加巴喷丁与电压门控钙通道α2δ亚基结合，减少钙离子内流，抑制兴奋性神经递质释放。用于神经性疼痛和辅助抗癫痫。
+name_en: Gabapentin
+name_zh: 加巴喷丁
+pk_pd: 口服吸收良好但剂量依赖性饱和。不与血浆蛋白结合，半衰期约3-4小时。以原形经肾脏排泄。
+tags:
+- mech_pain
 ---
 
 ## 适应症

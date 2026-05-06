@@ -1,8 +1,13 @@
 ---
-id: "drug_048"
-name_zh: "美拉索明"
-name_en: "Melarsomine"
-drug_class: "有机砷化合物（杀心丝虫药）"
+adverse_mechanism: 注射部位疼痛和肿胀。肺血栓栓塞（虫体死亡后栓塞肺动脉，需严格限制活动）。肝毒性。肾毒性。胃肠道反应。
+drug_class: 有机砷化合物（杀心丝虫药）
+id: drug_048
+mechanism_of_action: 美拉索明为有机砷化合物，通过砷基团与寄生虫蛋白的巯基结合，干扰能量代谢，导致成虫死亡。对犬心丝虫成虫有高度选择性毒性，是杀灭心丝虫成虫的唯一注册药物。
+name_en: Melarsomine
+name_zh: 美拉索明
+pk_pd: 深肌肉注射（腰旁肌）。吸收后分布于肝脏和肺动脉。血浆蛋白结合率高，半衰期约3-4小时。主要经肾脏排泄。
+tags:
+- mech_infectious
 ---
 
 ## 适应症

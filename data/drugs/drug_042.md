@@ -1,8 +1,13 @@
 ---
-id: "drug_042"
-name_zh: "苯巴比妥"
-name_en: "Phenobarbital"
-drug_class: "抗癫痫药（巴比妥类）"
+adverse_mechanism: 镇静、多饮多尿、多食、体重增加（初期最常见）。肝毒性（长期使用需定期监测肝酶和血药浓度）。血液学毒性（罕见）。突然停药可诱发癫痫持续状态。
+drug_class: 抗癫痫药（巴比妥类）
+id: drug_042
+mechanism_of_action: 苯巴比妥为长效巴比妥类抗癫痫药，通过增强GABA_A受体介导的氯离子内流（延长氯通道开放时间），增强中枢抑制效应。同时抑制谷氨酸的AMPA受体活性，提高癫痫发作阈值。
+name_en: Phenobarbital
+name_zh: 苯巴比妥
+pk_pd: 口服吸收良好，生物利用度约80-90%。血浆蛋白结合率约45%，半衰期约37-73小时（犬个体差异大）。强效肝药酶诱导剂（CYP450），可加速自身和其他药物代谢。
+tags:
+- mech_pain
 ---
 
 ## 适应症

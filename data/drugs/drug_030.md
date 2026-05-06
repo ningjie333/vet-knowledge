@@ -1,8 +1,13 @@
 ---
-id: "drug_030"
-name_zh: "活性炭"
-name_en: "Activated Charcoal"
-drug_class: "吸附剂（解毒）"
+adverse_mechanism: 便秘。呕吐（尤其大量给药时，误吸风险）。可能吸附其他口服药物降低其疗效。对重金属、醇类、氰化物吸附效果差。
+drug_class: 吸附剂（解毒）
+id: drug_030
+mechanism_of_action: 活性炭具有极大的比表面积（1000-2000 m²/g），通过物理吸附作用与胃肠道内的毒物分子结合，形成不溶性复合物，阻止毒物经肠壁吸收。在中毒后1-2小时内使用效果最佳，对吸附能力强的毒物（如有机磷、对乙酰氨基酚）效果显著。
+name_en: Activated Charcoal
+name_zh: 活性炭
+pk_pd: 口服后完全不被吸收，以原形随粪便排出。
+tags:
+- mech_toxic
 ---
 
 ## 适应症

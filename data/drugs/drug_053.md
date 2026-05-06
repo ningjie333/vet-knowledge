@@ -1,8 +1,11 @@
 ---
-id: "drug_053"
-name_zh: "曲马多"
-name_en: "Tramadol"
-drug_class: "镇痛药"
+adverse_mechanism: 镇静、恶心、便秘。高剂量可降低癫痫阈值。
+drug_class: 镇痛药
+id: drug_053
+mechanism_of_action: 曲马多为弱阿片类镇痛药，双重机制：弱μ受体激动+5-HT/NE再摄取抑制。适用于中度疼痛。
+name_en: Tramadol
+name_zh: 曲马多
+pk_pd: 口服生物利用度约70-80%。血浆蛋白结合率约20%，半衰期约4-6小时。主要经肝脏代谢。
 ---
 
 ## 适应症

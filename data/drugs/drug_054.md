@@ -1,8 +1,13 @@
 ---
-id: "drug_054"
-name_zh: "托赛米"
-name_en: "Torasemide"
-drug_class: "利尿剂"
+adverse_mechanism: 电解质紊乱（低钾、低钠、低氯性碱中毒）。脱水。耳毒性（罕见）。
+drug_class: 利尿剂
+id: drug_054
+mechanism_of_action: 托赛米为袢利尿剂，作用于肾小管髓袢升支粗段，抑制Na⁺/K⁺/2Cl⁻共转运体，产生强效利尿作用。与呋塞米相比，生物利用度更高且更稳定。
+name_en: Torasemide
+name_zh: 托赛米
+pk_pd: 口服生物利用度约80-90%（个体差异小）。血浆蛋白结合率>97%，半衰期约4-6小时。主要经肝脏代谢。
+tags:
+- mech_vascular
 ---
 
 ## 适应症

@@ -1,8 +1,13 @@
 ---
-id: "drug_022"
-name_zh: "伊曲康唑"
-name_en: "Itraconazole"
-drug_class: "抗真菌药（三唑类）"
+adverse_mechanism: 胃肠道反应（厌食、呕吐）。肝毒性（剂量依赖性，需监测肝酶）。与多种药物有相互作用（CYP450抑制）。负性肌力作用（慎用于心功能不全）。
+drug_class: 抗真菌药（三唑类）
+id: drug_022
+mechanism_of_action: 伊曲康唑为三唑类抗真菌药，抑制真菌细胞色素P450依赖的14α-去甲基酶，阻断麦角固醇合成，导致细胞膜通透性改变。对皮肤癣菌、念珠菌、曲霉菌、组织胞浆菌等均有活性。
+name_en: Itraconazole
+name_zh: 伊曲康唑
+pk_pd: 口服吸收受胃酸影响，酸性环境和食物促进吸收。高度亲脂性，在皮肤和角质层中浓度极高。血浆蛋白结合率>99%，半衰期约12-15小时。主要经肝脏CYP450代谢，为CYP3A4抑制剂。
+tags:
+- mech_infectious
 ---
 
 ## 适应症

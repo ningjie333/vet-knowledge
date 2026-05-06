@@ -1,8 +1,13 @@
 ---
-id: "drug_021"
-name_zh: "特比萘芬"
-name_en: "Terbinafine"
-drug_class: "抗真菌药（丙烯胺类）"
+adverse_mechanism: 胃肠道反应（呕吐、腹泻、厌食）。肝酶升高（罕见肝毒性，需监测）。味觉障碍。皮疹。
+drug_class: 抗真菌药（丙烯胺类）
+id: drug_021
+mechanism_of_action: 特比萘芬为丙烯胺类抗真菌药，通过选择性抑制角鲨烯环氧酶，阻断麦角固醇生物合成途径。角鲨烯在真菌细胞内蓄积产生细胞毒性，同时麦角固醇缺乏导致细胞膜功能障碍，对皮肤癣菌有杀菌作用。
+name_en: Terbinafine
+name_zh: 特比萘芬
+pk_pd: 口服吸收约40-50%，高脂餐促进吸收。高度亲脂性，在皮肤、毛发和指甲中浓度远高于血浆。血浆蛋白结合率>99%，半衰期约12小时。主要经肝脏CYP450代谢。
+tags:
+- mech_infectious
 ---
 
 ## 适应症

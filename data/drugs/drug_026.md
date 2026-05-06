@@ -1,8 +1,11 @@
 ---
-id: "drug_026"
-name_zh: "维生素K1"
-name_en: "Phytonadione (Vitamin K1)"
-drug_class: "维生素/凝血因子合成辅助"
+adverse_mechanism: 注射部位反应（疼痛、肿胀）。罕见过敏反应（静脉注射时风险较高，建议皮下或口服给药）。过量可致血栓风险。
+drug_class: 维生素/凝血因子合成辅助
+id: drug_026
+mechanism_of_action: 维生素K1（植物甲萘醌）为脂溶性维生素，作为γ-谷氨酰羧化酶的辅因子，参与凝血因子II、VII、IX、X以及蛋白C和蛋白S的γ-羧化过程，使其具有凝血活性。用于抗凝血类杀鼠药（华法林类）中毒的特效解毒。
+name_en: Phytonadione (Vitamin K1)
+name_zh: 维生素K1
+pk_pd: 口服吸收需要胆汁乳化，皮下注射吸收更稳定。血浆蛋白结合率高，半衰期约1-2小时。主要在肝脏代谢。
 ---
 
 ## 适应症

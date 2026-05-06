@@ -1,8 +1,13 @@
 ---
-id: "drug_034"
-name_zh: "布托啡诺"
-name_en: "Butorphanol"
-drug_class: "阿片类镇痛药（激动-拮抗剂）"
+adverse_mechanism: 镇静。胃肠道反应（恶心、呕吐）。大剂量时可能出现烦躁不安。
+drug_class: 阿片类镇痛药（激动-拮抗剂）
+id: drug_034
+mechanism_of_action: 布托啡诺为混合型阿片受体激动-拮抗剂：κ受体激动产生镇痛和镇静作用，μ受体部分激动/拮抗。镇痛效果约为吗啡的5倍，呼吸抑制有封顶效应（安全性优于纯μ激动剂）。
+name_en: Butorphanol
+name_zh: 布托啡诺
+pk_pd: 肌肉注射10-15分钟起效，持续约4-6小时。血浆蛋白结合率约80%，半衰期约3-4小时。主要经肝脏代谢。
+tags:
+- mech_pain
 ---
 
 ## 适应症

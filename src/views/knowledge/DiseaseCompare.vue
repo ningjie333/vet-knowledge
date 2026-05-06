@@ -229,7 +229,7 @@ function evidenceLabel(e: string) {
             <td class="row-header">需鉴别疾病</td>
             <td v-for="d in compareData" :key="d.disease.id">
               <div v-if="d.ddx.length">
-                <div v-for="x in d.ddx" :key="x.name_zh}" class="ddx-item">
+                <div v-for="x in d.ddx" :key="x.name_zh" class="ddx-item">
                   <router-link :to="`/diseases/${x.name_zh}`" class="ddx-link">{{ x.name_zh }}</router-link>
                   <span class="ddx-feature">{{ x.distinguishing_feature }}</span>
                 </div>

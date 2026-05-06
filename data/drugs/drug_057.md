@@ -1,8 +1,13 @@
 ---
-id: "drug_057"
-name_zh: "阿替帕唑"
-name_en: "Atipamezole"
-drug_class: "拮抗剂"
+adverse_mechanism: 短暂性低血压或高血压。兴奋、震颤。
+drug_class: 拮抗剂
+id: drug_057
+mechanism_of_action: 阿替美唑为α-2受体拮抗剂，逆转美托咪定等α-2激动剂的镇静和心血管抑制效应。
+name_en: Atipamezole
+name_zh: 阿替帕唑
+pk_pd: 肌肉注射吸收迅速，5-10分钟起效。半衰期约1-2小时。
+tags:
+- mech_pain
 ---
 
 ## 适应症

@@ -1,8 +1,13 @@
 ---
-id: "drug_059"
-name_zh: "两性霉素B"
-name_en: "Amphotericin B"
-drug_class: "抗真菌药"
+adverse_mechanism: 肾毒性（最常见且严重，可致急性肾损伤）。输液反应（寒战、发热）。低钾血症。贫血。
+drug_class: 抗真菌药
+id: drug_059
+mechanism_of_action: 两性霉素B为多烯类抗真菌药，与真菌细胞膜上的麦角固醇结合，形成膜孔道，导致细胞内重要物质外漏和细胞死亡。对多种深部真菌有杀菌作用。
+name_en: Amphotericin B
+name_zh: 两性霉素B
+pk_pd: 口服几乎不吸收（仅用于肠道真菌感染）。静脉给药后血浆蛋白结合率>90%，半衰期约15天。主要经肝脏代谢。
+tags:
+- mech_infectious
 ---
 
 ## 适应症

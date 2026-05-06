@@ -484,3 +484,16 @@ disease_diagnostic:
   - {disease: dis_050, test: test_008, purpose: confirming, evidence_level: gold_standard, species: 猫, expected_result: "子宫增大，腔内液性暗区"}
   - {disease: dis_050, test: test_001, purpose: screening, evidence_level: supportive, species: 猫, expected_result: "白细胞升高伴核左移"}
 
+# ===== 疾病-治疗方案关联 =====
+# 关联疾病到综合治疗方案（区别于 disease_treatment 的药物级关联）
+disease_treatment_map:
+  - {disease: dis_001, treatment: trt_001, line: first, species: 犬, notes: "细菌性肺炎标准抗生素方案"}
+  - {disease: dis_001, treatment: trt_001, line: first, species: 猫, notes: "猫吸入性/细菌性肺炎"}
+  - {disease: dis_002, treatment: trt_002, line: first, species: 犬, notes: "MMVD/DCM 充血性心衰标准三联"}
+  - {disease: dis_014, treatment: trt_002, line: first, species: 犬, notes: "DCM 心衰方案"}
+  - {disease: dis_003, treatment: trt_003, line: first, species: 猫, notes: "猫哮喘阶梯式抗炎"}
+  - {disease: dis_009, treatment: trt_004, line: first, species: null, notes: "胰腺炎支持治疗"}
+  - {disease: dis_025, treatment: trt_005, line: first, species: 犬, notes: "细小病毒重症监护"}
+  - {disease: dis_027, treatment: trt_005, line: first, species: 猫, notes: "猫泛白细胞减少症类似方案"}
+  - {disease: dis_029, treatment: trt_006, line: first, species: 犬, notes: "GDV 急救手术方案"}
+

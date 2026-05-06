@@ -1,8 +1,13 @@
 ---
-id: "drug_045"
-name_zh: "环磷酰胺"
-name_en: "Cyclophosphamide"
-drug_class: "烷化剂（化疗药）"
+adverse_mechanism: 骨髓抑制（剂量限制性毒性）。胃肠道反应（恶心、呕吐）。出血性膀胱炎（代谢物丙烯醛刺激膀胱黏膜，需配合美司钠和充足饮水）。脱发。免疫抑制。
+drug_class: 烷化剂（化疗药）
+id: drug_045
+mechanism_of_action: 环磷酰胺为烷化剂类化疗药和免疫抑制剂，在肝脏被CYP450活化后产生磷酰胺氮芥，与DNA交联，阻断DNA复制和转录，抑制细胞增殖。对增殖活跃的淋巴细胞有选择性毒性。
+name_en: Cyclophosphamide
+name_zh: 环磷酰胺
+pk_pd: 口服吸收良好，生物利用度约75-90%。血浆蛋白结合率低，半衰期约3-12小时。主要经肝脏活化，代谢物经肾脏排泄。
+tags:
+- mech_neoplastic
 ---
 
 ## 适应症

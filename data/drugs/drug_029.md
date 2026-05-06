@@ -1,8 +1,14 @@
 ---
-id: "drug_029"
-name_zh: "乳酸林格液"
-name_en: "Lactated Ringer's Solution"
-drug_class: "晶体液（等渗）"
+adverse_mechanism: 液体过负荷（尤其心功能不全或肾功能不全时可致肺水肿）。电解质稀释。乳酸根代谢障碍时（肝功能不全）可致代谢性碱中毒。
+drug_class: 晶体液（等渗）
+id: drug_029
+mechanism_of_action: 乳酸林格液为等渗晶体液，电解质成分与血浆相似（Na⁺ 130mEq/L, K⁺ 4mEq/L, Ca²⁺ 3mEq/L,
+  Cl⁻ 109mEq/L, 乳酸根 28mEq/L）。乳酸根在肝脏代谢为碳酸氢根，有助于纠正轻度代谢性酸中毒。
+name_en: Lactated Ringer's Solution
+name_zh: 乳酸林格液
+pk_pd: 静脉输注后迅速分布至细胞外液。不引起渗透压异常。
+tags:
+- mech_vascular
 ---
 
 ## 适应症

@@ -1,8 +1,13 @@
 ---
-id: "drug_023"
-name_zh: "多拉西泮（安定）"
-name_en: "Diazepam"
-drug_class: "苯二氮卓类"
+adverse_mechanism: 镇静、共济失调。矛盾性兴奋（罕见）。猫罕见但严重的特发性肝衰竭。长期使用产生耐受性和依赖性。
+drug_class: 苯二氮卓类
+id: drug_023
+mechanism_of_action: 地西泮为苯二氮卓类药物，与GABA_A受体上的苯二氮卓位点结合，增强GABA与受体的亲和力，增加氯离子通道开放频率，产生镇静、抗焦虑、肌肉松弛和抗惊厥作用。
+name_en: Diazepam
+name_zh: 多拉西泮（安定）
+pk_pd: 口服吸收迅速，生物利用度约90%。肌肉注射吸收不稳定。血浆蛋白结合率>98%，半衰期约2-4小时。主要经肝脏代谢为活性代谢物（去甲西泮、奥沙西泮）。
+tags:
+- mech_pain
 ---
 
 ## 适应症

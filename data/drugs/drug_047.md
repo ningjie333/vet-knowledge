@@ -1,8 +1,13 @@
 ---
-id: "drug_047"
-name_zh: "多柔比星"
-name_en: "Doxorubicin"
-drug_class: "蒽环类化疗药"
+adverse_mechanism: 心脏毒性（剂量累积性心肌损伤，犬最严重）。骨髓抑制。胃肠道反应（恶心、呕吐、腹泻）。脱发。局部组织坏死（外渗时）。尿液可呈红色。
+drug_class: 蒽环类化疗药
+id: drug_047
+mechanism_of_action: 多柔比星为蒽环类化疗药，通过多种机制发挥抗肿瘤作用：①嵌入DNA双链，抑制拓扑异构酶II，阻断DNA复制；②产生自由基，导致DNA链断裂和细胞膜损伤；③抑制RNA合成。
+name_en: Doxorubicin
+name_zh: 多柔比星
+pk_pd: 静脉给药（不可肌肉或皮下注射）。血浆蛋白结合率约75%，半衰期约1-2小时（终末半衰期更长）。主要经肝脏代谢，经胆汁排泄。
+tags:
+- mech_neoplastic
 ---
 
 ## 适应症

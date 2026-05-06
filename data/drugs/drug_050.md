@@ -1,8 +1,13 @@
 ---
-id: "drug_050"
-name_zh: "多库酯钠/乳果糖"
-name_en: "Docusate/Lactulose"
-drug_class: "消化系统用药"
+adverse_mechanism: 腹胀、腹痛。腹泻（过量时）。电解质紊乱（罕见）。
+drug_class: 消化系统用药
+id: drug_050
+mechanism_of_action: 多库酯钠为粪便软化剂，通过降低粪便表面张力使水分渗入软化粪便。乳果糖为合成双糖，在结肠被细菌分解为乳酸和乙酸，增加肠腔内渗透压，保留水分，软化粪便并刺激肠蠕动。两者协同促进排便。
+name_en: Docusate/Lactulose
+name_zh: 多库酯钠/乳果糖
+pk_pd: 两者口服后均几乎不吸收，局部作用于肠道。乳果糖在结肠被细菌发酵产酸。
+tags:
+- mech_inflammation
 ---
 
 ## 适应症

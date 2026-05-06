@@ -1,36 +1,53 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
-
-interface Symptom {
-  id: string
-  name_zh: string
-  name_en: string | null
-  definition: string | null
-}
+import type { Symptom, Tag } from '../../types'
 
 const symptoms = ref<Symptom[]>([])
 const diseaseCounts = ref<Map<string, number>>(new Map())
+const allTags = ref<Map<string, Tag>>(new Map())
 const loading = ref(true)
+
+const tagMap = computed(() => allTags.value)
 
 onMounted(async () => {
   try {
-    symptoms.value = await invoke<Symptom[]>('get_symptoms')
+    const [s, tags] = await Promise.all([
+      invoke<Symptom[]>('get_symptoms'),
+      invoke<Tag[]>('get_tags'),
+    ])
+    symptoms.value = s
+
+    const tMap = new Map<string, Tag>()
+    for (const tag of tags) {
+      tMap.set(tag.id, tag)
+    }
+    allTags.value = tMap
+
     // Batch fetch disease counts for all symptoms
     const counts = await Promise.all(
-      symptoms.value.map(s =>
+      symptoms.value.map(sym =>
         invoke<{ disease_id: string }[]>('get_diseases_by_symptom', {
-          symptomId: s.id,
+          symptomId: sym.id,
           species: null,
         }).then(r => r.length).catch(() => 0)
       )
     )
     const map = new Map<string, number>()
-    symptoms.value.forEach((s, i) => map.set(s.id, counts[i]))
+    symptoms.value.forEach((sym, i) => map.set(sym.id, counts[i]))
     diseaseCounts.value = map
   } catch (e) { console.error(e) }
   loading.value = false
 })
+
+function getTagStyle(tagId: string): string {
+  const tag = tagMap.value.get(tagId)
+  return tag?.color || '#999'
+}
+
+function getTagName(tagId: string): string {
+  return tagMap.value.get(tagId)?.name_zh || tagId
+}
 </script>
 
 <template>
@@ -55,6 +72,19 @@ onMounted(async () => {
         <div class="symptom-name">{{ s.name_zh }}</div>
         <div class="symptom-en">{{ s.name_en }}</div>
         <div class="symptom-def">{{ s.definition?.slice(0, 100) }}</div>
+
+        <!-- 标签 -->
+        <div v-if="s.tags?.length" class="symptom-tags">
+          <span
+            v-for="tagId in s.tags"
+            :key="tagId"
+            class="tag-chip"
+            :style="{ background: getTagStyle(tagId) }"
+          >
+            {{ getTagName(tagId) }}
+          </span>
+        </div>
+
         <div class="disease-count">
           <span class="count-badge">{{ diseaseCounts.get(s.id) || 0 }} 个相关疾病</span>
         </div>
@@ -100,6 +130,16 @@ onMounted(async () => {
 .symptom-name { font-weight: 600; font-size: 16px; }
 .symptom-en { font-size: 12px; color: var(--color-text-secondary); }
 .symptom-def { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin-top: 4px; }
+
+.symptom-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.tag-chip {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 500;
+}
+
 .disease-count { margin-top: 8px; }
 .count-badge {
   display: inline-block;

@@ -41,6 +41,29 @@ pub async fn get_disease_by_id(
         .map_err(|e| e.to_string())
 }
 
+fn row_to_disease(r: &sqlx::sqlite::SqliteRow) -> Disease {
+    Disease {
+        id: r.get("id"),
+        name_zh: r.get("name_zh"),
+        name_en: r.get("name_en"),
+        name_latin: r.get("name_latin"),
+        category: r.get("category"),
+        species: r.get("species"),
+        body_system: r.get("body_system"),
+        pathogenic_type: r.get("pathogenic_type"),
+        epidemiology: r.get("epidemiology"),
+        overview: r.get("overview"),
+        etiology: r.get("etiology"),
+        pathophysiology: r.get("pathophysiology"),
+        physiological_basis: r.get("physiological_basis"),
+        prognosis: r.get("prognosis"),
+        difficulty: r.get("difficulty"),
+        urgency_level: r.get("urgency_level"),
+        created_at: r.get("created_at"),
+        updated_at: r.get("updated_at"),
+    }
+}
+
 #[tauri::command]
 pub async fn get_disease_symptoms(
     pool: tauri::State<'_, DbPool>,
@@ -64,6 +87,7 @@ pub async fn get_disease_symptoms(
                 name_en: r.get("name_en"),
                 definition: r.get("definition"),
                 species_notes: r.get("species_notes"),
+                physiological_basis: r.get("physiological_basis"),
             };
             let frequency: String = r.get("frequency");
             let stage: String = r.get("stage");
@@ -89,26 +113,26 @@ pub async fn get_disease_ddx(
     .await
     .map(|rows| {
         rows.iter().map(|r| {
-            let disease = Disease {
-                id: r.get("id"),
-                name_zh: r.get("name_zh"),
-                name_en: r.get("name_en"),
-                category: r.get("category"),
-                species: r.get("species"),
-                overview: r.get("overview"),
-                etiology: r.get("etiology"),
-                pathophysiology: r.get("pathophysiology"),
-                prognosis: r.get("prognosis"),
-                difficulty: r.get("difficulty"),
-                urgency_level: r.get("urgency_level"),
-                created_at: r.get("created_at"),
-                updated_at: r.get("updated_at"),
-            };
-            let feature: String = r.get("distinguishing_feature");
-            (disease, feature)
+            (row_to_disease(r), r.get::<String, _>("distinguishing_feature"))
         }).collect()
     })
     .map_err(|e| e.to_string())
+}
+
+fn row_to_drug(r: &sqlx::sqlite::SqliteRow) -> Drug {
+    Drug {
+        id: r.get("id"),
+        name_zh: r.get("name_zh"),
+        name_en: r.get("name_en"),
+        drug_class: r.get("drug_class"),
+        mechanism_of_action: r.get("mechanism_of_action"),
+        pk_pd: r.get("pk_pd"),
+        indications: r.get("indications"),
+        contraindications: r.get("contraindications"),
+        side_effects: r.get("side_effects"),
+        adverse_mechanism: r.get("adverse_mechanism"),
+        species_dosing: r.get("species_dosing"),
+    }
 }
 
 #[tauri::command]
@@ -127,23 +151,27 @@ pub async fn get_disease_treatments(
     .await
     .map(|rows| {
         rows.iter().map(|r| {
-            let drug = Drug {
-                id: r.get("id"),
-                name_zh: r.get("name_zh"),
-                name_en: r.get("name_en"),
-                drug_class: r.get("drug_class"),
-                indications: r.get("indications"),
-                contraindications: r.get("contraindications"),
-                side_effects: r.get("side_effects"),
-                species_dosing: r.get("species_dosing"),
-            };
-            let line: String = r.get("line");
-            let species: String = r.get("species");
-            let notes: String = r.get("notes");
-            (drug, line, species, notes)
+            (
+                row_to_drug(r),
+                r.get::<String, _>("line"),
+                r.get::<String, _>("species"),
+                r.get::<String, _>("notes"),
+            )
         }).collect()
     })
     .map_err(|e| e.to_string())
+}
+
+fn row_to_test(r: &sqlx::sqlite::SqliteRow) -> DiagnosticTest {
+    DiagnosticTest {
+        id: r.get("id"),
+        name_zh: r.get("name_zh"),
+        category: r.get("category"),
+        reference_ranges: r.get("reference_ranges"),
+        interpretation: r.get("interpretation"),
+        cost_estimate: r.get("cost_estimate"),
+        turnaround_time: r.get("turnaround_time"),
+    }
 }
 
 #[tauri::command]
@@ -162,182 +190,144 @@ pub async fn get_disease_diagnostics(
     .await
     .map(|rows| {
         rows.iter().map(|r| {
-            let test = DiagnosticTest {
-                id: r.get("id"),
-                name_zh: r.get("name_zh"),
-                category: r.get("category"),
-                reference_ranges: r.get("reference_ranges"),
-                interpretation: r.get("interpretation"),
-                cost_estimate: r.get("cost_estimate"),
-                turnaround_time: r.get("turnaround_time"),
-            };
-            let purpose: String = r.get("purpose");
-            let evidence_level: String = r.get("evidence_level");
-            let species: String = r.get("species");
-            let expected: String = r.get("expected_result");
-            (test, purpose, evidence_level, species, expected)
+            (
+                row_to_test(r),
+                r.get::<String, _>("purpose"),
+                r.get::<String, _>("evidence_level"),
+                r.get::<String, _>("species"),
+                r.get::<String, _>("expected_result"),
+            )
         }).collect()
     })
     .map_err(|e| e.to_string())
 }
 
-	// ===== 疾病对比 =====
+// ===== 疾病对比 =====
 
-	#[derive(serde::Serialize)]
-	pub struct DiseaseCompareView {
-	    pub disease: Disease,
-	    pub symptoms: Vec<(Symptom, String, String, i64)>,
-	    pub treatments: Vec<(Drug, String, String, String)>,
-	    pub diagnostics: Vec<(DiagnosticTest, String, String, String, String)>,
-	    pub ddx: Vec<(Disease, String)>,
-	}
+#[derive(serde::Serialize)]
+pub struct DiseaseCompareView {
+    pub disease: Disease,
+    pub symptoms: Vec<(Symptom, String, String, i64)>,
+    pub treatments: Vec<(Drug, String, String, String)>,
+    pub diagnostics: Vec<(DiagnosticTest, String, String, String, String)>,
+    pub ddx: Vec<(Disease, String)>,
+}
 
-	#[tauri::command]
-	pub async fn get_disease_compare(
-	    pool: tauri::State<'_, DbPool>,
-	    disease_ids: Vec<String>,
-	) -> Result<Vec<DiseaseCompareView>, String> {
-	    let mut results = Vec::new();
+#[tauri::command]
+pub async fn get_disease_compare(
+    pool: tauri::State<'_, DbPool>,
+    disease_ids: Vec<String>,
+) -> Result<Vec<DiseaseCompareView>, String> {
+    let mut results = Vec::new();
 
-	    for did in &disease_ids {
-	        let disease = sqlx::query_as::<_, Disease>("SELECT * FROM diseases WHERE id = ?")
-	            .bind(did)
-	            .fetch_optional(&*pool)
-	            .await
-	            .map_err(|e| e.to_string())?;
+    for did in &disease_ids {
+        let disease = sqlx::query_as::<_, Disease>("SELECT * FROM diseases WHERE id = ?")
+            .bind(did)
+            .fetch_optional(&*pool)
+            .await
+            .map_err(|e| e.to_string())?;
 
-	        let Some(disease) = disease else { continue; };
+        let Some(disease) = disease else { continue; };
 
-	        let symptoms = sqlx::query(
-	            "SELECT s.*, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
-	             FROM disease_symptom ds
-	             JOIN symptoms s ON ds.symptom_id = s.id
-	             WHERE ds.disease_id = ?
-	             ORDER BY ds.frequency DESC"
-	        )
-	        .bind(did)
-	        .fetch_all(&*pool)
-	        .await
-	        .map(|rows| {
-	            rows.iter().map(|r| {
-	                let symptom = Symptom {
-	                    id: r.get("id"),
-	                    name_zh: r.get("name_zh"),
-	                    name_en: r.get("name_en"),
-	                    definition: r.get("definition"),
-	                    species_notes: r.get("species_notes"),
-	                };
-	                let frequency: String = r.get("frequency");
-	                let stage: String = r.get("stage");
-	                let is_pathognomonic: i64 = r.get("is_pathognomonic");
-	                (symptom, frequency, stage, is_pathognomonic)
-	            }).collect()
-	        })
-	        .unwrap_or_default();
+        let symptoms = sqlx::query(
+            "SELECT s.*, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
+             FROM disease_symptom ds
+             JOIN symptoms s ON ds.symptom_id = s.id
+             WHERE ds.disease_id = ?
+             ORDER BY ds.frequency DESC"
+        )
+        .bind(did)
+        .fetch_all(&*pool)
+        .await
+        .map(|rows| {
+            rows.iter().map(|r| {
+                let symptom = Symptom {
+                    id: r.get("id"),
+                    name_zh: r.get("name_zh"),
+                    name_en: r.get("name_en"),
+                    definition: r.get("definition"),
+                    species_notes: r.get("species_notes"),
+                    physiological_basis: r.get("physiological_basis"),
+                };
+                let frequency: String = r.get("frequency");
+                let stage: String = r.get("stage");
+                let is_pathognomonic: i64 = r.get("is_pathognomonic");
+                (symptom, frequency, stage, is_pathognomonic)
+            }).collect()
+        })
+        .unwrap_or_default();
 
-	        let treatments = sqlx::query(
-	            "SELECT dr.*, dt.line, dt.species, dt.notes FROM disease_treatment dt
-	             JOIN drugs dr ON dt.drug_id = dr.id
-	             WHERE dt.disease_id = ?
-	             ORDER BY dt.line"
-	        )
-	        .bind(did)
-	        .fetch_all(&*pool)
-	        .await
-	        .map(|rows| {
-	            rows.iter().map(|r| {
-	                let drug = Drug {
-	                    id: r.get("id"),
-	                    name_zh: r.get("name_zh"),
-	                    name_en: r.get("name_en"),
-	                    drug_class: r.get("drug_class"),
-	                    indications: r.get("indications"),
-	                    contraindications: r.get("contraindications"),
-	                    side_effects: r.get("side_effects"),
-	                    species_dosing: r.get("species_dosing"),
-	                };
-	                let line: String = r.get("line");
-	                let species: String = r.get("species");
-	                let notes: String = r.get("notes");
-	                (drug, line, species, notes)
-	            }).collect()
-	        })
-	        .unwrap_or_default();
+        let treatments = sqlx::query(
+            "SELECT dr.*, dt.line, dt.species, dt.notes FROM disease_treatment dt
+             JOIN drugs dr ON dt.drug_id = dr.id
+             WHERE dt.disease_id = ?
+             ORDER BY dt.line"
+        )
+        .bind(did)
+        .fetch_all(&*pool)
+        .await
+        .map(|rows| {
+            rows.iter().map(|r| {
+                (
+                    row_to_drug(r),
+                    r.get::<String, _>("line"),
+                    r.get::<String, _>("species"),
+                    r.get::<String, _>("notes"),
+                )
+            }).collect()
+        })
+        .unwrap_or_default();
 
-	        let diagnostics = sqlx::query(
-	            "SELECT t.*, dd.purpose, dd.evidence_level, dd.species, dd.expected_result
-	             FROM disease_diagnostic dd
-	             JOIN diagnostic_tests t ON dd.test_id = t.id
-	             WHERE dd.disease_id = ?"
-	        )
-	        .bind(did)
-	        .fetch_all(&*pool)
-	        .await
-	        .map(|rows| {
-	            rows.iter().map(|r| {
-	                let test = DiagnosticTest {
-	                    id: r.get("id"),
-	                    name_zh: r.get("name_zh"),
-	                    category: r.get("category"),
-	                    reference_ranges: r.get("reference_ranges"),
-	                    interpretation: r.get("interpretation"),
-	                    cost_estimate: r.get("cost_estimate"),
-	                    turnaround_time: r.get("turnaround_time"),
-	                };
-	                let purpose: String = r.get("purpose");
-	                let evidence_level: String = r.get("evidence_level");
-	                let species: String = r.get("species");
-	                let expected: String = r.get("expected_result");
-	                (test, purpose, evidence_level, species, expected)
-	            }).collect()
-	        })
-	        .unwrap_or_default();
+        let diagnostics = sqlx::query(
+            "SELECT t.*, dd.purpose, dd.evidence_level, dd.species, dd.expected_result
+             FROM disease_diagnostic dd
+             JOIN diagnostic_tests t ON dd.test_id = t.id
+             WHERE dd.disease_id = ?"
+        )
+        .bind(did)
+        .fetch_all(&*pool)
+        .await
+        .map(|rows| {
+            rows.iter().map(|r| {
+                (
+                    row_to_test(r),
+                    r.get::<String, _>("purpose"),
+                    r.get::<String, _>("evidence_level"),
+                    r.get::<String, _>("species"),
+                    r.get::<String, _>("expected_result"),
+                )
+            }).collect()
+        })
+        .unwrap_or_default();
 
-	        let ddx = sqlx::query(
-	            "SELECT d.*, dd.distinguishing_feature FROM disease_ddx dd
-	             JOIN diseases d ON dd.ddx_id = d.id
-	             WHERE dd.disease_id = ?"
-	        )
-	        .bind(did)
-	        .fetch_all(&*pool)
-	        .await
-	        .map(|rows| {
-	            rows.iter().map(|r| {
-	                let disease = Disease {
-	                    id: r.get("id"),
-	                    name_zh: r.get("name_zh"),
-	                    name_en: r.get("name_en"),
-	                    category: r.get("category"),
-	                    species: r.get("species"),
-	                    overview: r.get("overview"),
-	                    etiology: r.get("etiology"),
-	                    pathophysiology: r.get("pathophysiology"),
-	                    prognosis: r.get("prognosis"),
-	                    difficulty: r.get("difficulty"),
-	                    urgency_level: r.get("urgency_level"),
-	                    created_at: r.get("created_at"),
-	                    updated_at: r.get("updated_at"),
-	                };
-	                let feature: String = r.get("distinguishing_feature");
-	                (disease, feature)
-	            }).collect()
-	        })
-	        .unwrap_or_default();
+        let ddx = sqlx::query(
+            "SELECT d.*, dd.distinguishing_feature FROM disease_ddx dd
+             JOIN diseases d ON dd.ddx_id = d.id
+             WHERE dd.disease_id = ?"
+        )
+        .bind(did)
+        .fetch_all(&*pool)
+        .await
+        .map(|rows| {
+            rows.iter().map(|r| {
+                (row_to_disease(r), r.get::<String, _>("distinguishing_feature"))
+            }).collect()
+        })
+        .unwrap_or_default();
 
-	        results.push(DiseaseCompareView {
-	            disease,
-	            symptoms,
-	            treatments,
-	            diagnostics,
-	            ddx,
-	        });
-	    }
+        results.push(DiseaseCompareView {
+            disease,
+            symptoms,
+            treatments,
+            diagnostics,
+            ddx,
+        });
+    }
 
-	    Ok(results)
-	}
+    Ok(results)
+}
 
 // ===== 症状 =====
-
 
 #[tauri::command]
 pub async fn get_symptoms(
@@ -366,7 +356,7 @@ pub async fn get_diseases_by_symptom(
     pool: tauri::State<'_, DbPool>,
     symptom_id: String,
     species: Option<String>,
-) -> Result<Vec<(Disease, String, String, i64)>, String> {
+) -> Result<Vec<DiseaseWithSymptom>, String> {
     let mut query = String::from(
         "SELECT d.*, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
          FROM disease_symptom ds
@@ -388,26 +378,11 @@ pub async fn get_diseases_by_symptom(
         .await
         .map(|rows| {
             rows.iter()
-                .map(|r| {
-                    let disease = Disease {
-                        id: r.get("id"),
-                        name_zh: r.get("name_zh"),
-                        name_en: r.get("name_en"),
-                        category: r.get("category"),
-                        species: r.get("species"),
-                        overview: r.get("overview"),
-                        etiology: r.get("etiology"),
-                        pathophysiology: r.get("pathophysiology"),
-                        prognosis: r.get("prognosis"),
-                        difficulty: r.get("difficulty"),
-                        urgency_level: r.get("urgency_level"),
-                        created_at: r.get("created_at"),
-                        updated_at: r.get("updated_at"),
-                    };
-                    let frequency: String = r.get("frequency");
-                    let stage: String = r.get("stage");
-                    let is_pathognomonic: i64 = r.get("is_pathognomonic");
-                    (disease, frequency, stage, is_pathognomonic)
+                .map(|r| DiseaseWithSymptom {
+                    disease: row_to_disease(r),
+                    frequency: r.get::<String, _>("frequency"),
+                    stage: r.get::<String, _>("stage"),
+                    is_pathognomonic: r.get::<i64, _>("is_pathognomonic"),
                 })
                 .collect()
         })
@@ -415,7 +390,6 @@ pub async fn get_diseases_by_symptom(
 }
 
 // ===== 药物 =====
-
 
 #[tauri::command]
 pub async fn get_drugs(

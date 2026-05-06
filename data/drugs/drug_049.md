@@ -1,8 +1,13 @@
 ---
-id: "drug_049"
-name_zh: "伊维菌素"
-name_en: "Ivermectin"
-drug_class: "大环内酯类抗寄生虫药"
+adverse_mechanism: MDR1基因缺陷犬（柯利犬等）可出现严重神经毒性：震颤、共济失调、昏迷、死亡。呕吐、腹泻。瞳孔散大。
+drug_class: 大环内酯类抗寄生虫药
+id: drug_049
+mechanism_of_action: 伊维菌素为大环内酯类抗寄生虫药，通过激活谷氨酸门控氯离子通道（GluCl），增加氯离子内流，导致寄生虫神经肌肉麻痹死亡。对线虫和节肢动物有广谱活性。
+name_en: Ivermectin
+name_zh: 伊维菌素
+pk_pd: 口服吸收良好。血浆蛋白结合率约93%，半衰期约1-3小时。主要经肝脏代谢，经粪便排出。可穿透血脑屏障（MDR1基因缺陷犬可致严重神经毒性）。
+tags:
+- mech_infectious
 ---
 
 ## 适应症

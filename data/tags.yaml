@@ -1,0 +1,217 @@
+# 预置标签数据
+# 按 tag_group 分组，部分标签带颜色和急诊等级
+
+# ── 解剖系统 ──
+- id: body_respiratory
+  name_zh: 呼吸系统
+  tag_group: body_system
+  color: "#4A90D9"
+
+- id: body_digestive
+  name_zh: 消化系统
+  tag_group: body_system
+  color: "#E67E22"
+
+- id: body_cardiovascular
+  name_zh: 心血管系统
+  tag_group: body_system
+  color: "#E74C3C"
+
+- id: body_urinary
+  name_zh: 泌尿系统
+  tag_group: body_system
+  color: "#9B59B6"
+
+- id: body_endocrine
+  name_zh: 内分泌系统
+  tag_group: body_system
+  color: "#1ABC9C"
+
+- id: body_nervous
+  name_zh: 神经系统
+  tag_group: body_system
+  color: "#3498DB"
+
+- id: body_skin
+  name_zh: 皮肤系统
+  tag_group: body_system
+  color: "#F39C12"
+
+- id: body_musculoskeletal
+  name_zh: 肌肉骨骼系统
+  tag_group: body_system
+  color: "#795548"
+
+- id: body_eye_ear
+  name_zh: 眼耳系统
+  tag_group: body_system
+  color: "#607D8B"
+
+- id: body_reproductive
+  name_zh: 生殖系统
+  tag_group: body_system
+  color: "#E91E63"
+
+- id: body_immune
+  name_zh: 免疫系统
+  tag_group: body_system
+  color: "#00BCD4"
+
+# ── 病理机制 ──
+- id: mech_inflammation
+  name_zh: 炎症免疫
+  tag_group: mechanism
+  color: "#FF5722"
+
+- id: mech_metabolic
+  name_zh: 代谢
+  tag_group: mechanism
+  color: "#8BC34A"
+
+- id: mech_vascular
+  name_zh: 血管循环
+  tag_group: mechanism
+  color: "#F44336"
+
+- id: mech_obstruction
+  name_zh: 梗阻
+  tag_group: mechanism
+  color: "#FF9800"
+
+- id: mech_pain
+  name_zh: 疼痛信号
+  tag_group: mechanism
+  color: "#795548"
+
+- id: mech_infectious
+  name_zh: 感染
+  tag_group: mechanism
+  color: "#D32F2F"
+
+- id: mech_toxic
+  name_zh: 中毒
+  tag_group: mechanism
+  color: "#9C27B0"
+
+- id: mech_neoplastic
+  name_zh: 肿瘤
+  tag_group: mechanism
+  color: "#455A64"
+
+- id: mech_immune_mediated
+  name_zh: 免疫介导
+  tag_group: mechanism
+  color: "#009688"
+
+- id: mech_degenerative
+  name_zh: 退行性
+  tag_group: mechanism
+  color: "#607D8B"
+
+- id: mech_genetic
+  name_zh: 遗传/先天
+  tag_group: mechanism
+  color: "#3F51B5"
+
+# ── 急诊分级（四级临床决策体系）──
+- id: em_red
+  name_zh: 红色
+  name_en: Red - Critical
+  tag_group: emergency
+  emergency_level: red
+  clinical_action: 立即心肺复苏或生命支持 (Resuscitative)
+  textbook_logic: 生命体征极不稳定，随时可能进展至心跳呼吸骤停，需争分夺秒干预
+  typical_scenario: 心跳呼吸骤停、严重气道梗阻、失血性休克、濒死状态
+  color: "#D32F2F"
+
+- id: em_orange
+  name_zh: 橙色
+  name_en: Orange - Emergent
+  tag_group: emergency
+  emergency_level: orange
+  clinical_action: 15 分钟内介入，重点监测核心生理指标
+  textbook_logic: 生命体征不稳定但尚未至濒死，快速干预可防止恶化至红色等级
+  typical_scenario: 呼吸困难、重度创伤、严重呕吐/腹泻伴脱水、抽搐持续状态
+  color: "#F57C00"
+
+- id: em_yellow
+  name_zh: 黄色
+  name_en: Yellow - Urgent
+  tag_group: emergency
+  emergency_level: yellow
+  clinical_action: 60 分钟内介入，评估代偿状态
+  textbook_logic: 机体尚能代偿，但病因持续存在将导致失代偿，需尽快明确诊断
+  typical_scenario: 反复呕吐/腹泻、轻度脱水、间歇性跛行、不明原因发热
+  color: "#FBC02D"
+
+- id: em_green
+  name_zh: 绿色
+  name_en: Green - Non-Urgent
+  tag_group: emergency
+  emergency_level: green
+  clinical_action: 常规检查，侧重病史采集与病理分析
+  textbook_logic: 病情稳定，无急性生命威胁，可按计划进行系统评估
+  typical_scenario: 皮肤瘙痒、疫苗接种、常规体检、慢性疾病复诊
+  color: "#388E3C"
+
+# ── DAMNIT-V 诊断模型 ──
+- id: damnit_degenerative
+  name_zh: 退行性
+  tag_group: damnit_v
+  color: "#607D8B"
+
+- id: damnit_anomalous
+  name_zh: 畸形/先天
+  tag_group: damnit_v
+  color: "#3F51B5"
+
+- id: damnit_metabolic
+  name_zh: 代谢性
+  tag_group: damnit_v
+  color: "#8BC34A"
+
+- id: damnit_neoplastic
+  name_zh: 肿瘤性
+  tag_group: damnit_v
+  color: "#455A64"
+
+- id: damnit_infectious
+  name_zh: 感染/炎症
+  tag_group: damnit_v
+  color: "#D32F2F"
+
+- id: damnit_toxic
+  name_zh: 中毒/创伤
+  tag_group: damnit_v
+  color: "#9C27B0"
+
+- id: damnit_vascular
+  name_zh: 血管性
+  tag_group: damnit_v
+  color: "#F44336"
+
+# ── 物种 ──
+- id: species_dog
+  name_zh: 犬
+  tag_group: species
+  color: "#795548"
+
+- id: species_cat
+  name_zh: 猫
+  tag_group: species
+  color: "#607D8B"
+
+- id: species_horse
+  name_zh: 马
+  tag_group: species
+  color: "#4E342E"
+
+- id: species_cattle
+  name_zh: 牛
+  tag_group: species
+  color: "#5D4037"
+
+- id: species_exotic
+  name_zh: 异宠
+  tag_group: species
+  color: "#455A64"

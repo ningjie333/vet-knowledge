@@ -1,7 +1,26 @@
+export interface Tag {
+  id: string
+  name_zh: string
+  name_en: string | null
+  tag_group: string
+  emergency_level: string | null
+  clinical_action: string | null
+  textbook_logic: string | null
+  typical_scenario: string | null
+  color: string | null
+}
+
+export interface EntityTag {
+  entity_type: string
+  entity_id: string
+  tag_id: string
+}
+
 export interface Disease {
   id: string
   name_zh: string
   name_en: string | null
+  name_latin: string | null
   category: string | null
   species: string | null
   overview: string | null
@@ -10,6 +29,11 @@ export interface Disease {
   prognosis: string | null
   difficulty: string | null
   urgency_level: number | null
+  pathogenic_type: string | null
+  epidemiology: string | null
+  body_system: string | null
+  physiological_basis: string | null
+  tags: string[]
 }
 
 export interface Symptom {
@@ -18,6 +42,8 @@ export interface Symptom {
   name_en: string | null
   definition: string | null
   species_notes: string | null
+  physiological_basis: string | null
+  tags: string[]
 }
 
 export interface Drug {
@@ -29,6 +55,30 @@ export interface Drug {
   contraindications: string | null
   side_effects: string | null
   species_dosing: string | null
+  mechanism_of_action: string | null
+  pk_pd: string | null
+  adverse_mechanism: string | null
+  tags: string[]
+}
+
+export interface Treatment {
+  id: string
+  name_zh: string
+  name_en: string | null
+  therapy_type: string | null
+  principle: string | null
+  procedure: string | null
+  physiological_basis: string | null
+  prognosis_eval: string | null
+  tags: string[]
+}
+
+export interface DiseaseTreatmentMap {
+  disease_id: string
+  treatment_id: string
+  line: string
+  species: string | null
+  notes: string | null
 }
 
 export interface DiagnosticTest {

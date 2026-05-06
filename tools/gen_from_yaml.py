@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """兽医知识库 SQL 种子数据生成器 — 从 Markdown+Frontmatter 数据源生成
 
-读取 data/{diseases,symptoms,drugs,tests,cases}/*.md 的 frontmatter，
+读取 data/{diseases,symptoms,drugs,tests,cases,treatments}/*.md 的 frontmatter，
 加上 data/relations.yaml 和 data/treatment_rules.yaml，
 生成 src-tauri/data/seed/001_initial.sql。
 
@@ -9,6 +9,7 @@
 """
 
 import os
+import re
 import glob
 import datetime
 import json
@@ -57,15 +58,12 @@ def parse_species_dict(text):
     if not isinstance(text, str):
         return text
     result = {}
-    # 格式1: **犬**: xxx\n**猫**: xxx
-    import re
     bold_pattern = re.compile(r'\*\*(犬|猫|其他)\*\*[：:]\s*(.+?)(?=\n\*\*|$)', re.DOTALL)
     matches = bold_pattern.findall(text)
     if matches:
         for species, content in matches:
             result[species] = content.strip()
         return result if result else text
-    # 格式2: 犬：xxx；猫：xxx
     colon_pattern = re.compile(r'(犬|猫)[：:]\s*(.+?)(?=；(?:犬|猫)[：:]|$)', re.DOTALL)
     matches = colon_pattern.findall(text)
     if matches:
@@ -76,16 +74,14 @@ def parse_species_dict(text):
 
 
 def to_json(v):
-    """Python 列表/字典 → JSON 字符串（交给 V() 处理转义）"""
+    """Python 列表/字典 → JSON 字符串"""
     if v is None:
         return None
     if isinstance(v, str):
-        # 尝试解析为列表
         if '\n- ' in v or v.startswith('- '):
             parsed = parse_list_text(v)
             if isinstance(parsed, list):
                 return json.dumps(parsed, ensure_ascii=False)
-        # 尝试解析为物种字典
         if '**犬**' in v or '**猫**' in v or \
            (('犬：' in v or '犬:' in v) and ('猫：' in v or '猫:' in v)):
             parsed = parse_species_dict(v)
@@ -105,9 +101,7 @@ def INSERT_ROW(table, columns, values):
 
 def parse_body_sections(content):
     """从 MD body 中解析 ## 章节，返回 {标题: 内容} 字典"""
-    import re
     sections = {}
-    # 匹配 ## 标题 + 内容（直到下一个 ## 或文件末尾）
     pattern = re.compile(r'^##\s+(.+?)\n(.*?)(?=\n##\s+|\Z)', re.MULTILINE | re.DOTALL)
     for m in pattern.finditer(content):
         title = m.group(1).strip()
@@ -121,7 +115,6 @@ def load_md_entities(pattern, body_fields=None):
 
     body_fields: [(section_key, frontmatter_key), ...]
         指定从 MD body 的哪个章节提取内容，合并到 frontmatter 字段。
-        例如 [("概述", "overview"), ("病因", "etiology")]
     """
     if body_fields is None:
         body_fields = []
@@ -145,6 +138,7 @@ diseases_list = load_md_entities(os.path.join(DATA_DIR, 'diseases', '*.md'), [
     ('概述', 'overview'),
     ('病因', 'etiology'),
     ('病理生理', 'pathophysiology'),
+    ('生理基础', 'physiological_basis'),
     ('预后', 'prognosis'),
 ])
 
@@ -152,6 +146,7 @@ diseases_list = load_md_entities(os.path.join(DATA_DIR, 'diseases', '*.md'), [
 symptoms_list = load_md_entities(os.path.join(DATA_DIR, 'symptoms', '*.md'), [
     ('定义', 'definition'),
     ('物种特异性', 'species_notes'),
+    ('生理基础', 'physiological_basis'),
 ])
 
 # 药物：body 章节
@@ -159,7 +154,10 @@ drugs_list = load_md_entities(os.path.join(DATA_DIR, 'drugs', '*.md'), [
     ('适应症', 'indications'),
     ('禁忌症', 'contraindications'),
     ('不良反应', 'side_effects'),
+    ('不良反应机制', 'adverse_mechanism'),
     ('物种剂量', 'species_dosing'),
+    ('作用机制', 'mechanism_of_action'),
+    ('药代动力学', 'pk_pd'),
 ])
 
 # 检查：body 章节
@@ -181,6 +179,14 @@ cases_list = load_md_entities(os.path.join(DATA_DIR, 'cases', '*.md'), [
     ('学习要点', 'learning_points'),
 ])
 
+# 治疗：body 章节
+treatments_list = load_md_entities(os.path.join(DATA_DIR, 'treatments', '*.md'), [
+    ('治疗原则', 'principle'),
+    ('操作指南', 'procedure_text'),
+    ('生理基础', 'physiological_basis'),
+    ('预后评估', 'prognosis_assessment'),
+])
+
 # 关系数据仍用 YAML
 with open(os.path.join(DATA_DIR, 'relations.yaml'), 'r', encoding='utf-8') as f:
     relations = yaml.safe_load(f)
@@ -188,40 +194,140 @@ with open(os.path.join(DATA_DIR, 'relations.yaml'), 'r', encoding='utf-8') as f:
 with open(os.path.join(DATA_DIR, 'treatment_rules.yaml'), 'r', encoding='utf-8') as f:
     treatment_rules = yaml.safe_load(f)
 
+# ── 加载标签 ──────────────────────────────────────────
+
+# 1) 从 tags.yaml 加载预置标签
+tag_registry = {}
+tags_yaml_path = os.path.join(DATA_DIR, 'tags.yaml')
+if os.path.exists(tags_yaml_path):
+    with open(tags_yaml_path, 'r', encoding='utf-8') as f:
+        preset_tags = yaml.safe_load(f) or []
+    for tag in preset_tags:
+        tag_registry[tag['id']] = tag
+
+# 2) 从实体 frontmatter.tags 收集标签（去重，不覆盖预置）
+def collect_tags(entity_list, default_group='custom'):
+    """从实体列表的 frontmatter['tags'] 收集标签"""
+    for entity in entity_list:
+        tags = entity.get('tags', [])
+        if isinstance(tags, str):
+            tags = [t.strip() for t in tags.split(',')]
+        for tag_ref in tags:
+            if not tag_ref:
+                continue
+            # 支持两种格式：tag_id（直接引用预置标签）或 纯文本（自动创建）
+            tag_id = tag_ref.lower().replace(' ', '_').replace('#', '')
+            if tag_id not in tag_registry:
+                tag_registry[tag_id] = {
+                    'id': tag_id,
+                    'name_zh': tag_ref,
+                    'tag_group': default_group,
+                }
+
+collect_tags(diseases_list, 'custom')
+collect_tags(symptoms_list, 'custom')
+collect_tags(drugs_list, 'custom')
+collect_tags(treatments_list, 'custom')
+
 # ── 生成 SQL ───────────────────────────────────────────
 
 L = []
 L.append('-- ============================================')
-L.append('-- 兽医知识库 种子数据 v2.0 (Markdown+Frontmatter 驱动)')
-L.append(f'-- {len(diseases_list)} 疾病 + {len(symptoms_list)} 症状 + {len(drugs_list)} 药物 + {len(tests_list)} 检查 + {len(cases_list)} 病例 + 完整关联关系')
+L.append('-- 兽医知识库 种子数据 v3.0 (Markdown+Frontmatter 驱动)')
+L.append(f'-- {len(diseases_list)} 疾病 + {len(symptoms_list)} 症状 + {len(drugs_list)} 药物 + {len(tests_list)} 检查 + {len(cases_list)} 病例 + {len(treatments_list)} 治疗 + 标签系统 + 完整关联关系')
 L.append(f'-- 生成时间: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
 L.append('-- ============================================')
 L.append('')
 
+# ===== 标签 =====
+L.append(f'-- ===== 标签 ({len(tag_registry)}个) =====')
+for tag in sorted(tag_registry.values(), key=lambda t: t['id']):
+    has_emergency = tag.get('emergency_level') is not None
+    has_color = tag.get('color') is not None
+    has_en = tag.get('name_en') is not None
+
+    if has_emergency:
+        L.append(
+            f"INSERT INTO tags (id, name_zh, name_en, tag_group, emergency_level, "
+            f"clinical_action, textbook_logic, typical_scenario, color) "
+            f"VALUES ({S(tag['id'])}, {S(tag['name_zh'])}, {S(tag.get('name_en'))}, "
+            f"{S(tag['tag_group'])}, {S(tag.get('emergency_level'))}, "
+            f"{S(tag.get('clinical_action'))}, {S(tag.get('textbook_logic'))}, "
+            f"{S(tag.get('typical_scenario'))}, {S(tag.get('color'))});"
+        )
+    elif has_color or has_en:
+        cols = ['id', 'name_zh', 'tag_group']
+        vals = [tag['id'], tag['name_zh'], tag['tag_group']]
+        if has_en:
+            cols.append('name_en')
+            vals.append(tag.get('name_en'))
+        if has_color:
+            cols.append('color')
+            vals.append(tag.get('color'))
+        L.append(INSERT_ROW('tags', cols, vals))
+    else:
+        L.append(
+            f"INSERT INTO tags (id, name_zh, tag_group) "
+            f"VALUES ({S(tag['id'])}, {S(tag['name_zh'])}, {S(tag['tag_group'])});"
+        )
+L.append('')
+
 # ===== 疾病 =====
 L.append(f'-- ===== 疾病 ({len(diseases_list)}种) =====')
-disease_cols = ['id', 'name_zh', 'name_en', 'category', 'species', 'overview',
-                'etiology', 'pathophysiology', 'prognosis', 'difficulty', 'urgency_level']
+disease_cols = ['id', 'name_zh', 'name_en', 'name_latin', 'category', 'species',
+                'body_system', 'pathogenic_type', 'epidemiology', 'overview',
+                'etiology', 'pathophysiology', 'physiological_basis', 'prognosis',
+                'difficulty', 'urgency_level']
 for d in diseases_list:
     vals = [
-        d['id'], d['name_zh'], d['name_en'],
+        d['id'], d['name_zh'], d['name_en'], d.get('name_latin'),
         to_json(d.get('category')), to_json(d.get('species')),
+        d.get('body_system'), d.get('pathogenic_type'), d.get('epidemiology'),
         d.get('overview'), to_json(d.get('etiology')),
-        d.get('pathophysiology'), d.get('prognosis'),
-        d.get('difficulty', 'intermediate'), d.get('urgency_level', 3)
+        d.get('pathophysiology'), d.get('physiological_basis'),
+        d.get('prognosis'), d.get('difficulty', 'intermediate'), d.get('urgency_level', 3)
     ]
     L.append(INSERT_ROW('diseases', disease_cols, vals))
 L.append('')
 
+# ===== 疾病-标签关联 =====
+L.append('-- ===== 疾病-标签关联 =====')
+et_count = 0
+for d in diseases_list:
+    tags = d.get('tags', [])
+    if isinstance(tags, str):
+        tags = [t.strip() for t in tags.split(',')]
+    for tag_name in tags:
+        if not tag_name:
+            continue
+        tag_id = tag_name.lower().replace(' ', '_').replace('#', '')
+        L.append(f"INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', {S(d['id'])}, {S(tag_id)});")
+        et_count += 1
+L.append('')
+
 # ===== 症状 =====
 L.append(f'-- ===== 症状 ({len(symptoms_list)}种) =====')
-symptom_cols = ['id', 'name_zh', 'name_en', 'definition', 'species_notes']
+symptom_cols = ['id', 'name_zh', 'name_en', 'definition', 'species_notes', 'physiological_basis']
 for s in symptoms_list:
     vals = [
         s['id'], s['name_zh'], s['name_en'],
-        s.get('definition'), to_json(s.get('species_notes'))
+        s.get('definition'), to_json(s.get('species_notes')), s.get('physiological_basis')
     ]
     L.append(INSERT_ROW('symptoms', symptom_cols, vals))
+L.append('')
+
+# ===== 症状-标签关联 =====
+L.append('-- ===== 症状-标签关联 =====')
+for s in symptoms_list:
+    tags = s.get('tags', [])
+    if isinstance(tags, str):
+        tags = [t.strip() for t in tags.split(',')]
+    for tag_name in tags:
+        if not tag_name:
+            continue
+        tag_id = tag_name.lower().replace(' ', '_').replace('#', '')
+        L.append(f"INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', {S(s['id'])}, {S(tag_id)});")
+        et_count += 1
 L.append('')
 
 # ===== 疾病-症状关联 =====
@@ -235,7 +341,6 @@ for d in diseases_list:
         freq = entry['frequency']
         stage = entry.get('stage', '')
         is_patho = entry.get('is_pathognomonic', False)
-
         if is_patho:
             L.append(
                 f"INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomonic) "
@@ -261,15 +366,31 @@ L.append('')
 
 # ===== 药物 =====
 L.append(f'-- ===== 药物 ({len(drugs_list)}种) =====')
-drug_cols = ['id', 'name_zh', 'name_en', 'drug_class', 'indications',
-             'contraindications', 'side_effects', 'species_dosing']
+drug_cols = ['id', 'name_zh', 'name_en', 'drug_class', 'mechanism_of_action', 'pk_pd',
+             'indications', 'contraindications', 'side_effects', 'adverse_mechanism', 'species_dosing']
 for d in drugs_list:
     vals = [
         d['id'], d['name_zh'], d['name_en'], d.get('drug_class'),
+        d.get('mechanism_of_action'), d.get('pk_pd'),
         to_json(d.get('indications')), to_json(d.get('contraindications')),
-        to_json(d.get('side_effects')), to_json(d.get('species_dosing'))
+        to_json(d.get('side_effects')), d.get('adverse_mechanism'),
+        to_json(d.get('species_dosing'))
     ]
     L.append(INSERT_ROW('drugs', drug_cols, vals))
+L.append('')
+
+# ===== 药物-标签关联 =====
+L.append('-- ===== 药物-标签关联 =====')
+for d in drugs_list:
+    tags = d.get('tags', [])
+    if isinstance(tags, str):
+        tags = [t.strip() for t in tags.split(',')]
+    for tag_name in tags:
+        if not tag_name:
+            continue
+        tag_id = tag_name.lower().replace(' ', '_').replace('#', '')
+        L.append(f"INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', {S(d['id'])}, {S(tag_id)});")
+        et_count += 1
 L.append('')
 
 # ===== 诊断检查 =====
@@ -330,6 +451,56 @@ for r in dd_list:
         )
 L.append('')
 
+# ===== 疾病-治疗方案关联 =====
+L.append('-- ===== 疾病-治疗方案关联 =====')
+dtm_list = treatment_rules.get('disease_treatment_map', [])
+for r in dtm_list:
+    species = r.get('species', '')
+    notes = r.get('notes', '')
+    if species and notes:
+        L.append(
+            f"INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) "
+            f"VALUES ({S(r['disease'])}, {S(r['treatment'])}, {S(r['line'])}, {S(species)}, {S(notes)});"
+        )
+    elif species:
+        L.append(
+            f"INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species) "
+            f"VALUES ({S(r['disease'])}, {S(r['treatment'])}, {S(r['line'])}, {S(species)});"
+        )
+    else:
+        L.append(
+            f"INSERT INTO disease_treatment_map (disease_id,treatment_id,line) "
+            f"VALUES ({S(r['disease'])}, {S(r['treatment'])}, {S(r['line'])});"
+        )
+L.append('')
+
+# ===== 治疗 =====
+L.append(f'-- ===== 治疗 ({len(treatments_list)}个) =====')
+treatment_cols = ['id', 'name_zh', 'name_en', 'therapy_type', 'principle',
+                  'procedure_text', 'physiological_basis', 'prognosis_assessment']
+for t in treatments_list:
+    vals = [
+        t['id'], t['name_zh'], t.get('name_en'), t.get('therapy_type'),
+        t.get('principle'), t.get('procedure_text'),
+        t.get('physiological_basis'), t.get('prognosis_assessment')
+    ]
+    L.append(INSERT_ROW('treatments', treatment_cols, vals))
+L.append('')
+
+# ===== 治疗-标签关联 =====
+L.append('-- ===== 治疗-标签关联 =====')
+for t in treatments_list:
+    tags = t.get('tags', [])
+    if isinstance(tags, str):
+        tags = [t.strip() for t in tags.split(',')]
+    for tag_name in tags:
+        if not tag_name:
+            continue
+        tag_id = tag_name.lower().replace(' ', '_').replace('#', '')
+        L.append(f"INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', {S(t['id'])}, {S(tag_id)});")
+        et_count += 1
+L.append('')
+
 # ===== 病例 =====
 L.append(f'-- ===== 病例 ({len(cases_list)}个) =====')
 case_cols = ['id', 'title', 'species', 'breed', 'age', 'weight', 'chief_complaint',
@@ -383,6 +554,8 @@ with open(OUT, 'w', encoding='utf-8') as f:
     f.write('\n')
 
 print(f'OK: wrote {len(L)} lines to {OUT}')
+print(f'   Tags: {len(tag_registry)}')
+print(f'   Entity-Tag relations: {et_count}')
 print(f'   Diseases: {len(diseases_list)}')
 print(f'   Symptoms: {len(symptoms_list)}')
 print(f'   Drugs: {len(drugs_list)}')
@@ -391,5 +564,7 @@ print(f'   Disease-Symptom relations: {ds_count}')
 print(f'   DDX relations: {len(ddx_list)}')
 print(f'   Disease-Treatment relations: {len(dt_list)}')
 print(f'   Disease-Diagnostic relations: {len(dd_list)}')
+print(f'   Disease-TreatmentMap relations: {len(dtm_list)}')
+print(f'   Treatments: {len(treatments_list)}')
 print(f'   Cases: {len(cases_list)}')
 print(f'   Case-Disease relations: {cd_count}')

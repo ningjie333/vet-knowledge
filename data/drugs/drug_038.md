@@ -1,8 +1,13 @@
 ---
-id: "drug_038"
-name_zh: "贝那普利"
-name_en: "Benazepril"
-drug_class: "血管紧张素转换酶抑制剂（ACEI）"
+adverse_mechanism: 低血压（尤其脱水或合用利尿剂时）。高钾血症。肾功能恶化。胃肠道反应。咳嗽（人医常见，兽医少见）。
+drug_class: 血管紧张素转换酶抑制剂（ACEI）
+id: drug_038
+mechanism_of_action: 贝那普利为血管紧张素转换酶抑制剂（ACEI），抑制血管紧张素I转化为血管紧张素II（强效血管收缩剂），同时减少缓激肽降解，产生血管扩张作用。降低心脏前后负荷，改善心输出量。
+name_en: Benazepril
+name_zh: 贝那普利
+pk_pd: 口服后在肝脏水解为活性代谢物贝那普利拉。血浆蛋白结合率约95%，半衰期约10-12小时。主要经肾脏排泄。
+tags:
+- mech_vascular
 ---
 
 ## 适应症

@@ -1,8 +1,13 @@
 ---
-id: "drug_024"
-name_zh: "阿替美唑"
-name_en: "Atipamezole"
-drug_class: "α-2肾上腺素能受体拮抗剂（右美托咪定拮抗剂）"
+adverse_mechanism: 短暂性低血压或高血压。兴奋、震颤。快速逆转可能导致急性疼痛。流涎。
+drug_class: α-2肾上腺素能受体拮抗剂（右美托咪定拮抗剂）
+id: drug_024
+mechanism_of_action: 阿替美唑为高选择性α-2肾上腺素能受体拮抗剂，通过竞争性阻断α-2受体，逆转美托咪定等α-2激动剂引起的镇静、镇痛和心血管抑制效应。作为特异性拮抗剂使用。
+name_en: Atipamezole
+name_zh: 阿替美唑
+pk_pd: 肌肉注射吸收迅速，5-10分钟起效。血浆蛋白结合率约85%，半衰期约1-2小时。主要经肝脏代谢。
+tags:
+- mech_pain
 ---
 
 ## 适应症

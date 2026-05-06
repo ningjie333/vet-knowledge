@@ -1,8 +1,13 @@
 ---
-id: "drug_040"
-name_zh: "乙酰丙嗪"
-name_en: "Acepromazine"
-drug_class: "吩噻嗪类镇静剂"
+adverse_mechanism: 镇静、低血压（α-1受体阻断）。体温调节障碍（环境温度敏感）。斗牛犬品系可致晕厥。降低癫痫阈值。
+drug_class: 吩噻嗪类镇静剂
+id: drug_040
+mechanism_of_action: 乙酰丙嗪为吩噻嗪类镇静剂，通过阻断多巴胺D2受体产生镇静和安定作用。同时具有抗组胺和抗胆碱能作用。作为术前镇静和化学保定用药。
+name_en: Acepromazine
+name_zh: 乙酰丙嗪
+pk_pd: 口服吸收良好。血浆蛋白结合率>90%，半衰期约3-6小时。主要经肝脏代谢。
+tags:
+- mech_pain
 ---
 
 ## 适应症

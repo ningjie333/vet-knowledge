@@ -1,8 +1,14 @@
 ---
-id: "drug_037"
-name_zh: "曲唑酮"
-name_en: "Trazodone"
-drug_class: "5-HT受体拮抗剂/再摄取抑制剂（SARI类）"
+adverse_mechanism: 镇静、共济失调。胃肠道反应。罕见阴茎异常勃起（犬）。与SSRI合用时需谨慎。
+drug_class: 5-HT受体拮抗剂/再摄取抑制剂（SARI类）
+id: drug_037
+mechanism_of_action: 曲唑酮为5-HT受体拮抗剂/再摄取抑制剂（SARI类），通过阻断5-HT2A受体和抑制5-HT再摄取，产生抗焦虑和镇静作用。同时阻断α-1肾上腺素能受体。用于犬猫行为问题管理。
+name_en: Trazodone
+name_zh: 曲唑酮
+pk_pd: 口服吸收良好。血浆蛋白结合率约89-95%，半衰期约5-9小时。主要经肝脏代谢为活性代谢物mCPP。
+tags:
+- mech_metabolic
+- mech_pain
 ---
 
 ## 适应症
