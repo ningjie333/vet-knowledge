@@ -449,6 +449,23 @@ pub async fn get_test_by_id(
 // ===== 病例 =====
 
 #[tauri::command]
+pub async fn get_case_diseases(
+    pool: tauri::State<'_, DbPool>,
+    case_id: String,
+) -> Result<Vec<Disease>, String> {
+    sqlx::query_as::<_, Disease>(
+        "SELECT d.* FROM diseases d
+         INNER JOIN case_disease cd ON cd.disease_id = d.id
+         WHERE cd.case_id = ?
+         ORDER BY d.name_zh"
+    )
+    .bind(&case_id)
+    .fetch_all(&*pool)
+    .await
+    .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 pub async fn get_cases(
     pool: tauri::State<'_, DbPool>,
     species: Option<String>,

@@ -1,0 +1,57 @@
+{
+  "project": "vet-knowledge",
+  "base_dir": ".",
+  "ignore": ["node_modules/**", "dist/**", "target/**", ".git/**"],
+
+  "route_check": {
+    "enabled": true,
+    "framework": "vue",
+    "route_file": "src/router/index.ts",
+    "scan_dirs": ["src/views", "src/components"],
+    "scan_ext": [".vue", ".ts"],
+    "ignore": []
+  },
+
+  "api_check": {
+    "enabled": true,
+    "api_type": "tauri",
+    "backend_route_file": "src-tauri/src/lib.rs",
+    "scan_dirs": ["src/views", "src/components"],
+    "scan_ext": [".vue", ".ts"],
+    "ignore": []
+  },
+
+  "type_check": {
+    "enabled": false,
+    "frontend_types_dir": "src/types",
+    "backend_models_file": "src-tauri/src/db/models.rs",
+    "entity_map": {},
+    "field_map": {},
+    "ignore_fields": ["created_at", "updated_at", "deleted_at"]
+  },
+
+  "empty_check": {
+    "enabled": true,
+    "register_file": "src-tauri/src/lib.rs",
+    "impl_dirs": ["src-tauri/src/commands"],
+    "impl_ext": [".rs"]
+  },
+
+  "hardcode_check": {
+    "enabled": true,
+    "scan_dirs": ["tools"],
+    "scan_ext": [".py"],
+    "threshold": 5,
+    "min_entries": 3,
+    "allow_names": [],
+    "ignore": ["_tools/dev/**"]
+  },
+
+  "dead_code_check": {
+    "enabled": true,
+    "schema_file": "src-tauri/data/seed/schema.sql",
+    "code_dirs": ["src-tauri/src"],
+    "code_ext": [".rs"],
+    "exclude_tables": ["schema_migrations", "app_meta"]
+  }
+}

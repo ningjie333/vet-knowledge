@@ -1,0 +1,242 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "代码一致性检查框架配置文件",
+  "description": "用于 check.py 的配置文件 schema，支持 JSON 和 TOML 格式",
+  "type": "object",
+
+  "properties": {
+    "project": {
+      "type": "string",
+      "description": "项目名称（仅用于标识，不影响检查行为）"
+    },
+    "base_dir": {
+      "type": "string",
+      "description": "项目根目录，相对路径以此为基准（默认 .）",
+      "default": "."
+    },
+    "ignore": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "全局忽略规则（glob 模式），适用于所有检查器",
+      "default": ["node_modules/**", "**/*.min.js", "**/*.min.css", "vendor/**", ".git/**"]
+    },
+
+    "route_check": {
+      "type": "object",
+      "description": "规则 1: 路由死链检查",
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "framework": {
+          "type": "string",
+          "enum": ["vue", "react"],
+          "description": "前端框架类型"
+        },
+        "route_file": {
+          "type": "string",
+          "description": "路由注册文件路径（如 src/router/index.ts）"
+        },
+        "scan_dirs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "要扫描的源码目录列表"
+        },
+        "scan_ext": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "扫描的文件扩展名",
+          "default": [".vue", ".ts", ".tsx", ".js", ".jsx"]
+        },
+        "ignore": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "额外忽略规则（叠加全局 ignore）"
+        }
+      },
+      "required": ["framework", "route_file", "scan_dirs"]
+    },
+
+    "api_check": {
+      "type": "object",
+      "description": "规则 2: API 调用一致性检查",
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "api_type": {
+          "type": "string",
+          "enum": ["tauri", "rest", "trpc"],
+          "description": "API 类型"
+        },
+        "backend_route_file": {
+          "type": "string",
+          "description": "后端路由/命令注册文件路径（多个文件用逗号分隔）"
+        },
+        "scan_dirs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "前端源码目录列表"
+        },
+        "scan_ext": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "扫描的文件扩展名",
+          "default": [".ts", ".tsx", ".js", ".jsx", ".vue"]
+        },
+        "ignore": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "额外忽略规则"
+        }
+      },
+      "required": ["api_type", "backend_route_file", "scan_dirs"]
+    },
+
+    "type_check": {
+      "type": "object",
+      "description": "规则 3: 类型一致性检查（默认关闭，高误报风险）",
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "frontend_types_dir": {
+          "type": "string",
+          "description": "前端类型定义文件目录"
+        },
+        "backend_models_file": {
+          "type": "string",
+          "description": "后端模型文件路径"
+        },
+        "entity_map": {
+          "type": "object",
+          "description": "{前端实体名: 后端实体名} 映射"
+        },
+        "field_map": {
+          "type": "object",
+          "description": "{实体名: {前端字段: 后端字段}} 字段名映射"
+        },
+        "ignore_fields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "忽略的后端内部字段",
+          "default": ["created_at", "updated_at", "deleted_at"]
+        },
+        "scan_ext": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "扫描的文件扩展名",
+          "default": [".ts", ".d.ts"]
+        }
+      },
+      "required": ["frontend_types_dir", "backend_models_file", "entity_map"]
+    },
+
+    "empty_check": {
+      "type": "object",
+      "description": "规则 4: 空实现检查",
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "register_file": {
+          "type": "string",
+          "description": "命令/路由注册文件路径"
+        },
+        "impl_dirs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "实现代码目录列表"
+        },
+        "impl_ext": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "实现文件扩展名",
+          "default": [".py", ".rs", ".ts", ".js"]
+        },
+        "allow_marker": {
+          "type": "string",
+          "description": "标注允许空实现的注释标记"
+        },
+        "todo_patterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "额外的 TODO 匹配正则列表"
+        }
+      },
+      "required": ["register_file", "impl_dirs"]
+    },
+
+    "hardcode_check": {
+      "type": "object",
+      "description": "规则 5: 硬编码数据检查",
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "scan_dirs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "脚本目录列表"
+        },
+        "scan_ext": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "文件扩展名",
+          "default": [".py", ".js", ".ts"]
+        },
+        "threshold": {
+          "type": "integer",
+          "description": "报告阈值：超过多少个键值对触发报告",
+          "default": 5,
+          "minimum": 1
+        },
+        "min_entries": {
+          "type": "integer",
+          "description": "最小条目数：少于此值的结构不报告",
+          "default": 3,
+          "minimum": 1
+        },
+        "ignore": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "忽略路径 glob 列表"
+        },
+        "allow_names": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "允许的变量名 glob 列表",
+          "default": ["STATUS_*", "HTTP_*", "ERROR_*"]
+        }
+      },
+      "required": ["scan_dirs"]
+    },
+
+    "dead_code_check": {
+      "type": "object",
+      "description": "规则 6: 废弃代码（数据库表）检查",
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "schema_file": {
+          "type": "string",
+          "description": "SQL schema 文件路径"
+        },
+        "code_dirs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "应用代码目录列表"
+        },
+        "code_ext": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "代码文件扩展名",
+          "default": [".rs", ".py", ".js", ".ts"]
+        },
+        "ignore": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "忽略路径 glob 列表"
+        },
+        "exclude_tables": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "排除检查的表名列表",
+          "default": ["__diesel_schema_migrations", "schema_migrations"]
+        }
+      },
+      "required": ["schema_file", "code_dirs"]
+    }
+  },
+
+  "required": []
+}

@@ -260,7 +260,7 @@ disease_symptoms:
 
   dis_041:  # 椎间盘疾病
     - {symptom: sym_030, frequency: common, stage: 早期}
-    - {symptom: sym_031, frequency: common, stage: 进展}
+    - {symptom: sym_024, frequency: common, stage: 进展}
     - {symptom: sym_029, frequency: common, stage: 全程}
     - {symptom: sym_019, frequency: uncommon, stage: 疼痛}
 
@@ -272,31 +272,31 @@ disease_symptoms:
   dis_043:  # 肥大细胞瘤
     - {symptom: sym_037, frequency: common, stage: 全程, is_pathognomonic: true}
     - {symptom: sym_032, frequency: uncommon, stage: 肿瘤周围}
-    - {symptom: sym_040, frequency: rare, stage: 组胺释放}
+    - {symptom: sym_022, frequency: rare, stage: 组胺释放}
 
   dis_044:  # 血管肉瘤
-    - {symptom: sym_035, frequency: uncommon, stage: 晚期}
-    - {symptom: sym_036, frequency: common, stage: 破裂}
+    - {symptom: sym_010, frequency: uncommon, stage: 晚期}
+    - {symptom: sym_015, frequency: common, stage: 破裂}
     - {symptom: sym_019, frequency: common, stage: 晚期}
     - {symptom: sym_017, frequency: common, stage: 晚期}
 
   dis_045:  # 异位性皮炎
-    - {symptom: sym_033, frequency: common, stage: 全程, is_pathognomonic: true}
+    - {symptom: sym_025, frequency: common, stage: 全程, is_pathognomonic: true}
     - {symptom: sym_032, frequency: common, stage: 全程}
     - {symptom: sym_034, frequency: common, stage: 慢性期}
 
   dis_046:  # 钩端螺旋体病
     - {symptom: sym_018, frequency: common, stage: 全程}
-    - {symptom: sym_035, frequency: common, stage: 进展}
-    - {symptom: sym_040, frequency: uncommon, stage: 急性期}
+    - {symptom: sym_010, frequency: common, stage: 进展}
+    - {symptom: sym_022, frequency: uncommon, stage: 急性期}
     - {symptom: sym_005, frequency: common, stage: 肾型}
     - {symptom: sym_019, frequency: common, stage: 全程}
 
   dis_047:  # 脂肪肝(猫)
-    - {symptom: sym_035, frequency: common, stage: 进展, is_pathognomonic: true}
-    - {symptom: sym_040, frequency: common, stage: 全程}
+    - {symptom: sym_010, frequency: common, stage: 进展, is_pathognomonic: true}
+    - {symptom: sym_022, frequency: common, stage: 全程}
     - {symptom: sym_019, frequency: common, stage: 全程}
-    - {symptom: sym_043, frequency: uncommon, stage: 合并糖尿病}
+    - {symptom: sym_011, frequency: uncommon, stage: 合并糖尿病}
 
   dis_048:  # ITP
     - {symptom: sym_032, frequency: uncommon, stage: 出血倾向}
@@ -310,8 +310,8 @@ disease_symptoms:
 
   dis_050:  # 子宫蓄脓(猫)
     - {symptom: sym_019, frequency: common, stage: 全程}
-    - {symptom: sym_043, frequency: common, stage: 全程}
-    - {symptom: sym_040, frequency: uncommon, stage: 开放型}
+    - {symptom: sym_011, frequency: common, stage: 全程}
+    - {symptom: sym_022, frequency: uncommon, stage: 开放型}
     - {symptom: sym_039, frequency: uncommon, stage: 进展}
 
 # 鉴别诊断关联

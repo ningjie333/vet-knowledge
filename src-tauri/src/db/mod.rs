@@ -372,13 +372,36 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         .await?;
     }
 
+    // ── v8: 病例全文搜索 ──
+    if current < 8 {
+        sqlx::query(
+            "CREATE VIRTUAL TABLE IF NOT EXISTS cases_fts USING fts5(
+                title, chief_complaint, diagnosis, content='cases', content_rowid='rowid'
+            )"
+        )
+        .execute(pool)
+        .await
+        .ok();
+        // 重建 FTS 索引（如果 cases 表已有数据）
+        sqlx::query("INSERT INTO cases_fts(cases_fts) VALUES('rebuild')")
+            .execute(pool)
+            .await
+            .ok();
+        sqlx::query(
+            "INSERT OR IGNORE INTO schema_migrations (version, description)
+             VALUES (8, 'Add cases_fts for full-text search on cases')"
+        )
+        .execute(pool)
+        .await?;
+    }
+
     Ok(())
 }
 
 /// 种子数据导入：版本不匹配时全量重建。
 /// 使用 UPSERT（INSERT OR REPLACE）避免 DELETE 后再 INSERT 的外键问题。
 async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
-    const SEED_DATA_VERSION: i64 = 10;
+    const SEED_DATA_VERSION: i64 = 11;
 
     let stored: Option<i64> = sqlx::query_scalar(
         "SELECT value FROM app_meta WHERE key = 'seed_data_version'"
@@ -421,6 +444,12 @@ async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
             sqlx::query(t).execute(&mut *tx).await.ok();
         }
     }
+
+    // 重建 FTS 索引（cases_fts 使用 content 模式，需手动重建）
+    sqlx::query("INSERT INTO cases_fts(cases_fts) VALUES('rebuild')")
+        .execute(&mut *tx)
+        .await
+        .ok();
 
     // 记录数据版本
     sqlx::query(

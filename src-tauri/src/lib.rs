@@ -27,6 +27,7 @@ pub fn run() {
             commands::knowledge::get_test_by_id,
             commands::knowledge::get_cases,
             commands::knowledge::get_case_by_id,
+            commands::knowledge::get_case_diseases,
             commands::knowledge::get_disease_ddx,
             commands::knowledge::get_disease_symptoms,
             commands::knowledge::get_disease_treatments,

@@ -101,9 +101,12 @@ export interface Case {
   chief_complaint: string | null
   history: string | null
   physical_exam: string | null
+  lab_results: string | null
+  imaging: string | null
   diagnosis: string | null
   treatment: string | null
   outcome: string | null
+  learning_points: string | null
   difficulty: string | null
 }
 

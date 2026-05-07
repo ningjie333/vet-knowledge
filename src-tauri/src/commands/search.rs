@@ -114,6 +114,30 @@ pub async fn full_text_search(
         });
     }
 
+    // 搜索病例
+    let case_rows = sqlx::query(
+        "SELECT id, title, chief_complaint, diagnosis FROM cases
+         WHERE title LIKE ? OR chief_complaint LIKE ? OR diagnosis LIKE ?
+         LIMIT ?"
+    )
+    .bind(&q).bind(&q).bind(&q)
+    .bind(limit)
+    .fetch_all(&*pool)
+    .await
+    .map_err(|e| e.to_string())?;
+
+    for row in &case_rows {
+        let title: String = row.get("title");
+        let chief_complaint: Option<String> = row.get("chief_complaint");
+        results.push(SearchResult {
+            entity_type: "case".to_string(),
+            entity_id: row.get("id"),
+            title,
+            snippet: chief_complaint.unwrap_or_default(),
+            relevance: 0.75,
+        });
+    }
+
     // 按相关性排序
     results.sort_by(|a, b| b.relevance.partial_cmp(&a.relevance).unwrap());
     results.truncate(limit as usize);

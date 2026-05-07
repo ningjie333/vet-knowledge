@@ -163,3 +163,21 @@ src/
 - 新增前端页面需在 `router/index.ts` 添加路由并在 `Sidebar.vue` 添加菜单项
 - `drug_051`（马罗匹坦）条目曾出现格式问题，编辑 `data/drugs/drug_051.md` 时注意 frontmatter 格式
 - 为现有数据文件添加标签：`python tools/tag_existing_data.py`（仅对没有 tags 的文件写入）
+
+## 开发检查流程（必须遵守）
+
+> 详见 `docs/WORKFLOW_REFORM.md`
+
+**每次 commit 前自动执行（pre-commit hook 已安装）：**
+```bash
+python _tools/dev/check.py --config check_config.json --quick
+```
+如未安装 hook：`python _tools/dev/check.py --install-hook`
+
+**新增页面时** 遵循 `_knowledge/workflows/new_page.md` SOP
+**数据变更时** 遵循 `_knowledge/workflows/data_change.md` SOP
+
+**阶段交付前全套检查：**
+```bash
+python _tools/dev/check.py --config check_config.json --full
+```

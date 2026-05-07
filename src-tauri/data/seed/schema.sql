@@ -177,6 +177,9 @@ CREATE VIRTUAL TABLE IF NOT EXISTS symptoms_fts USING fts5(
 CREATE VIRTUAL TABLE IF NOT EXISTS drugs_fts USING fts5(
     name_zh, name_en, drug_class, content='drugs', content_rowid='rowid'
 );
+CREATE VIRTUAL TABLE IF NOT EXISTS cases_fts USING fts5(
+    title, chief_complaint, diagnosis, content='cases', content_rowid='rowid'
+);
 
 -- ── Schema 版本管理 ──
 

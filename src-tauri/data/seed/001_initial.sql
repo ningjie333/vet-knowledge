@@ -1,7 +1,7 @@
 -- ============================================
 -- 兽医知识库 种子数据 v3.0 (Markdown+Frontmatter 驱动)
--- 50 疾病 + 45 症状 + 60 药物 + 36 检查 + 15 病例 + 6 治疗 + 标签系统 + 完整关联关系
--- 生成时间: 2026-05-05 22:06:40
+-- 50 疾病 + 39 症状 + 60 药物 + 36 检查 + 15 病例 + 6 治疗 + 标签系统 + 完整关联关系
+-- 生成时间: 2026-05-07 12:10:52
 -- ============================================
 
 -- ===== 标签 (48个) =====
@@ -338,7 +338,7 @@ INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_050', 'mech_inflammation');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_050', 'species_cat');
 
--- ===== 症状 (45种) =====
+-- ===== 症状 (39种) =====
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_001', '咳嗽', 'Cough', '呼吸道受到刺激时产生的保护性反射动作，特征为突然的呼气性爆发声', '{"犬": "区分干咳(气管/支气管)和湿咳(肺实质)", "猫": "需与吐毛球鉴别"}', '咳嗽是呼吸道保护性反射，由气道黏膜下的机械感受器和化学感受器（C纤维和快适应感受器）受到刺激后，经迷走神经传入延髓咳嗽中枢，触发协调的呼气肌强烈收缩。炎症介质（组胺、前列腺素、缓激肽）降低感受器阈值，导致咳嗽反射敏感性升高。慢性咳嗽还与气道重塑和咳嗽中枢可塑性改变有关。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_002', '呼吸困难', 'Dyspnea', '呼吸做功增加的表现，包括张口呼吸、腹式呼吸、头颈伸展', '{"犬": "静息张口呼吸为急症信号", "猫": "张口呼吸在猫几乎总是急症"}', '呼吸困难是呼吸做功增加的代偿表现，源于肺顺应性下降、气道阻力增加或肺泡换气功能障碍。当PaO2降低或PaCO2升高时，颈动脉体和主动脉体化学感受器激活呼吸中枢，增加呼吸驱动。同时肺间质水肿或塌陷使肺顺应性降低，需更大的胸腔负压才能维持潮气量，表现为辅助呼吸肌参与、腹式呼吸和张口呼吸。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_003', '呼吸急促', 'Tachypnea', '呼吸频率异常增快。犬>30次/分，猫>40次/分为异常', NULL, '呼吸急促是机体对低氧血症或代谢性酸中毒的代偿反应。外周化学感受器感知PaO2下降，中枢化学感受器感知pH降低和PaCO2升高，共同兴奋延髓呼吸中枢使呼吸频率增快。肺实质病变时肺牵张反射和J感受器激活也促进呼吸加快，以增加每分钟通气量、改善氧合和排出CO2。');
@@ -348,40 +348,34 @@ INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiolog
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_007', '腹痛', 'Abdominal Pain', '腹部不适或疼痛，可表现为弓背、回避触诊、祈祷姿势', '{"犬": "祈祷姿势高度提示胰腺炎", "猫": "表现隐蔽，可能仅表现为躲藏"}', '腹痛源于腹腔内脏壁层腹膜和肠系膜的痛觉感受器激活。炎症介质（缓激肽、前列腺素、P物质、5-HT）直接刺激伤害性感受器并降低其阈值（外周敏化）。肠管扩张和痉挛通过牵张感受器产生痛觉。持续的疼痛信号传入还可导致脊髓背角神经元中枢敏化，放大疼痛感知。不同病因激活的感受器类型和传导通路各异。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_008', '厌食', 'Anorexia', '食欲完全丧失，是许多疾病的非特异性但重要体征', NULL, '厌食由食欲调节中枢功能抑制引起。下丘脑弓状核的AgRP/NPY神经元和POMC神经元构成食欲调控中枢，受外周信号调控。炎症状态下，促炎细胞因子（IL-1β、IL-6、TNF-α）直接作用于下丘脑，抑制促食欲的NPY/AgRP神经元、激活抑食欲的POMC神经元。此外，肝性脑病、尿毒症毒素和发热等也可通过中枢抑制机制降低食欲。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_009', '体重下降', 'Weight Loss', '非意愿性体重减轻，超过体重10%为临床显著', NULL, '体重下降反映机体能量代谢负平衡，源于摄入减少、吸收障碍、消耗增加或丢失过多。分解代谢状态下，炎性细胞因子和应激激素（皮质醇、儿茶酚胺）上调泛素-蛋白酶体通路，促进肌肉蛋白水解。同时脂肪分解增加、脂肪生成减少。甲亢等高代谢状态增加基础代谢率。恶性肿瘤还通过分泌促恶液质因子（如PIF）加速体重丢失。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_010', '黄疸', 'Icterus', '胆红素沉积导致皮肤、黏膜和巩膜黄染', NULL, '黄疸由胆红素代谢障碍引起，分为溶血性（肝前性）、肝细胞性（肝性）和胆汁淤积性（肝后性）。溶血时红细胞大量破坏，未结合胆红素生成超过肝脏结合能力。肝细胞损伤使胆红素的摄取、结合和排泄功能受损。胆汁淤积时结合胆红素反流入血。血中胆红素升高后与弹性蛋白丰富的组织（巩膜、皮肤）结合产生黄染。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_011', '多饮多尿', 'PU/PD', '饮水量和/或尿量异常增多。犬>45ml/kg/day为多饮', '{"犬": "鉴别：糖尿病、CKD、库欣", "猫": "鉴别：糖尿病、CKD、甲亢"}', '多饮多尿的核心机制是肾脏浓缩功能受损或渗透性利尿。ADH（抗利尿激素）分泌不足（中枢性尿崩）或肾小管对ADH反应性下降（肾性尿崩）使集合管水通道蛋白（AQP2）表达减少，水分重吸收障碍。糖尿病时高血糖超过肾糖阈产生渗透性利尿。慢性肾病时肾髓质渗透梯度破坏也导致多尿，继而通过渗透压感受器刺激口渴中枢引起多饮。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_010', '黄疸', 'Icterus', '胆红素沉积导致皮肤、黏膜和巩膜黄染', NULL, '黄疸由胆红素代谢障碍引起，分为溶血性（肝前性）、肝细胞性（肝性）和胆汁淤积性（肝后性）。溶血时红细胞大量破坏，血红蛋白分解产生的血红素经血红素加氧酶转化为胆绿素，再被还原为未结合胆红素，超过肝脏的结合能力。肝细胞损伤（肝炎、肝硬化）使胆红素的摄取（OATP转运体）、结合（UGT1A1酶）和排泄（MRP2转运体）功能全面受损。胆汁淤积时结合胆红素反流入血，经肾脏排出产生胆红素尿。血中胆红素升高后与弹性蛋白丰富的组织（巩膜、皮肤）结合产生黄染。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_011', '多饮多尿', 'PU/PD', '饮水量和/或尿量异常增多。犬>45ml/kg/day为多饮', '{"犬": "鉴别：糖尿病、CKD、库欣", "猫": "鉴别：糖尿病、CKD、甲亢"}', '多饮多尿的核心机制是肾脏浓缩功能受损或渗透性利尿。ADH由下丘脑视上核和室旁核合成，经神经垂体释放入血，作用于肾集合管V2受体，通过cAMP-PKA通路促进AQP2水通道蛋白插入顶膜以增加水重吸收。ADH分泌不足（中枢性尿崩）或肾小管对ADH抵抗（肾性尿崩）使该通路受损，水分重吸收障碍。糖尿病时高血糖超过肾糖阈产生渗透性利尿。慢性肾病时残余肾单位代偿性高滤过和肾髓质渗透梯度破坏也导致多尿，继而通过渗透压感受器刺激口渴中枢引起多饮。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_012', '少尿/无尿', 'Oliguria/Anuria', '尿量显著减少(<1ml/kg/h)或无尿', NULL, '少尿/无尿反映肾小球滤过率（GFR）显著降低。肾前性因素（脱水、休克、心衰）导致有效循环血量减少，肾灌注压降低激活RAAS系统，GFR下降。肾性因素（急性肾小管坏死）时肾小管上皮细胞脱落阻塞管腔，回漏入间质。肾后性因素（尿道梗阻）使逆行压力传导至肾小球。当滤过液生成严重不足（<1ml/kg/h）时为少尿，几近停止时为无尿。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_013', '尿频', 'Pollakiuria', '排尿次数增加但每次尿量减少', NULL, '尿频源于膀胱储尿功能受损或膀胱黏膜刺激。膀胱炎时炎性介质（前列腺素、组胺）刺激膀胱黏膜下感受器，降低膀胱感觉阈值，导致低容量即产生排尿反射。膀胱壁纤维化使顺应性下降，有效容量减少。此外，膀胱逼尿肌不稳定或逼尿肌-括约肌协调障碍也可引起频繁的排尿冲动，但每次排出的尿量较少。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_014', '血尿', 'Hematuria', '尿液中存在红细胞', NULL, '血尿由泌尿系统任何部位的血管完整性破坏或出血性疾病引起。肾小球肾炎时免疫复合物沉积损伤肾小球基底膜，红细胞经破损处漏出（常伴蛋白尿和异形红细胞）。肾盂肾炎、膀胱炎和尿道炎通过炎症直接破坏黏膜血管。凝血功能障碍或血管炎则通过全身性出血机制引起血尿。血尿的定位可通过红细胞形态和三杯试验初步鉴别。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_015', '腹水', 'Ascites', '腹腔内液体积聚，可由右心衰、低白蛋白血症、肿瘤等引起', NULL, '腹水的形成涉及门脉高压、低白蛋白血症和钠水潴留三大机制。门脉高压（肝硬化、右心衰）使内脏毛细血管静水压升高，驱动液体渗入腹腔。低白蛋白血症降低血浆胶体渗透压，进一步促进液体外渗。有效循环血量减少激活RAAS系统和ADH分泌，导致肾脏钠水潴留，加重腹水。腹膜肿瘤或炎症还通过增加毛细血管通透性和淋巴回流障碍促进积液。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_015', '腹水', 'Ascites', '腹腔内液体积聚，可由右心衰、低白蛋白血症、肿瘤等引起', NULL, '腹水的形成涉及门脉高压、低白蛋白血症和钠水潴留三大机制。门脉高压（肝硬化、右心衰）使内脏毛细血管流体静压升高，驱动液体渗入腹腔。低白蛋白血症（<15g/L）降低血浆胶体渗透压，Starling力失衡进一步促进液体外渗。有效循环血量不足激活RAAS系统、交感神经系统和ADH分泌，导致肾脏钠水潴留，加重腹水。腹膜肿瘤或炎症还通过增加毛细血管通透性和阻碍淋巴回流促进积液。肝淋巴液生成超过胸导管引流能力也是肝硬化腹水的重要机制。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_016', '晕厥', 'Syncope', '短暂性脑血流不足导致的意识丧失', NULL, '晕厥是短暂性全脑灌注不足导致的突发性意识丧失。心源性晕厥由心律失常（心动过缓、室速/室颤）或流出道梗阻致心输出量骤降。血管迷走性迷走神经过度激活引起心动过缓和血管扩张。体位性低血压源于压力感受器反射障碍或血容量不足。脑血流中断6-8秒即可导致晕厥，脑灌注恢复后意识即可恢复，这是与癫痫的重要区别。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_017', '运动不耐受', 'Exercise Intolerance', '运动能力下降，轻微活动即出现疲劳或呼吸困难', NULL, '运动不耐受的核心病理生理是运动时心输出量无法满足外周组织的氧需求。心血管原因包括限制性/阻塞性心脏病导致每搏输出量受限、瓣膜反流使有效前向血流减少、心律失常致心搏出量下降。呼吸系统原因（肺炎、胸腔积液）使氧合不足。hemoglobin减少（贫血）降低氧输送能力。这些因素均导致运动时过早出现组织缺氧和乳酸堆积。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_018', '发热', 'Fever', '体温升高超过正常范围。犬>39.2C，猫>39.4C为发热', NULL, '发热是致热原作用于体温调节中枢使体温调定点上移的结果。外源性致热原（细菌LPS、病毒）激活免疫细胞释放内源性致热原（IL-1β、IL-6、TNF-α、IFN-γ），这些细胞因子经血脑屏障作用于下丘脑视前区（POAH），通过PGE2合成升高体温调定点。机体通过战栗产热和非战栗产热（棕色脂肪、代谢增加）使体温上升至高与新调定点匹配。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_019', '嗜睡', 'Lethargy', '精神状态抑制，活动减少', NULL, '嗜睡反映大脑皮层觉醒维持系统功能抑制。上行网状激活系统（ARAS）是维持觉醒的关键结构，从脑干投射至丘脑和皮层。当ARAS受损、神经递质失衡（去甲肾上腺素、组胺、食欲素减少）或代谢紊乱（肝性脑病、低血糖、尿毒症）时，皮层兴奋性降低。全身炎性反应中促炎细胞因子穿越血脑屏障也抑制中枢觉醒系统，是疾病状态下非特异性嗜睡的重要机制。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_020', '脱水', 'Dehydration', '体液丢失超过摄入，可通过皮肤弹性、黏膜干燥度评估', NULL, '脱水是体液丢失超过摄入导致的细胞外液容量不足，可分为等渗性、低渗性和高渗性。等渗性丢失（呕吐、腹泻）使血浆和间质液按比例减少。高渗性脱水（高热、饮水不足）使水分丢失多于电解质，渗透压升高驱动细胞内水分外移。脱水还减少有效循环血量，激活压力感受器反射、RAAS和ADH，通过减少尿量和水钠潴留进行代偿，但严重时可进展为低血容量性休克。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_021', '多食', 'Polyphagia', '食欲异常亢进，常见于糖尿病、甲亢(猫)、库欣', '{"猫": "老年猫多食伴体重下降高度怀疑甲亢"}', '多食的病理生理涉及食欲调节中枢的正反馈失衡。胰岛功能异常时，胰岛素绝对或相对不足使葡萄糖不能有效进入细胞利用，细胞能量感知（AMPK通路）激活下丘脑促食欲神经元。甲亢时甲状腺激素T3/T4升高基础代谢率，增加能量消耗，代偿性刺激食欲。库欣综合征的高皮质醇通过促进NPY表达和瘦素抵抗增加食欲。外周信号（ghrelin升高、瘦素抵抗）也持续激活摄食中枢。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_022', '流涎', 'Drooling', '唾液过度分泌或吞咽障碍导致的唾液外流', NULL, '流涎可由唾液分泌过多或吞咽障碍引起。唾液分泌受自主神经调控，副交感神经兴奋通过M3受体刺激腮腺和下颌下腺大量分泌稀薄唾液。口腔疾病、毒物（有机磷）和恶心中枢激活均可增加分泌量。吞咽障碍（食道梗阻、巨食道、神经肌肉疾病）使正常分泌的唾液无法下咽而外流。中枢神经系统疾病还可能破坏吞咽反射的协调性，导致唾液在口腔内积聚和外溢。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_022', '流涎', 'Drooling', '唾液过度分泌或吞咽障碍导致的唾液外流', NULL, '流涎可由唾液分泌过多或吞咽障碍引起。唾液分泌受自主神经调控，副交感神经（面神经和舌咽神经）通过乙酰胆碱作用于腺体M3受体，刺激腮腺和下颌下腺大量分泌稀薄唾液。口腔疾病、口腔疼痛（口腔炎、舌损伤、异物）、毒物（有机磷抑制胆碱酯酶致乙酰胆碱蓄积）和恶心中枢激活（迷走神经反射，常为呕吐前兆）均可增加分泌量。吞咽障碍（食道梗阻、巨食道、神经肌肉疾病）使正常分泌的唾液无法下咽而外流。中枢神经系统疾病还可能破坏吞咽反射的协调性，导致唾液在口腔内积聚和外溢。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_023', '黏膜苍白', 'Pale Mucous Membranes', '黏膜颜色苍白提示贫血或外周血管收缩(休克)，CRT>2秒为异常', NULL, '黏膜苍白反映毛细血管内血红蛋白含量减少或外周血管收缩。贫血时单位容积红细胞和血红蛋白降低，使黏膜颜色变淡、毛细血管充盈色度下降。休克或低血压早期，交感神经兴奋引起皮肤和黏膜小动脉、前毛细血管括约肌强烈收缩，血液优先供应核心器官，导致外周黏膜苍白。毛细血管再充盈时间（CRT）延长是微床灌注不足的敏感指标，对早期休克识别有重要价值。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_024', '后肢瘫痪', 'Paraplegia', '后肢运动功能丧失。在猫需高度警惕动脉血栓(鞍血栓)', '{"猫": "突发后肢瘫痪+皮温低+无脉搏高度怀疑主动脉鞍血栓"}', '后肢瘫痪源于胸腰段脊髓的上运动神经元或下运动神经元通路受损。椎间盘突出、脊髓炎或肿瘤压迫损伤皮质脊髓束和脊髓丘脑束，中断大脑对后肢运动神经元的控制。主动脉鞍血栓栓塞闭塞髂内动脉，导致后肢肌肉和神经的急性缺血性损伤。下运动神经元损伤（神经根或周围神经病变）引起弛缓性瘫痪，上运动神经元损伤引起痉挛性瘫痪伴反射亢进。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_025', '瘙痒', 'Pruritus', '引起搔抓、舔舐或摩擦欲望的感觉', '{"犬": "注意分布模式", "猫": "常表现为过度理毛而非搔抓"}', '瘙痒是由皮肤C纤维末梢介导的感觉，与疼痛共享部分通路。组胺通过H1/H4受体激活角质形成细胞和肥大细胞释放的致痒因子，沿无髓C纤维传导至脊髓丘脑束至皮层。在过敏性疾病中，IgE交联致肥大细胞脱颗粒释放组胺和白三CellValue。此外，IL-31、TSLP等细胞因子也直接激活感觉神经元的致痒受体。慢性瘙痒还涉及神经可塑性和中枢敏化机制，使痒阈降低。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_024', '后肢瘫痪', 'Paraplegia', '后肢运动功能丧失。在猫需高度警惕动脉血栓(鞍血栓)', '{"猫": "突发后肢瘫痪+皮温低+无脉搏高度怀疑主动脉鞍血栓"}', '后肢瘫痪源于胸腰段脊髓的上运动神经元或下运动神经元通路受损。椎间盘突出、脊髓炎或肿瘤压迫损伤皮质脊髓束和脊髓丘脑束，中断大脑对后肢运动神经元的控制。主动脉鞍血栓栓塞闭塞髂内动脉，导致后肢肌肉和神经的急性缺血性损伤。脊髓损伤后局部缺血、水肿和炎症级联反应加重继发性损伤；前动脉综合征使脊髓前2/3缺血，主要影响运动功能。下运动神经元损伤（神经根、周围神经病变或马尾综合征）引起弛缓性瘫痪和反射消失，上运动神经元损伤引起痉挛性瘫痪伴反射亢进。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_025', '瘙痒', 'Pruritus', '引起搔抓、舔舐或摩擦欲望的感觉', '{"犬": "注意分布模式", "猫": "常表现为过度理毛而非搔抓"}', '瘙痒是由皮肤C纤维末梢介导的感觉，与疼痛共享部分通路。在过敏性疾病中，IgE介导的I型过敏反应中，过敏原交联肥大细胞表面的IgE-FcεRI复合物，触发脱颗粒释放组胺、蛋白酶和细胞因子。组胺通过H1/H4受体、蛋白酶通过PAR-2受体激活感觉神经元的致痒信号，沿无髓C纤维传导至脊髓丘脑束至皮层。IL-31家族细胞因子是直接致痒的关键分子，与神经元上的IL-31RA受体结合；TSLP等细胞因子也直接激活致痒受体。慢性瘙痒中，反复刺激导致外周和中枢敏化，瘙痒阈值降低并出现痒觉超敏。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_026', '癫痫发作', 'Seizure', '大脑神经元异常过度放电导致的突发性临床事件', NULL, '癫痫发作是大脑神经元突发性异常同步过度放电的结果。病理状态下，兴奋性（谷氨酸能）与抑制性（GABA能）神经传递的平衡被打破，NMDA受体过度激活或GABA-A受体功能下降导致去极化扩散。离子通道基因突变（遗传性癫痫）或获得性损伤（肿瘤、炎症、创伤）降低癫痫发作阈值。异常放电可局限于局部（局灶性发作）或泛化至双侧大脑（全面性发作）。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_027', '瞳孔散大', 'Mydriasis', '瞳孔异常扩大，对光反射减弱或消失，可见于青光眼、视网膜疾病或神经系统疾病。', NULL, '瞳孔散大（散瞳）由副交感神经对瞳孔括约肌的支配丧失或交感神经对瞳孔开大肌的过度兴奋引起。动眼神经受压（青光眼致颅内压升高、眶内肿瘤）使副交感纤维中断，括约肌松弛。视网膜或视神经严重损伤使光反射的传入通路中断（Marcus-Gunn瞳孔）。交感通路激活（Horner综合征的对侧、阿托品中毒）使开大肌占优势。瞳孔大小反映自主神经平衡和传入通路的完整性。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_028', '眼球震颤', 'Nystagmus', '眼球不自主的节律性摆动，可为水平、垂直或旋转性，提示前庭系统或小脑病变。', NULL, '眼球震颤是前庭系统或小脑对眼球运动调控功能异常的表现。前庭迷路或前庭神经损伤导致双侧前庭张力不对称，眼球缓慢向患侧偏斜（慢相），随后脑干快速纠正运动（快相）产生节律性摆动。中枢性病变（脑干、小脑）破坏前庭核与小脑和前庭眼反射通路的连接，产生不规则或垂直性眼震。前庭性眼震方向固定，中枢性眼震方向可随注视方向改变。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_029', '共济失调', 'Ataxia', '运动协调障碍，步态不稳，可见于小脑病变、前庭疾病或脊髓压迫。', NULL, '共济失调源于小脑、前庭系统或本体感觉通路的损伤。小脑性共济失调因小脑皮层（协调运动计划）或小脑核受损，导致运动幅度、速率和方向的判断失误，表现为辨距不良和意向性震颤。前庭性共济失调因前庭系统功能障碍导致躯体侧倾和平衡失调。感觉性共济失调（脊髓后索病变）时本体感觉传入中断，动物无法感知肢体位置，表现为高抬足和踏步样步态。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_030', '跛行', 'Lameness', '肢体负重异常导致的步态改变，可见于骨折、关节炎、韧带损伤或神经病变。', NULL, '跛行是肢体疼痛或结构异常导致的负重回避反应。骨和关节病变（骨折、关节炎、骨膜炎）激活骨膜和关节囊的伤害性感受器，传入疼痛信号使动物减轻患肢负重。软组织损伤（肌腱炎、韧带撕裂）导致运动时疼痛加剧或结构不稳定。神经根压迫（椎间盘突出）产生放射性疼痛和运动神经元损伤。跛行是疼痛和保护性抑制的结果，有助于鉴别病变部位。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_031', '后肢瘫痪', 'Hindlimb Paralysis', '后肢自主运动功能丧失，可见于椎间盘疾病、脊髓损伤或血栓栓塞。', NULL, '后肢瘫痪由胸腰段脊髓的运动传导通路中断引起。椎间盘突出是最常见原因，退变的髓核从腹侧或背侧压迫脊髓，导致上行和下行神经纤维传导阻断。脊髓损伤后局部缺血、水肿和炎症级联反应加重继发性损伤。前动脉综合征使脊髓前2/3缺血，主要影响运动功能。周围神经丛损伤或马尾综合征则影响下运动神经元通路，导致弛缓性瘫痪和反射消失。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_032', '皮肤红斑', 'Erythema', '皮肤发红，由局部血管扩张引起，可见于过敏、感染或自身免疫性皮肤病。', NULL, '皮肤红斑由真皮层血管扩张和血流增加引起，是炎症反应的核心表现之一。炎性介质（组胺、前列腺素E2、NO）直接作用于血管平滑肌，使小动脉扩张、局部血流增加（主动性充血）。同时血管通透性增加导致间质水肿。红斑的颜色和分布有助于鉴别病因：感染性红斑常伴发热，过敏性红斑边界不清且发展迅速，自身免疫性红斑多呈特征性分布。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_033', '皮肤瘙痒', 'Pruritus', '搔抓欲望，是犬猫皮肤病最常见的症状，主要病因为过敏和寄生虫。', NULL, '皮肤瘙痒由致痒原激活皮肤C类感觉神经末梢引发。IgE介导的I型过敏反应中，过敏原交联肥大细胞表面的IgE-FcεRI复合物，触发脱颗粒释放组胺、蛋白酶和细胞因子。这些介质激活感觉神经元上的H1/H4受体和PAR-2受体。IL-31家族细胞因子是直接致痒的关键分子，与神经元上的IL-31RA受体结合。慢性瘙痒中，反复刺激导致外周和中枢敏化，瘙痒阈值降低并出现痒觉超敏。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_034', '脱毛', 'Alopecia', '毛发脱落，可为局灶性或全身性，可见于内分泌疾病、寄生虫或真菌感染。', NULL, '脱毛源于毛囊生长周期异常或毛囊结构破坏。内分泌疾病（甲减、库欣、性激素异常）干扰毛囊从退行期（catagen）到休止期（telogen）的正常转换，导致毛发提前进入休止期并脱落。寄生虫感染和真菌（小孢子菌）直接破坏毛囊结构。自身免疫性毛囊炎（如毛囊扁平苔藓）通过淋巴细胞浸润破坏毛囊干细胞。此外，慢性炎症和纤维化使毛囊永久性萎缩，导致不可逆性脱毛。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_035', '黄疸', 'Icterus/Jaundice', '皮肤、黏膜和巩膜黄染，由胆红素升高引起，提示溶血、肝病或胆道梗阻。', NULL, '黄疸由胆红素生成、代谢或排泄障碍引起。溶血时红细胞大量破坏，血红蛋白分解产生的血红素经血红素加氧酶转化为胆绿素，再被还原为未结合胆红素，超过肝脏的结合能力。肝细胞损伤（肝炎、肝硬化）使胆红素的摄取（OATP转运体）、结合（UGT1A1酶）和排泄（MRP2转运体）功能全面受损。胆道梗阻时结合胆红素反流入血，经肾脏排出产生胆红素尿。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_036', '腹水', 'Ascites', '腹腔内液体积聚，可见于右心衰、肝病、低蛋白血症或腹膜疾病。', NULL, '腹水形成涉及多种病理生理机制。门脉高压（肝硬化、心衰）使内脏毛细血管流体静压升高，液体渗入腹腔。低白蛋白血症（<15g/L）降低血浆胶体渗透压，Starling力失衡促进液体外渗。有效循环血量不足激活RAAS和交感神经系统，导致肾脏钠水潴留。腹膜炎症或肿瘤还增加毛细血管通透性和阻碍淋巴回流。肝淋巴液生成超过胸导管引流能力也是肝硬化腹水的重要机制。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_037', '皮下肿块', 'Subcutaneous Mass', '皮下可触及的肿物，可为脂肪瘤、肥大细胞瘤、囊肿或脓肿。', NULL, '皮下肿块源于皮下组织细胞的异常增殖或炎症反应。良性肿瘤（脂肪瘤）由成熟脂肪细胞在包膜内缓慢增殖形成。恶性肿瘤（肥大细胞瘤、软组织肉瘤）由细胞失控增殖和凋亡逃逸驱动，涉及原癌基因激活和抑癌基因失活。炎症性肿块（脓肿、肉芽肿）是免疫细胞浸润和局部组织修复反应的结果。囊肿由上皮细胞分泌液体在封闭腔隙内积聚形成。肿块的生物学行为取决于细胞来源和分化程度。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_038', '角膜混浊', 'Corneal Opacity', '角膜透明度下降，可见于角膜溃疡、青光眼、角膜水肿或角膜营养不良。', NULL, '角膜混浊由角膜正常透明结构的破坏引起。角膜水肿是最常见原因，内皮细胞泵功能失代偿或上皮屏障破坏使水分进入基质层，打乱胶原纤维的规则排列而失去透明性。炎症（角膜炎）时白细胞浸润和新生血管长入使角膜变混。角膜营养不良是遗传性基质或内皮细胞代谢异常导致的进行性混浊。瘢痕形成时胶原纤维无序修复替代正常基质结构，造成永久性混浊。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_039', '眼部分泌物增多', 'Ocular Discharge', '眼部分泌物增加，可为浆液性、黏液性或脓性，提示结膜炎、角膜溃疡或泪道阻塞。', NULL, '眼部分泌物增多是结膜或角膜炎症反应的表现。炎性介质刺激结膜杯状细胞和副泪腺分泌增加，同时血管通透性增高使血浆成分渗出。细菌感染时中性粒细胞浸润形成脓性分泌物。泪道阻塞（鼻泪管狭窄或闭锁）使正常泪液引流受阻而溢出。角膜溃疡刺激三叉神经眼支，反射性增加泪液分泌。分泌物的性状（浆液性、黏液性、脓性）有助于判断炎症类型和严重程度。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_040', '流涎', 'Ptyalism/Salivation', '唾液分泌过多或吞咽困难导致唾液外流，可见于口腔疾病、中毒或恶心。', NULL, '流涎由唾液分泌量超过吞咽清除能力引起。副交感神经（面神经和舌咽神经）通过乙酰胆碱作用于腺体M3受体，刺激大量稀薄唾液分泌。口腔疼痛（口腔炎、舌损伤、异物）使动物因疼痛而减少吞咽。恶心中枢激活通过迷走神经反射增加唾液分泌，是呕吐前兆。有机磷中毒抑制胆碱酯酶，导致乙酰胆碱蓄积、持续刺激唾液腺。巨食道和神经性吞咽障碍使唾液在口腔内积聚外溢。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_041', '里急后重', 'Tenesmus', '排便困难或频繁尝试排便但排出量少，可见于结肠炎、便秘或直肠肿物。', NULL, '里急后重由直肠或肛门区域的炎症和感觉过敏引起。结肠炎和直肠炎时，炎性介质（前列腺素、白三烯、5-HT）刺激直肠壁内机械感受器和伤害性感受器，持续产生排便冲动。直肠黏膜水肿和溃疡使直肠顺应性下降，少量粪便或黏液即可触发排便反射。肛门腺炎和直肠肿物通过局部压迫和炎症刺激产生类似效应。频繁的排便尝试导致直肠黏膜进一步损伤，形成恶性循环。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_042', '血便', 'Hematochezia/Melena', '粪便中带血，鲜红色为下消化道出血（hematochezia），黑色为上消化道出血（melena）。', NULL, '血便反映消化道出血，出血部位决定粪便性状。上消化道出血（胃、十二指肠）时血液经胃酸作用，血红蛋白转化为酸性血红素，形成黑色柏油样便（melena）。下消化道出血（结肠、直肠）时血液未经消化，呈鲜红色（hematachezia）。炎症性肠病、寄生虫感染和肿瘤侵蚀肠黏膜血管。凝血功能障碍（灭鼠药中毒、DIC）可导致全消化道弥漫性出血。出血量和速度决定临床表现的严重程度。');
-INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_043', '多饮多尿', 'PU/PD', '多饮（polydipsia）和多尿（polyuria）是多种内科疾病的非特异性症状，常见于肾病、糖尿病、库欣等。', NULL, '多饮多尿的核心是肾脏尿液浓缩功能障碍。ADH由下丘脑视上核和室旁核合成，经神经垂体释放入血，作用于肾集合管V2受体，通过cAMP-PKA通路促进AQP2水通道蛋白插入顶膜，增加水重吸收。ADH缺乏（中枢性尿崩）或肾小管对ADH抵抗（肾性尿崩）导致大量稀释尿排出。高血糖（糖尿病）超过肾糖阈产生渗透性利尿。慢性肾病时残余肾单位代偿性高滤过和髓质渗透梯度丧失也导致多尿。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_044', '抽搐', 'Seizures', '肌肉不自主强直或阵挛性收缩，可见于癫痫、中毒、代谢性脑病或颅内占位。', NULL, '抽搐是运动皮层或皮层下结构异常放电引起的肌肉不自主收缩。癫痫源于大脑神经元兴奋-抑制失衡，谷氨酸能兴奋传递增强或GABA能抑制传递减弱导致异常放电扩散。代谢性原因（低血糖、低钙血症、肝性脑病）改变神经元膜电位和神经递质平衡。毒素（有机磷、士的宁）直接干扰离子通道或神经递质代谢。颅内占位和炎症破坏局部神经元网络稳定性，降低发作阈值。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_045', '前肢伸展/角弓反张', 'Opisthotonos', '头颈后仰、四肢强直伸展，提示严重脑膜脑炎或破伤风。', NULL, '角弓反张是全身伸肌张力极度增高的表现，源于脑干网状结构抑制通路受损。破伤风毒素（破伤风梭菌产生）经轴突逆行转运至中枢，不可逆地阻断抑制性中间神经元（Renshaw细胞）的甘氨酸和GABA释放，使运动神经元持续兴奋。脑膜脑炎时炎症直接损伤脑干网状结构，破坏对肌张力的下行抑制控制。这种去抑制状态导致全身伸肌和屈肌同时强直收缩，以伸肌优势表现为角弓反张姿态。');
 
@@ -431,25 +425,17 @@ INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_029', 'body_nervous');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_029', 'mech_pain');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_030', 'body_musculoskeletal');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_031', 'body_nervous');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_032', 'body_skin');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_032', 'mech_inflammation');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_033', 'body_skin');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_033', 'mech_inflammation');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_034', 'body_skin');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_035', 'mech_metabolic');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_036', 'body_cardiovascular');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_036', 'mech_vascular');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_037', 'body_skin');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_037', 'mech_neoplastic');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_038', 'body_eye_ear');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_039', 'body_eye_ear');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_040', 'body_digestive');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_041', 'body_digestive');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_041', 'mech_inflammation');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_042', 'body_digestive');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_042', 'mech_inflammation');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_043', 'body_urinary');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_044', 'body_nervous');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_044', 'mech_pain');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_045', 'body_musculoskeletal');
@@ -631,7 +617,7 @@ INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_040', 'sym_038', 'uncommon', '全程');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_040', 'sym_019', 'rare', '继发感染');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_041', 'sym_030', 'common', '早期');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_041', 'sym_031', 'common', '进展');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_041', 'sym_024', 'common', '进展');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_041', 'sym_029', 'common', '全程');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_041', 'sym_019', 'uncommon', '疼痛');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_042', 'sym_030', 'common', '全程');
@@ -639,23 +625,23 @@ INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_042', 'sym_019', 'common', '慢性期');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomonic) VALUES ('dis_043', 'sym_037', 'common', '全程', 1);
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_043', 'sym_032', 'uncommon', '肿瘤周围');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_043', 'sym_040', 'rare', '组胺释放');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_044', 'sym_035', 'uncommon', '晚期');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_044', 'sym_036', 'common', '破裂');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_043', 'sym_022', 'rare', '组胺释放');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_044', 'sym_010', 'uncommon', '晚期');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_044', 'sym_015', 'common', '破裂');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_044', 'sym_019', 'common', '晚期');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_044', 'sym_017', 'common', '晚期');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomonic) VALUES ('dis_045', 'sym_033', 'common', '全程', 1);
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomonic) VALUES ('dis_045', 'sym_025', 'common', '全程', 1);
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_045', 'sym_032', 'common', '全程');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_045', 'sym_034', 'common', '慢性期');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_046', 'sym_018', 'common', '全程');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_046', 'sym_035', 'common', '进展');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_046', 'sym_040', 'uncommon', '急性期');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_046', 'sym_010', 'common', '进展');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_046', 'sym_022', 'uncommon', '急性期');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_046', 'sym_005', 'common', '肾型');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_046', 'sym_019', 'common', '全程');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomonic) VALUES ('dis_047', 'sym_035', 'common', '进展', 1);
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_047', 'sym_040', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomonic) VALUES ('dis_047', 'sym_010', 'common', '进展', 1);
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_047', 'sym_022', 'common', '全程');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_047', 'sym_019', 'common', '全程');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_047', 'sym_043', 'uncommon', '合并糖尿病');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_047', 'sym_011', 'uncommon', '合并糖尿病');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_048', 'sym_032', 'uncommon', '出血倾向');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_048', 'sym_042', 'rare', '严重出血');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_048', 'sym_019', 'common', '全程');
@@ -663,8 +649,8 @@ INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomo
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_049', 'sym_018', 'common', '全程');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_049', 'sym_019', 'common', '全程');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_050', 'sym_019', 'common', '全程');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_050', 'sym_043', 'common', '全程');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_050', 'sym_040', 'uncommon', '开放型');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_050', 'sym_011', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_050', 'sym_022', 'uncommon', '开放型');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_050', 'sym_039', 'uncommon', '进展');
 
 -- ===== 鉴别诊断关联 =====

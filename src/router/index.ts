@@ -49,6 +49,16 @@ const router = createRouter({
       component: () => import('@/views/learning/CaseLibrary.vue')
     },
     {
+      path: '/cases/:id',
+      name: 'case-detail',
+      component: () => import('@/views/learning/CaseDetail.vue')
+    },
+    {
+      path: '/cases/:id/study',
+      name: 'case-study',
+      component: () => import('@/views/learning/CaseStudy.vue')
+    },
+    {
       path: '/flashcards',
       name: 'flashcards',
       component: () => import('@/views/learning/FlashcardStudy.vue')
