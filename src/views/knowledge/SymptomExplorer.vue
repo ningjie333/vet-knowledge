@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch, nextTick } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { invoke } from '@tauri-apps/api/core'
 
@@ -72,10 +72,15 @@ onMounted(async () => {
 // When selected symptom changes, scroll it into view in the left panel
 watch(() => selectedSymptom.value?.id, (newId) => {
   if (newId) {
-    nextTick(() => {
-      const el = document.querySelector('.symptom-item.active')
-      if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-    })
+    // Use setTimeout to ensure DOM is fully updated after async data fetch
+    setTimeout(() => {
+      const listEl = document.querySelector('.symptom-list') as HTMLElement
+      const activeEl = document.querySelector('.symptom-item.active') as HTMLElement
+      if (listEl && activeEl) {
+        const offsetTop = activeEl.offsetTop - listEl.clientHeight / 3
+        listEl.scrollTo({ top: Math.max(0, offsetTop), behavior: 'smooth' })
+      }
+    }, 100)
   }
 })
 
