@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, watch, nextTick } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { invoke } from '@tauri-apps/api/core'
 
@@ -8,6 +8,7 @@ interface Symptom {
   name_zh: string
   name_en: string | null
   definition: string | null
+  species_notes: string | null
 }
 
 interface DiseaseResult {
@@ -58,8 +59,7 @@ onMounted(async () => {
   try {
     allSymptoms.value = await invoke<Symptom[]>('get_symptoms')
 
-    // Auto-select symptom from query parameter (e.g., from DiseaseDetail click)
-    await nextTick()
+    // Auto-select from query parameter (e.g., from DiseaseDetail click)
     const preSelectedId = route.query.symptomId as string
     if (preSelectedId) {
       const found = allSymptoms.value.find(s => s.id === preSelectedId)
@@ -68,20 +68,6 @@ onMounted(async () => {
       }
     }
   } catch (e) { console.error(e) }
-})
-
-// When selected symptom changes, scroll it into view in the left panel
-watch(() => selectedSymptom.value?.id, (newId) => {
-  if (newId) {
-    nextTick(() => {
-      const listEl = document.querySelector('.symptom-list') as HTMLElement
-      const activeEl = document.querySelector('.symptom-item.active') as HTMLElement
-      if (listEl && activeEl) {
-        const offsetTop = activeEl.offsetTop - listEl.clientHeight / 3
-        listEl.scrollTo({ top: Math.max(0, offsetTop), behavior: 'smooth' })
-      }
-    })
-  }
 })
 
 async function selectSymptom(symptom: Symptom) {
@@ -129,41 +115,51 @@ function urgencyBadge(level: number | null) {
 
 <template>
   <div class="page">
-    <h1 class="page-title">症状→疾病反向查找</h1>
-    <p class="desc">选择一个症状，查找所有可能与之相关的疾病，按出现频率排序</p>
+    <div class="header-row">
+      <div>
+        <h1 class="page-title">症状检索</h1>
+        <p class="desc">共 {{ allSymptoms.length }} 个症状，点击查看相关疾病</p>
+      </div>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-bar">
+      <input
+        v-model="searchQuery"
+        type="text"
+        class="symptom-search"
+        placeholder="搜索症状..."
+      />
+    </div>
 
     <div class="layout">
-      <!-- Left: Symptom picker -->
+      <!-- Left: Symptom grid -->
       <div class="symptom-panel">
-        <div class="panel-header">
-          <h3>症状列表</h3>
-          <span class="count">{{ allSymptoms.length }} 个症状</span>
+        <div v-if="loading && !searched" class="loading-state">
+          <p>加载中...</p>
         </div>
-        <input
-          v-model="searchQuery"
-          type="text"
-          class="symptom-search"
-          placeholder="搜索症状..."
-        />
-        <div class="symptom-list">
+        <div v-else class="symptom-grid">
           <button
             v-for="s in filteredSymptoms"
             :key="s.id"
-            class="symptom-item"
+            class="symptom-card"
             :class="{ active: selectedSymptom?.id === s.id }"
             @click="selectSymptom(s)"
           >
-            <span class="s-name">{{ s.name_zh }}</span>
-            <span class="s-en">{{ s.name_en }}</span>
+            <div class="card-top">
+              <span class="card-name">{{ s.name_zh }}</span>
+            </div>
+            <span class="card-en">{{ s.name_en }}</span>
+            <p v-if="s.definition" class="card-def">{{ s.definition?.slice(0, 80) }}{{ (s.definition?.length || 0) > 80 ? '...' : '' }}</p>
           </button>
         </div>
       </div>
 
-      <!-- Right: Results -->
+      <!-- Right: Disease results -->
       <div class="result-panel">
         <div v-if="!searched" class="empty-state">
           <div class="empty-icon">🔍</div>
-          <p>从左侧选择一个症状开始查找</p>
+          <p>从左侧选择一个症状查看相关疾病</p>
         </div>
 
         <div v-else-if="loading" class="loading-state">
@@ -183,6 +179,12 @@ function urgencyBadge(level: number | null) {
           <div v-if="selectedSymptom.definition" class="symptom-definition">
             <h3>症状定义</h3>
             <p>{{ selectedSymptom.definition }}</p>
+          </div>
+
+          <!-- 物种特异性 -->
+          <div v-if="selectedSymptom.species_notes" class="symptom-definition species-notes">
+            <h3>物种特异性</h3>
+            <p>{{ selectedSymptom.species_notes }}</p>
           </div>
 
           <div v-if="speciesOptions.length > 1" class="species-filter">
@@ -238,11 +240,25 @@ function urgencyBadge(level: number | null) {
 
 <style scoped>
 .page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-.desc { color: var(--color-text-secondary); margin-bottom: 24px; }
+.desc { color: var(--color-text-secondary); margin-bottom: 8px; }
+.header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+
+.search-bar { margin-bottom: 20px; }
+.symptom-search {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+.symptom-search:focus { outline: none; border-color: var(--color-primary); }
 
 .layout {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
   align-items: start;
 }
@@ -252,58 +268,46 @@ function urgencyBadge(level: number | null) {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  overflow: hidden;
-  position: sticky;
-  top: 16px;
-  max-height: calc(100vh - 120px);
-  display: flex;
-  flex-direction: column;
+  padding: 16px;
 }
 
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--color-border);
+.symptom-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 
-.panel-header h3 { font-size: 14px; font-weight: 600; }
-.count { font-size: 12px; color: var(--color-text-secondary); }
-
-.symptom-search {
-  margin: 8px 12px;
-  padding: 8px 12px;
+.symptom-card {
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  font-size: 13px;
-  background: var(--color-bg);
-  color: var(--color-text);
-}
-
-.symptom-list {
-  overflow-y: auto;
-  flex: 1;
-}
-
-.symptom-item {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 8px 16px;
-  border: none;
-  border-bottom: 1px solid var(--color-border);
-  background: none;
+  padding: 14px;
   text-align: left;
   cursor: pointer;
-  transition: background 0.1s;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
+.symptom-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow); }
+.symptom-card.active { border-color: var(--color-primary); background: #eff6ff; }
 
-.symptom-item:hover { background: var(--color-bg); }
-.symptom-item.active { background: #eff6ff; border-left: 3px solid var(--color-primary); }
+.card-top { display: flex; align-items: center; gap: 8px; }
+.card-name { font-weight: 600; font-size: 15px; }
+.tag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.card-en { font-size: 12px; color: var(--color-text-secondary); }
+.card-def { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; margin-top: 4px; }
 
-.s-name { font-size: 14px; font-weight: 500; }
-.s-en { font-size: 11px; color: var(--color-text-secondary); }
+.card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.tag-chip {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+}
 
 /* Right panel */
 .result-panel {
@@ -322,7 +326,6 @@ function urgencyBadge(level: number | null) {
   padding: 80px 0;
   color: var(--color-text-secondary);
 }
-
 .empty-icon { font-size: 48px; margin-bottom: 16px; }
 
 .result-header {
@@ -331,7 +334,6 @@ function urgencyBadge(level: number | null) {
   align-items: baseline;
   margin-bottom: 16px;
 }
-
 .result-header h2 { font-size: 18px; font-weight: 600; }
 .symptom-highlight { color: var(--color-primary); }
 .result-count { font-size: 13px; color: var(--color-text-secondary); }
@@ -341,10 +343,11 @@ function urgencyBadge(level: number | null) {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 16px 20px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
+.symptom-definition.species-notes { background: #f0fdf4; }
 .symptom-definition h3 {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--color-text-secondary);
   margin-bottom: 8px;
@@ -364,7 +367,6 @@ function urgencyBadge(level: number | null) {
   gap: 8px;
   margin-bottom: 16px;
 }
-
 .species-filter label { font-size: 13px; color: var(--color-text-secondary); }
 .species-filter select { padding: 4px 10px; border: 1px solid var(--color-border); border-radius: var(--radius); font-size: 13px; }
 
@@ -379,11 +381,9 @@ function urgencyBadge(level: number | null) {
   color: var(--color-text);
   transition: all 0.15s;
 }
-
 .disease-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow); }
 
 .card-left { display: flex; gap: 12px; flex: 1; }
-
 .card-rank {
   width: 28px;
   height: 28px;
@@ -397,7 +397,6 @@ function urgencyBadge(level: number | null) {
   font-size: 13px;
   flex-shrink: 0;
 }
-
 .card-info { flex: 1; }
 .card-name { font-weight: 600; font-size: 15px; margin-bottom: 6px; }
 .card-en { font-size: 12px; color: var(--color-text-secondary); margin-left: 6px; font-weight: 400; }
@@ -425,7 +424,6 @@ function urgencyBadge(level: number | null) {
   margin-left: 6px;
   vertical-align: middle;
 }
-
 .urgency-badge {
   display: inline-block;
   font-size: 10px;
@@ -440,7 +438,6 @@ function urgencyBadge(level: number | null) {
 .urgency-low { background: #f1f5f9; color: #64748b; }
 
 .card-overview { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; }
-
 .no-result { text-align: center; padding: 40px; color: var(--color-text-secondary); }
 .loading-state { text-align: center; padding: 40px; }
 </style>
