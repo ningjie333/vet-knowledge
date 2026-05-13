@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { invoke } from '@tauri-apps/api/core'
 
@@ -67,6 +67,16 @@ onMounted(async () => {
       }
     }
   } catch (e) { console.error(e) }
+})
+
+// When selected symptom changes, scroll it into view in the left panel
+watch(() => selectedSymptom.value?.id, (newId) => {
+  if (newId) {
+    nextTick(() => {
+      const el = document.querySelector('.symptom-item.active')
+      if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    })
+  }
 })
 
 async function selectSymptom(symptom: Symptom) {
