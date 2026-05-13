@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { invoke } from '@tauri-apps/api/core'
 
 interface Symptom {
@@ -32,6 +33,7 @@ const results = ref<DiseaseResult[]>([])
 const loading = ref(false)
 const searched = ref(false)
 const searchQuery = ref('')
+const route = useRoute()
 
 const filteredSymptoms = computed(() => {
   if (!searchQuery.value.trim()) return allSymptoms.value
@@ -55,6 +57,15 @@ const speciesOptions = computed(() => {
 onMounted(async () => {
   try {
     allSymptoms.value = await invoke<Symptom[]>('get_symptoms')
+
+    // Auto-select symptom from query parameter (e.g., from DiseaseDetail click)
+    const preSelectedId = route.query.symptomId as string
+    if (preSelectedId) {
+      const found = allSymptoms.value.find(s => s.id === preSelectedId)
+      if (found) {
+        await selectSymptom(found)
+      }
+    }
   } catch (e) { console.error(e) }
 })
 
@@ -151,6 +162,12 @@ function urgencyBadge(level: number | null) {
               相关疾病
             </h2>
             <span class="result-count">{{ results.length }} 个结果</span>
+          </div>
+
+          <!-- 症状定义展示 -->
+          <div v-if="selectedSymptom.definition" class="symptom-definition">
+            <h3>症状定义</h3>
+            <p>{{ selectedSymptom.definition }}</p>
           </div>
 
           <div v-if="speciesOptions.length > 1" class="species-filter">
@@ -303,6 +320,28 @@ function urgencyBadge(level: number | null) {
 .result-header h2 { font-size: 18px; font-weight: 600; }
 .symptom-highlight { color: var(--color-primary); }
 .result-count { font-size: 13px; color: var(--color-text-secondary); }
+
+.symptom-definition {
+  background: #f8fafc;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+.symptom-definition h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.symptom-definition p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin: 0;
+}
 
 .species-filter {
   display: flex;

@@ -143,7 +143,7 @@ onMounted(async () => {
       <h2>临床症状</h2>
       <div class="symptom-list">
         <div v-for="s in symptoms" :key="s[0].id" class="symptom-item" :class="{ pathognomonic: s[3] === 1 }">
-          <span class="symptom-name">{{ s[0].name_zh }}</span>
+          <router-link :to="{ name: 'symptom-explorer', query: { symptomId: s[0].id } }" class="symptom-name">{{ s[0].name_zh }}</router-link>
           <span v-if="s[3] === 1" class="pathognomonic-tag">核心</span>
           <span class="freq" :class="s[1]">{{ s[1] }}</span>
           <span v-if="s[2]" class="stage">{{ s[2] }}</span>
@@ -260,6 +260,20 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
   font-size: 14px;
+}
+
+.symptom-name {
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+.symptom-name:hover {
+  text-decoration: underline;
+}
+.pathognomonic .symptom-name {
+  color: #ca8a04;
+  font-weight: 600;
 }
 
 .freq { font-size: 11px; padding: 2px 6px; border-radius: 8px; }
