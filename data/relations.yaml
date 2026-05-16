@@ -314,6 +314,134 @@ disease_symptoms:
     - {symptom: sym_022, frequency: uncommon, stage: 开放型}
     - {symptom: sym_039, frequency: uncommon, stage: 进展}
 
+  dis_051:  # 犬前庭疾病
+    - {symptom: sym_028, frequency: common, stage: 急性期, is_pathognomonic: true}
+    - {symptom: sym_029, frequency: common, stage: 全程}
+    - {symptom: sym_030, frequency: uncommon, stage: 全程}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+
+  dis_052:  # 犬蠕形螨病
+    - {symptom: sym_025, frequency: common, stage: 全程}
+    - {symptom: sym_034, frequency: common, stage: 全程, is_pathognomonic: true}
+    - {symptom: sym_032, frequency: common, stage: 炎症期}
+    - {symptom: sym_019, frequency: uncommon, stage: 全身型}
+
+  dis_053:  # 猫白血病 FeLV
+    - {symptom: sym_009, frequency: common, stage: 全程}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+    - {symptom: sym_018, frequency: uncommon, stage: 进展}
+    - {symptom: sym_023, frequency: uncommon, stage: 出血倾向}
+
+  dis_054:  # 猫免疫缺陷病毒 FIV
+    - {symptom: sym_009, frequency: common, stage: 进展}
+    - {symptom: sym_025, frequency: common, stage: 全程}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+    - {symptom: sym_004, frequency: uncommon, stage: 口腔病变}
+
+  dis_055:  # 犬钩虫病
+    - {symptom: sym_023, frequency: common, stage: 进展, is_pathognomonic: true}
+    - {symptom: sym_022, frequency: common, stage: 全程}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+    - {symptom: sym_029, frequency: uncommon, stage: 严重贫血}
+
+  dis_056:  # 球虫/贾第虫病
+    - {symptom: sym_006, frequency: common, stage: 全程, is_pathognomonic: true}
+    - {symptom: sym_009, frequency: common, stage: 进展}
+    - {symptom: sym_034, frequency: uncommon, stage: 消瘦}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+
+  dis_057:  # 有机磷中毒
+    - {symptom: sym_022, frequency: common, stage: 早期, is_pathognomonic: true}
+    - {symptom: sym_026, frequency: common, stage: 进展, is_pathognomonic: true}
+    - {symptom: sym_045, frequency: common, stage: 严重期}
+    - {symptom: sym_003, frequency: uncommon, stage: 进展}
+
+  dis_058:  # 士的宁中毒
+    - {symptom: sym_026, frequency: common, stage: 发作期, is_pathognomonic: true}
+    - {symptom: sym_045, frequency: common, stage: 发作期, is_pathognomonic: true}
+    - {symptom: sym_029, frequency: uncommon, stage: 发作间期}
+
+  dis_059:  # 脑炎/脑膜炎
+    - {symptom: sym_026, frequency: common, stage: 发作}
+    - {symptom: sym_004, frequency: common, stage: 全程}
+    - {symptom: sym_009, frequency: common, stage: 进展}
+    - {symptom: sym_045, frequency: uncommon, stage: 重症}
+
+  dis_060:  # 角膜坏死/腐骨
+    - {symptom: sym_039, frequency: common, stage: 全程, is_pathognomonic: true}
+    - {symptom: sym_038, frequency: uncommon, stage: 病变区}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+
+  dis_061:  # 结膜炎/干眼症
+    - {symptom: sym_039, frequency: common, stage: 全程}
+    - {symptom: sym_025, frequency: uncommon, stage: 过敏性}
+    - {symptom: sym_038, frequency: uncommon, stage: 干眼症晚期}
+
+  dis_062:  # 心律失常
+    - {symptom: sym_016, frequency: common, stage: 全程, is_pathognomonic: true}
+    - {symptom: sym_002, frequency: uncommon, stage: 心室率过快}
+    - {symptom: sym_017, frequency: uncommon, stage: 心输出量下降}
+    - {symptom: sym_024, frequency: rare, stage: 严重}
+
+  dis_063:  # 猫胆管肝炎
+    - {symptom: sym_010, frequency: common, stage: 进展}
+    - {symptom: sym_009, frequency: common, stage: 全程}
+    - {symptom: sym_022, frequency: uncommon, stage: 呕吐}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+
+  dis_064:  # 骨髓疾病/血友病
+    - {symptom: sym_023, frequency: common, stage: 出血倾向}
+    - {symptom: sym_017, frequency: common, stage: 贫血}
+    - {symptom: sym_018, frequency: uncommon, stage: 感染}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+
+  dis_065:  # 癫痫持续状态
+    - {symptom: sym_026, frequency: common, stage: 发作期, is_pathognomonic: true}
+    - {symptom: sym_004, frequency: uncommon, stage: 高热}
+    - {symptom: sym_003, frequency: uncommon, stage: 呼吸抑制}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+
+  dis_066:  # Addison病
+    - {symptom: sym_005, frequency: common, stage: 全程}
+    - {symptom: sym_022, frequency: common, stage: 全程}
+    - {symptom: sym_009, frequency: common, stage: 进展}
+    - {symptom: sym_016, frequency: uncommon, stage: 心律失常}
+
+  dis_067:  # 胃溃疡
+    - {symptom: sym_005, frequency: common, stage: 全程}
+    - {symptom: sym_006, frequency: uncommon, stage: 出血}
+    - {symptom: sym_042, frequency: common, stage: 黑便（melena）}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+
+  dis_068:  # 尿石症
+    - {symptom: sym_013, frequency: common, stage: 全程, is_pathognomonic: true}
+    - {symptom: sym_014, frequency: common, stage: 全程}
+    - {symptom: sym_023, frequency: uncommon, stage: 结石移行}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+
+  dis_069:  # 骨关节炎
+    - {symptom: sym_030, frequency: common, stage: 全程}
+    - {symptom: sym_029, frequency: uncommon, stage: 慢性期}
+    - {symptom: sym_019, frequency: common, stage: 慢性期}
+
+  dis_070:  # 乳腺肿瘤
+    - {symptom: sym_037, frequency: common, stage: 局部, is_pathognomonic: true}
+    - {symptom: sym_019, frequency: common, stage: 晚期}
+    - {symptom: sym_018, frequency: uncommon, stage: 转移}
+
+  dis_071:  # 鼻炎
+    - {symptom: sym_001, frequency: common, stage: 全程}
+    - {symptom: sym_039, frequency: common, stage: 分泌物}
+    - {symptom: sym_004, frequency: uncommon, stage: 发热}
+    - {symptom: sym_019, frequency: common, stage: 全程}
+
+  dis_072:  # 癣菌病
+    - {symptom: sym_034, frequency: common, stage: 全程, is_pathognomonic: true}
+    - {symptom: sym_025, frequency: uncommon, stage: 炎症}
+    - {symptom: sym_032, frequency: uncommon, stage: 病变区}
+
+# 鉴别诊断关联
+
 # 鉴别诊断关联
 # 格式：疾病A -> 疾病B：鉴别要点
 ddx:
@@ -376,3 +504,95 @@ ddx:
   - disease: dis_021
     target: dis_005
     feature: 乙二醇中毒有草酸钙结晶+阴离子间隙升高，其他AKI无此特征
+
+  - disease: dis_051
+    target: dis_031
+    feature: 前庭疾病有头歪+眼震+共济失调，癫痫发作有意识丧失+抽搐
+
+  - disease: dis_052
+    target: dis_037
+    feature: 蠕形螨有毛囊性脱毛+油腻性鳞屑，脓皮症以脓疱为主
+
+  - disease: dis_052
+    target: dis_045
+    feature: 蠕形螨伴继发脓皮症时需与异位性皮炎鉴别，螨虫感染有毛囊堵塞
+
+  - disease: dis_053
+    target: dis_054
+    feature: FeLV+与FIV+均可致免疫抑制，但FeLV+常见淋巴增殖性肿瘤和骨髓抑制，PCR和ELISA可确诊
+
+  - disease: dis_054
+    target: dis_028
+    feature: FIV慢性免疫抑制可致机会性感染和消瘦，FIP有渗出液+高球蛋白血症可鉴别
+
+  - disease: dis_055
+    target: dis_025
+    feature: 钩虫病有血便+低蛋白血症+贫血，细小病毒有严重出血性肠炎+白细胞↓↓，粪便镜检可见虫卵
+
+  - disease: dis_056
+    target: dis_010
+    feature: 球虫/贾第虫病有水样腹泻+脂肪泻，胃肠炎以呕吐为主，粪便浮聚法或PCR可确诊
+
+  - disease: dis_057
+    target: dis_022
+    feature: 有机磷中毒有流涎+瞳孔缩小+支气管痉挛，士的宁中毒以强直惊厥为主无流涎
+
+  - disease: dis_058
+    target: dis_026
+    feature: 士的宁中毒强直惊厥为特异症状，脑炎有意识障碍和灶性神经症状
+
+  - disease: dis_059
+    target: dis_031
+    feature: 脑炎/脑膜炎有发热+颈背强直+惊厥，癫痫发作无发热且惊厥后恢复快
+
+  - disease: dis_060
+    target: dis_040
+    feature: 角膜坏死有棕色/黑色腐骨灶，角膜溃疡为浅表缺损无变色
+
+  - disease: dis_061
+    target: dis_039
+    feature: 结膜炎/干眼症有眼红+分泌物+干燥感，青光眼有眼压升高和角膜混浊
+
+  - disease: dis_062
+    target: dis_002
+    feature: 心律失常有心电图异常和节律紊乱，心衰有心脏杂音和心脏扩大，超声心动可鉴别
+
+  - disease: dis_063
+    target: dis_028
+    feature: 胆管肝炎有肝酶升高+胆红素升高，FIP有渗出液+高球蛋白，可做胆汁培养鉴别
+
+  - disease: dis_064
+    target: dis_033
+    feature: 骨髓疾病有全系血细胞减少，再障骨髓活检示脂肪化，IMHA有Coombs阳性且网织红细胞不低
+
+  - disease: dis_065
+    target: dis_026
+    feature: 癫痫持续状态抽搐超过5分钟或反复发作，普通癫痫发作短暂可自行停止
+
+  - disease: dis_066
+    target: dis_006
+    feature: Addison病有高钾低钠血症和肾上腺皮质功能低下，CKD有氮质血症和等渗尿
+
+  - disease: dis_067
+    target: dis_009
+    feature: 胃溃疡有黑便和吐血，胰腺炎有剧烈腹痛和fPLI升高
+
+  - disease: dis_068
+    target: dis_007
+    feature: 尿石症有结石相关的排尿障碍和血尿，UTI有菌尿和脓尿，影像可确诊结石
+
+  - disease: dis_069
+    target: dis_035
+    feature: 骨关节炎是慢性进行性关节疼痛和僵硬，十字韧带撕裂为急性发作跛行
+
+  - disease: dis_070
+    target: dis_043
+    feature: 乳腺肿瘤为乳腺部位坚硬肿块，肥大细胞瘤可为皮肤型，病理可确诊
+
+  - disease: dis_071
+    target: dis_001
+    feature: 鼻炎有鼻漏和打喷嚏，肺炎有咳嗽和呼吸困难，影像可鉴别
+
+  - disease: dis_072
+    target: dis_037
+    feature: 癣菌病有圆形脱毛和鳞屑，脓皮症以脓疱为主，伍德灯和真菌培养可确诊

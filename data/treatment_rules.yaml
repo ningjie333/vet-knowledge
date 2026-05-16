@@ -261,6 +261,132 @@ disease_treatment:
   # 子宫蓄脓(猫)
   - {disease: dis_050, drug: drug_001, line: adjunctive, species: 猫, notes: "术前抗生素控制感染，卵巢子宫切除术是根治方案"}
 
+  # 犬前庭疾病
+  - {disease: dis_051, drug: drug_029, line: first, species: 犬, notes: "支持性液体治疗，维持水合状态"}
+  - {disease: dis_051, drug: drug_023, line: adjunctive, species: 犬, notes: "犬前庭疾病急性期镇静辅助，减少应激"}
+  - {disease: dis_051, drug: drug_012, line: adjunctive, species: 犬, notes: "美洛昔康用于疼痛管理"}
+
+  # 犬蠕形螨病
+  - {disease: dis_052, drug: drug_049, line: first, species: 犬, notes: "伊维菌素是全身型蠕形螨病一线治疗，注意MDR1突变品种（柯利犬等）安全剂量"}
+  - {disease: dis_052, drug: drug_001, line: adjunctive, species: 犬, notes: "继发脓皮症时联合抗生素，疗程3-4周"}
+  - {disease: dis_052, drug: drug_004, line: adjunctive, species: 犬, notes: "糖皮质激素仅用于严重瘙痒的全身型，抑制免疫可能加重螨虫感染" }
+
+  # 猫白血病 FeLV
+  - {disease: dis_053, drug: drug_029, line: first, species: 猫, notes: "支持治疗，维持水合和营养，纠正脱水"}
+  - {disease: dis_053, drug: drug_001, line: adjunctive, species: 猫, notes: "预防性抗生素防止机会性感染"}
+  - {disease: dis_053, drug: drug_004, line: adjunctive, species: 猫, notes: "合并淋巴瘤时用于化疗辅助"}
+
+  # 猫免疫缺陷病毒 FIV
+  - {disease: dis_054, drug: drug_029, line: first, species: 猫, notes: "支持治疗，维持良好营养和减少应激"}
+  - {disease: dis_054, drug: drug_001, line: adjunctive, species: 猫, notes: "预防性抗生素防止机会性感染"}
+  - {disease: dis_054, drug: drug_004, line: adjunctive, species: 猫, notes: "干扰素和免疫调节治疗可尝试"}
+
+  # 犬钩虫病
+  - {disease: dis_055, drug: drug_049, line: first, species: 犬, notes: "芬苯达唑是钩虫一线驱虫药，对成虫和幼虫均有效"}
+  - {disease: dis_055, drug: drug_026, line: second, species: 犬, notes: "伊维菌素对钩虫有效，注意MDR1品种安全剂量"}
+  - {disease: dis_055, drug: drug_029, line: adjunctive, species: 犬, notes: "严重贫血需输血和液体支持"}
+  - {disease: dis_055, drug: drug_060, line: adjunctive, species: 犬, notes: "铁剂补充纠正贫血"}
+
+  # 球虫/贾第虫病
+  - {disease: dis_056, drug: drug_049, line: first, species: 犬, notes: "芬苯达唑对球虫和贾第虫均有效，是首选药物"}
+  - {disease: dis_056, drug: drug_029, line: adjunctive, species: 犬, notes: "严重腹泻时补液纠正脱水"}
+  - {disease: dis_056, drug: drug_001, line: adjunctive, species: 猫, notes: "甲氧苄啶-磺胺甲噁唑用于球虫病"}
+
+  # 有机磷中毒
+  - {disease: dis_057, drug: drug_021, line: first, species: null, notes: "阿托品是解毒核心，对抗乙酰胆碱的毒蕈碱样作用"}
+  - {disease: dis_057, drug: drug_022, line: first, species: null, notes: "碘解磷定（2-PAM）复活胆碱酯酶，与阿托品联用"}
+  - {disease: dis_057, drug: drug_029, line: adjunctive, species: null, notes: "液体治疗维持呼吸功能和肾脏灌注"}
+  - {disease: dis_057, drug: drug_042, line: adjunctive, species: 犬, notes: "地西泮控制惊厥"}
+  - {disease: dis_057, drug: drug_023, line: adjunctive, species: 犬, notes: "乙酰丙嗪用于镇静（低剂量）"}
+
+  # 士的宁中毒
+  - {disease: dis_058, drug: drug_042, line: first, species: null, notes: "地西泮是控制士的宁惊厥的一线药物，大剂量使用"}
+  - {disease: dis_058, drug: drug_016, line: second, species: null, notes: "苯巴比妥用于地西泮无法控制的持续惊厥"}
+  - {disease: dis_058, drug: drug_023, line: adjunctive, species: null, notes: "乙酰丙嗪辅助镇静"}
+  - {disease: dis_058, drug: drug_029, line: adjunctive, species: null, notes: "液体治疗纠正高热和酸中毒"}
+
+  # 脑炎/脑膜炎
+  - {disease: dis_059, drug: drug_016, line: first, species: 犬, notes: "苯巴比妥是控制脑炎惊厥的一线药物"}
+  - {disease: dis_059, drug: drug_004, line: first, species: null, notes: "糖皮质激素（免疫介导性脑膜炎）减轻炎症"}
+  - {disease: dis_059, drug: drug_001, line: adjunctive, species: null, notes: "感染性脑炎使用抗生素预防继发感染"}
+  - {disease: dis_059, drug: drug_032, line: adjunctive, species: 犬, notes: "加巴喷丁辅助控制神经性疼痛和癫痫"}
+
+  # 角膜坏死/腐骨
+  - {disease: dis_060, drug: drug_056, line: first, species: null, notes: "手术治疗（浅层角膜切除术）是根治方法"}
+  - {disease: dis_060, drug: drug_001, line: adjunctive, species: null, notes: "局部抗生素滴眼液预防感染"}
+  - {disease: dis_060, drug: drug_057, line: adjunctive, species: null, notes: "人工泪液保持眼部湿润"}
+
+  # 结膜炎/干眼症
+  - {disease: dis_061, drug: drug_057, line: first, species: 犬, notes: "人工泪液是干眼症基础治疗，需终身使用"}
+  - {disease: dis_061, drug: drug_058, line: first, species: 犬, notes: "环孢素滴眼液刺激泪液分泌，是免疫介导性KCS一线用药"}
+  - {disease: dis_061, drug: drug_041, line: adjunctive, species: 猫, notes: "抗组胺滴眼液用于过敏性结膜炎"}
+  - {disease: dis_061, drug: drug_001, line: adjunctive, species: null, notes: "局部抗生素用于细菌性结膜炎"}
+
+  # 心律失常
+  - {disease: dis_062, drug: drug_015, line: first, species: 犬, notes: "地尔硫卓控制房颤心室率，犬<5岁可尝试转复"}
+  - {disease: dis_062, drug: drug_006, line: adjunctive, species: 犬, notes: "匹莫苯丹改善 DCM 收缩功能，间接有助于心律控制"}
+  - {disease: dis_062, drug: drug_015, line: first, species: 猫, notes: "地尔硫卓或β受体阻滞剂控制猫房颤心室率"}
+  - {disease: dis_062, drug: drug_029, line: adjunctive, species: null, notes: "液体治疗维持电解质平衡，防心律失常恶化"}
+
+  # 猫胆管肝炎
+  - {disease: dis_063, drug: drug_001, line: first, species: 猫, notes: "阿莫西林-克拉维酸是胆管肝炎一线抗生素，疗程4-6周"}
+  - {disease: dis_063, drug: drug_009, line: first, species: 猫, notes: "熊去氧胆酸促进胆汁分泌和排泄，用于胆汁淤积"}
+  - {disease: dis_063, drug: drug_004, line: adjunctive, species: 猫, notes: "泼尼松龙用于免疫介导性胆管肝炎，需与抗生素联用"}
+  - {disease: dis_063, drug: drug_029, line: adjunctive, species: 猫, notes: "液体治疗纠正脱水，维持肝灌注"}
+
+  # 骨髓疾病/血友病
+  - {disease: dis_064, drug: drug_026, line: first, species: null, notes: "维生素K1用于血友病（维生素K依赖凝血因子缺乏）"}
+  - {disease: dis_064, drug: drug_059, line: first, species: 犬, notes: "强的松龙抑制免疫介导性再障，可能需联合CsA"}
+  - {disease: dis_064, drug: drug_029, line: adjunctive, species: null, notes: "支持治疗：输液、输血、抗生素预防感染"}
+  - {disease: dis_064, drug: drug_060, line: adjunctive, species: null, notes: "铁剂补充（再障常伴缺铁性贫血）"}
+
+  # 癫痫持续状态
+  - {disease: dis_065, drug: drug_042, line: first, species: null, notes: "地西泮是SE急救一线，快速控制惊厥，必要时IV持续输注"}
+  - {disease: dis_065, drug: drug_016, line: second, species: null, notes: "苯巴比妥用于地西泮无法控制的持续惊厥，长效维持"}
+  - {disease: dis_065, drug: drug_029, line: adjunctive, species: null, notes: "液体治疗维持水合，纠正高热和代谢紊乱"}
+  - {disease: dis_065, drug: drug_032, line: adjunctive, species: 犬, notes: "左乙拉西坦联合抗癫痫，无药物相互作用"}
+
+  # Addison病
+  - {disease: dis_066, drug: drug_061, line: first, species: 犬, notes: "醋酸氢化可的松替代糖皮质激素，是Addison病核心治疗"}
+  - {disease: dis_066, drug: drug_062, line: first, species: 犬, notes: "氟氢可的松替代盐皮质激素，与氢化可的松联用"}
+  - {disease: dis_066, drug: drug_029, line: adjunctive, species: 犬, notes: "Addison危象时积极液体和电解质纠正"}
+  - {disease: dis_066, drug: drug_063, line: first, species: 犬, notes: "泼尼松龙小剂量补充（与氟氢可的松联用时减少量）"}
+
+  # 胃溃疡
+  - {disease: dis_067, drug: drug_009, line: first, species: null, notes: "奥美拉唑是胃溃疡一线药物，抑制胃酸分泌"}
+  - {disease: dis_067, drug: drug_027, line: first, species: null, notes: "硫糖铝保护胃黏膜，与质子泵抑制剂联用"}
+  - {disease: dis_067, drug: drug_001, line: adjunctive, species: null, notes: "抗生素（阿莫西林+甲硝唑）根除幽门螺杆菌"}
+  - {disease: dis_067, drug: drug_029, line: adjunctive, species: null, notes: "输液纠正脱水和电解质紊乱"}
+
+  # 尿石症
+  - {disease: dis_068, drug: drug_049, line: first, species: 犬, notes: "枸橼酸钾碱化尿液，溶解鸟粪石并防新结石"}
+  - {disease: dis_068, drug: drug_065, line: adjunctive, species: 犬, notes: "处방粮（溶解型/防结石型）是长期管理核心"}
+  - {disease: dis_068, drug: drug_001, line: adjunctive, species: null, notes: "抗生素用于结石相关感染"}
+  - {disease: dis_068, drug: drug_012, line: adjunctive, species: null, notes: "NSAIDs控制结石引发的疼痛和炎症"}
+
+  # 骨关节炎
+  - {disease: dis_069, drug: drug_012, line: first, species: 犬, notes: "美洛昔康是骨关节炎疼痛管理的首选NSAIDs，需定期监测肾功能"}
+  - {disease: dis_069, drug: drug_011, line: adjunctive, species: 犬, notes: "曲马多用于中重度疼痛的辅助镇痛"}
+  - {disease: dis_069, drug: drug_066, line: first, species: 犬, notes: "葡萄糖胺+硫酸软骨素改善软骨代谢，配合控制炎症"}
+  - {disease: dis_069, drug: drug_004, line: adjunctive, species: 犬, notes: "严重疼痛时短期使用糖皮质激素"}
+
+  # 乳腺肿瘤
+  - {disease: dis_070, drug: drug_067, line: first, species: 犬, notes: "手术切除是乳腺肿瘤根治方法，患侧乳腺全切+绝育"}
+  - {disease: dis_070, drug: drug_004, line: adjunctive, species: 犬, notes: "恶性乳腺腺癌术后可辅助化疗（环磷酰胺+多柔比星）"}
+  - {disease: dis_070, drug: drug_029, line: adjunctive, species: 猫, notes: "猫乳腺肿瘤预后差，手术后常需化疗"}
+
+  # 鼻炎
+  - {disease: dis_071, drug: drug_001, line: first, species: 犬, notes: "阿莫西林-克拉维酸用于细菌性鼻炎，疗程7-14天"}
+  - {disease: dis_071, drug: drug_041, line: adjunctive, species: 犬, notes: "抗组胺药缓解过敏性鼻炎的鼻漏和喷嚏"}
+  - {disease: dis_071, drug: drug_009, line: adjunctive, species: 猫, notes: "泛昔洛韦用于猫疱疹病毒I型鼻炎"}
+  - {disease: dis_071, drug: drug_023, line: adjunctive, species: null, notes: "局部减充血剂缓解鼻塞（如羟甲唑啉滴鼻剂，应急用）"}
+
+  # 癣菌病
+  - {disease: dis_072, drug: drug_068, line: first, species: null, notes: "特比萘芬是癣菌病一线口服抗真菌药，比灰黄霉素更安全"}
+  - {disease: dis_072, drug: drug_069, line: second, species: null, notes: "灰黄霉素是癣菌病传统用药，但需监测肝功能"}
+  - {disease: dis_072, drug: drug_070, line: adjunctive, species: null, notes: "外用抗真菌药膏（克霉唑）配合口服药用于局部病变"}
+  - {disease: dis_072, drug: drug_029, line: adjunctive, species: null, notes: "严重全身型需配合全身用药和药浴"}
+
 # ===== 疾病-诊断关联 =====
 # purpose: screening=筛查 / confirming=确诊 / monitoring=监测
 # evidence_level: gold_standard=金标准 / supportive=支持性 / exclusionary=排除性

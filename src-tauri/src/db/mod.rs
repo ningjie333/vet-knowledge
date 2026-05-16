@@ -401,7 +401,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
 /// 种子数据导入：版本不匹配时全量重建。
 /// 使用 UPSERT（INSERT OR REPLACE）避免 DELETE 后再 INSERT 的外键问题。
 async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
-    const SEED_DATA_VERSION: i64 = 11;
+    const SEED_DATA_VERSION: i64 = 16;
 
     let stored: Option<i64> = sqlx::query_scalar(
         "SELECT value FROM app_meta WHERE key = 'seed_data_version'"
