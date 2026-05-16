@@ -387,10 +387,128 @@ disease_treatment:
   - {disease: dis_072, drug: drug_070, line: adjunctive, species: null, notes: "外用抗真菌药膏（克霉唑）配合口服药用于局部病变"}
   - {disease: dis_072, drug: drug_029, line: adjunctive, species: null, notes: "严重全身型需配合全身用药和药浴"}
 
+  # 脑肿瘤
+  - {disease: dis_073, drug: drug_071, line: adjunctive, species: null, notes: "皮质类固醇（泼尼松龙）降低颅内压，缓解水肿"}
+  - {disease: dis_073, drug: drug_057, line: adjunctive, species: 犬, notes: "苯巴比妥控制癫痫发作，脑肿瘤常见症状性癫痫"}
+  - {disease: dis_073, drug: drug_029, line: second, species: null, notes: "化疗（卡铂、洛莫司汀）用于无法手术的脑肿瘤"}
+
+  # 脑积水
+  - {disease: dis_074, drug: drug_071, line: first, species: null, notes: "皮质类固醇（泼尼松龙）降低颅内压，缓解症状"}
+  - {disease: dis_074, drug: drug_057, line: adjunctive, species: null, notes: "苯巴比妥控制癫痫发作"}
+
+  # 胆囊炎
+  - {disease: dis_075, drug: drug_001, line: first, species: null, notes: "阿莫西林-克拉维酸是胆道感染首选抗生素，可穿透胆道"}
+  - {disease: dis_075, drug: drug_035, line: first, species: null, notes: "甲硝唑抗厌氧菌，胆道感染常见厌氧菌"}
+  - {disease: dis_075, drug: drug_071, line: adjunctive, species: null, notes: "严重病例用皮质类固醇减轻炎症反应"}
+
+  # 胆石症
+  - {disease: dis_076, drug: drug_071, line: first, species: null, notes: "皮质类固醇减轻胆道炎症和疼痛"}
+  - {disease: dis_076, drug: drug_001, line: second, species: null, notes: "抗生素预防继发感染"}
+  - {disease: dis_076, drug: drug_035, line: second, species: null, notes: "甲硝唑配合抗感染"}
+
+  # 结肠炎
+  - {disease: dis_077, drug: drug_040, line: first, species: 犬, notes: "甲硝唑抗厌氧菌和免疫调节作用，是犬结肠炎首选"}
+  - {disease: dis_077, drug: drug_005, line: first, species: null, notes: "泼尼松龙用于炎症性结肠炎（IBD型）"}
+  - {disease: dis_077, drug: drug_021, line: adjunctive, species: null, notes: "高纤维处方粮辅助管理慢性结肠炎"}
+
+  # 静脉血栓
+  - {disease: dis_078, drug: drug_060, line: first, species: null, notes: "低分子肝素（那屈肝素）是犬猫静脉血栓首选抗凝药"}
+  - {disease: dis_078, drug: drug_061, line: second, species: 犬, notes: "华法林抗凝治疗，需监测INR调整剂量"}
+  - {disease: dis_078, drug: drug_031, line: adjunctive, species: null, notes: "阿司匹林抗血小板，辅助抗凝"}
+
+  # 肺动脉高压
+  - {disease: dis_079, drug: drug_073, line: first, species: 犬, notes: "西地那非扩张肺血管，降低肺动脉压"}
+  - {disease: dis_079, drug: drug_074, line: first, species: null, notes: "波生坦内皮素受体拮抗剂，用于肺动脉高压"}
+  - {disease: dis_079, drug: drug_044, line: adjunctive, species: null, notes: "利尿剂（呋塞米）减轻右心负荷和腹水"}
+
+  # 膀胱炎
+  - {disease: dis_080, drug: drug_001, line: first, species: 犬, notes: "甲氧苄啶-磺胺甲噁唑是犬细菌性膀胱炎首选"}
+  - {disease: dis_080, drug: drug_006, line: first, species: 猫, notes: "氟喹诺酮（恩诺沙星）穿透膀胱黏膜效果好，猫膀胱炎首选"}
+  - {disease: dis_080, drug: drug_016, line: first, species: null, notes: "呋喃妥因尿路感染常用，但猫慎用（肺纤维化风险）"}
+
+  # 肾结石
+  - {disease: dis_081, drug: drug_064, line: first, species: 犬, notes: "石淋通或金钱草颗粒辅助化石，辅助治疗"}
+  - {disease: dis_081, drug: drug_044, line: adjunctive, species: null, notes: "呋塞米增加尿量，帮助小结石自然排出"}
+  - {disease: dis_081, drug: drug_016, line: adjunctive, species: null, notes: "抗生素预防结石相关感染"}
+
+  # 骨肉瘤
+  - {disease: dis_082, drug: drug_029, line: first, species: 犬, notes: "顺铂或卡铂配合手术是骨肉瘤标准化疗方案"}
+  - {disease: dis_082, drug: drug_072, line: adjunctive, species: null, notes: "美洛昔康缓解骨痛和前列腺素介导的疼痛"}
+  - {disease: dis_082, drug: drug_038, line: adjunctive, species: null, notes: "阿片类镇痛药（吗啡/芬太尼）用于严重骨痛"}
+
+  # 黑色素瘤
+  - {disease: dis_083, drug: drug_029, line: first, species: 犬, notes: "卡铂或紫杉醇用于口腔黑色素瘤化疗"}
+  - {disease: dis_083, drug: drug_072, line: adjunctive, species: null, notes: "美洛昔康缓解肿瘤相关疼痛"}
+  - {disease: dis_083, drug: drug_056, line: second, species: 犬, notes: "干扰素-α免疫调节，用于黑色素瘤辅助治疗"}
+
+  # 弓形虫病
+  - {disease: dis_084, drug: drug_045, line: first, species: null, notes: "磺胺甲氧苄啶（TMP-SMX）是弓形虫病首选，抑制虫体叶酸代谢"}
+  - {disease: dis_084, drug: drug_046, line: first, species: null, notes: "乙胺嘧啶配合叶酸，是弓形虫病经典方案"}
+  - {disease: dis_084, drug: drug_008, line: adjunctive, species: null, notes: "皮质类固醇用于严重脑炎和眼部弓形虫病"}
+
 # ===== 疾病-诊断关联 =====
 # purpose: screening=筛查 / confirming=确诊 / monitoring=监测
 # evidence_level: gold_standard=金标准 / supportive=支持性 / exclusionary=排除性
 disease_diagnostic:
+  # 脑肿瘤
+  - {disease: dis_073, test: test_025, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "CT/MRI：颅内占位性病变，可定位和评估大小"}
+  - {disease: dis_073, test: test_031, purpose: confirming, evidence_level: supportive, species: null, expected_result: "病理活检：确诊肿瘤类型（脑膜瘤/胶质瘤）"}
+  - {disease: dis_073, test: test_019, purpose: screening, evidence_level: supportive, species: null, expected_result: "排除转移性肿瘤（胸片/腹超）"}
+
+  # 脑积水
+  - {disease: dis_074, test: test_025, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "CT/MRI：脑室扩大，皮质受压变薄"}
+  - {disease: dis_074, test: test_008, purpose: screening, evidence_level: supportive, species: null, expected_result: "排除脑肿瘤等其他颅内病变"}
+
+  # 胆囊炎
+  - {disease: dis_075, test: test_019, purpose: confirming, evidence_level: supportive, species: null, expected_result: "X线：胆囊壁增厚，胆泥或结石"}
+  - {disease: dis_075, test: test_011, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "超声：胆囊壁增厚分层，周围渗出，胆泥"}
+  - {disease: dis_075, test: test_001, purpose: screening, evidence_level: supportive, species: null, expected_result: "白细胞升高（核左移），CRP升高"}
+
+  # 胆石症
+  - {disease: dis_076, test: test_011, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "超声：胆道内强回声光团伴声影"}
+  - {disease: dis_076, test: test_019, purpose: confirming, evidence_level: supportive, species: null, expected_result: "X线：部分结石可见（草酸钙结石不透X线）"}
+  - {disease: dis_076, test: test_011, purpose: monitoring, evidence_level: supportive, species: null, expected_result: "监测结石大小和数量变化"}
+
+  # 结肠炎
+  - {disease: dis_077, test: test_024, purpose: confirming, evidence_level: supportive, species: null, expected_result: "粪便常规：排除寄生虫（贾第鞭毛虫、鞭虫）"}
+  - {disease: dis_077, test: test_012, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "结肠镜+活检：黏膜炎症、糜烂、IBD组织学"}
+  - {disease: dis_077, test: test_031, purpose: confirming, evidence_level: supportive, species: null, expected_result: "细菌培养：排除沙门氏菌、弯曲杆菌"}
+
+  # 静脉血栓
+  - {disease: dis_078, test: test_008, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "超声多普勒：深静脉血栓形成，患肢深静脉无血流信号"}
+  - {disease: dis_078, test: test_033, purpose: screening, evidence_level: supportive, species: null, expected_result: "凝血功能：D-二聚体升高，FDP升高"}
+  - {disease: dis_078, test: test_001, purpose: screening, evidence_level: supportive, species: null, expected_result: "排查 underlying disease（IMHA、PLN、胰腺炎、肿瘤）"}
+
+  # 肺动脉高压
+  - {disease: dis_079, test: test_008, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "心脏超声：肺动脉压升高，右心增大，三尖瓣反流"}
+  - {disease: dis_079, test: test_006, purpose: confirming, evidence_level: supportive, species: null, expected_result: "胸片：肺动脉扩张，右心增大"}
+  - {disease: dis_079, test: test_004, purpose: monitoring, evidence_level: supportive, species: null, expected_result: "血气：低氧血症"}
+
+  # 膀胱炎
+  - {disease: dis_080, test: test_014, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "尿培养+药敏：确诊细菌感染和抗生素选择"}
+  - {disease: dis_080, test: test_009, purpose: confirming, evidence_level: supportive, species: null, expected_result: "尿常规：脓尿、血尿、细菌尿"}
+  - {disease: dis_080, test: test_011, purpose: screening, evidence_level: supportive, species: null, expected_result: "超声：膀胱壁增厚，排查结石或肿瘤"}
+
+  # 肾结石
+  - {disease: dis_081, test: test_011, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "超声：肾盂内强回声光团伴声影"}
+  - {disease: dis_081, test: test_019, purpose: confirming, evidence_level: supportive, species: null, expected_result: "X线：部分结石可见（草酸钙结石不透X线）"}
+  - {disease: dis_081, test: test_014, purpose: screening, evidence_level: supportive, species: null, expected_result: "血常规+生化：排查代谢异常（高钙血症）"}
+
+  # 骨肉瘤
+  - {disease: dis_082, test: test_019, purpose: confirming, evidence_level: gold_standard, species: 犬, expected_result: "X线：溶骨性病变+骨膜反应（'阳光放射'征），病理性骨折"}
+  - {disease: dis_082, test: test_031, purpose: confirming, evidence_level: supportive, species: 犬, expected_result: "活检病理：肿瘤性成骨细胞，产生类骨质"}
+  - {disease: dis_082, test: test_006, purpose: screening, evidence_level: supportive, species: 犬, expected_result: "胸片：排查肺转移（常见转移部位）"}
+
+  # 黑色素瘤
+  - {disease: dis_083, test: test_031, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "病理活检：黑色素细胞恶性肿瘤，黑色素颗粒"}
+  - {disease: dis_083, test: test_022, purpose: confirming, evidence_level: supportive, species: null, expected_result: "细胞学：黑色素瘤细胞，印戒样细胞"}
+  - {disease: dis_083, test: test_008, purpose: screening, evidence_level: supportive, species: null, expected_result: "超声：区域淋巴结评估，排查转移"}
+
+  # 弓形虫病
+  - {disease: dis_084, test: test_034, purpose: confirming, evidence_level: gold_standard, species: null, expected_result: "血清学：IgM阳性（急性感染）或IgG滴度4倍升高"}
+  - {disease: dis_084, test: test_031, purpose: confirming, evidence_level: supportive, species: null, expected_result: "PCR：检测血液或脑脊液中弓形虫DNA"}
+  - {disease: dis_084, test: test_001, purpose: screening, evidence_level: supportive, species: null, expected_result: "血常规：可能出现嗜酸性粒细胞增多"}
+
   # 肺炎
   - {disease: dis_001, test: test_006, purpose: confirming, evidence_level: supportive, species: 犬, expected_result: "肺间质/肺泡浸润影，肺门周围为主"}
   - {disease: dis_001, test: test_001, purpose: screening, evidence_level: supportive, species: 犬, expected_result: "白细胞升高（细菌感染时中性粒↑）"}
