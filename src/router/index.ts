@@ -19,11 +19,6 @@ const router = createRouter({
       component: () => import('@/views/knowledge/DiseaseDetail.vue')
     },
     {
-      path: '/symptoms',
-      name: 'symptoms',
-      component: () => import('@/views/knowledge/SymptomList.vue')
-    },
-    {
       path: '/symptom-explorer',
       name: 'symptom-explorer',
       component: () => import('@/views/knowledge/SymptomExplorer.vue')

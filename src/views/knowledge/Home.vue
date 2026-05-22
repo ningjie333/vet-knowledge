@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function goCategory(cat: string) {
+  router.push({ path: '/diseases', query: { category: cat } })
+}
 
 const stats = ref({ diseases: 0, symptoms: 0, drugs: 0, cases: 0 })
 const recentDiseases = ref<any[]>([])
@@ -44,38 +51,38 @@ onMounted(async () => {
     <section class="section">
       <h2>疾病分类</h2>
       <div class="category-grid">
-        <router-link to="/diseases" class="category-card">
+        <div class="category-card" @click="goCategory('呼吸系统')">
           <span class="cat-icon">🫁</span>
           <span class="cat-name">呼吸系统</span>
-        </router-link>
-        <router-link to="/diseases" class="category-card">
+        </div>
+        <div class="category-card" @click="goCategory('泌尿系统')">
           <span class="cat-icon">🫘</span>
           <span class="cat-name">泌尿系统</span>
-        </router-link>
-        <router-link to="/diseases" class="category-card">
+        </div>
+        <div class="category-card" @click="goCategory('消化系统')">
           <span class="cat-icon">🍽️</span>
           <span class="cat-name">消化系统</span>
-        </router-link>
-        <router-link to="/diseases" class="category-card">
+        </div>
+        <div class="category-card" @click="goCategory('心血管系统')">
           <span class="cat-icon">❤️</span>
           <span class="cat-name">心血管系统</span>
-        </router-link>
-        <router-link to="/diseases" class="category-card">
+        </div>
+        <div class="category-card" @click="goCategory('内分泌系统')">
           <span class="cat-icon">⚗️</span>
           <span class="cat-name">内分泌系统</span>
-        </router-link>
-        <router-link to="/diseases" class="category-card">
+        </div>
+        <div class="category-card" @click="goCategory('中毒与急救')">
           <span class="cat-icon">☠️</span>
           <span class="cat-name">中毒与急救</span>
-        </router-link>
-        <router-link to="/diseases" class="category-card">
+        </div>
+        <div class="category-card" @click="goCategory('传染病')">
           <span class="cat-icon">🦠</span>
           <span class="cat-name">传染病</span>
-        </router-link>
-        <router-link to="/diseases" class="category-card">
+        </div>
+        <div class="category-card" @click="goCategory('外科')">
           <span class="cat-icon">🔪</span>
           <span class="cat-name">外科</span>
-        </router-link>
+        </div>
       </div>
     </section>
 

@@ -5,7 +5,6 @@ const route = useRoute()
 const menuItems = [
   { path: '/', label: '首页', icon: '🏠' },
   { path: '/diseases', label: '疾病百科', icon: '📚' },
-  { path: '/symptoms', label: '症状检索', icon: '🔍' },
   { path: '/symptom-explorer', label: '症状→疾病', icon: '🔄' },
   { path: '/drugs', label: '药物手册', icon: '💊' },
   { path: '/diagnose', label: '症状推理', icon: '🧠' },

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 const diseases = ref<any[]>([])
 const loading = ref(true)
 const filterSpecies = ref('')
-const filterCategory = ref('')
+const filterCategory = ref((route.query.category as string) || '')
 const filterDifficulty = ref('')
 
 const systems = ['呼吸系统', '泌尿系统', '消化系统', '心血管系统', '内分泌系统', '中毒与急救', '传染病', '外科']
