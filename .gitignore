@@ -28,3 +28,6 @@ Thumbs.db
 
 # 缓存
 .ruff_cache/
+.npm-cache/
+__pycache__/
+*.pyc
