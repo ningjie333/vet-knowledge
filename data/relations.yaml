@@ -431,8 +431,8 @@ disease_symptoms:
 
   dis_071:  # 鼻炎
     - {symptom: sym_001, frequency: common, stage: 全程}
-    - {symptom: sym_039, frequency: common, stage: 分泌物}
-    - {symptom: sym_004, frequency: uncommon, stage: 发热}
+    - {symptom: sym_004, frequency: common, stage: 分泌物}
+    - {symptom: sym_018, frequency: uncommon, stage: 发热}
     - {symptom: sym_019, frequency: common, stage: 全程}
 
   dis_072:  # 癣菌病
@@ -443,8 +443,8 @@ disease_symptoms:
   dis_073:  # 脑肿瘤
     - {symptom: sym_026, frequency: common, stage: 颅内压}
     - {symptom: sym_005, frequency: common, stage: 神经症状}
-    - {symptom: sym_031, frequency: uncommon, stage: 局部}
-    - {symptom: sym_022, frequency: uncommon, stage: 行为改变}
+    - {symptom: sym_029, frequency: uncommon, stage: 局部}
+    - {symptom: sym_031, frequency: uncommon, stage: 行为改变}
 
   dis_074:  # 脑积水
     - {symptom: sym_026, frequency: common, stage: 颅内压}
@@ -452,50 +452,50 @@ disease_symptoms:
     - {symptom: sym_037, frequency: uncommon, stage: 发育}
 
   dis_075:  # 胆囊炎
-    - {symptom: sym_025, frequency: common, stage: 腹痛}
-    - {symptom: sym_016, frequency: common, stage: 黄疸}
-    - {symptom: sym_004, frequency: common, stage: 发热}
-    - {symptom: sym_008, frequency: uncommon, stage: 呕吐}
+    - {symptom: sym_007, frequency: common, stage: 腹痛}
+    - {symptom: sym_010, frequency: common, stage: 黄疸}
+    - {symptom: sym_018, frequency: common, stage: 发热}
+    - {symptom: sym_005, frequency: uncommon, stage: 呕吐}
 
   dis_076:  # 胆石症
-    - {symptom: sym_025, frequency: common, stage: 腹痛}
-    - {symptom: sym_016, frequency: common, stage: 黄疸}
-    - {symptom: sym_008, frequency: uncommon, stage: 呕吐}
+    - {symptom: sym_007, frequency: common, stage: 腹痛}
+    - {symptom: sym_010, frequency: common, stage: 黄疸}
+    - {symptom: sym_005, frequency: uncommon, stage: 呕吐}
 
   dis_077:  # 结肠炎
-    - {symptom: sym_010, frequency: common, stage: 腹泻}
-    - {symptom: sym_033, frequency: common, stage: 里急后重}
-    - {symptom: sym_039, frequency: common, stage: 血便}
+    - {symptom: sym_006, frequency: common, stage: 腹泻}
+    - {symptom: sym_041, frequency: common, stage: 里急后重}
+    - {symptom: sym_042, frequency: common, stage: 血便}
 
   dis_078:  # 静脉血栓
-    - {symptom: sym_041, frequency: common, stage: 患肢肿胀}
-    - {symptom: sym_025, frequency: common, stage: 疼痛}
-    - {symptom: sym_040, frequency: uncommon, stage: 呼吸困难}
-    - {symptom: sym_004, frequency: uncommon, stage: 发热}
+    - {symptom: sym_040, frequency: common, stage: 患肢肿胀}
+    - {symptom: sym_007, frequency: common, stage: 疼痛}
+    - {symptom: sym_002, frequency: uncommon, stage: 呼吸困难}
+    - {symptom: sym_018, frequency: uncommon, stage: 发热}
 
   dis_079:  # 肺动脉高压
     - {symptom: sym_002, frequency: common, stage: 呼吸困难}
-    - {symptom: sym_036, frequency: common, stage: 运动不耐受}
-    - {symptom: sym_030, frequency: uncommon, stage: 晕厥}
-    - {symptom: sym_024, frequency: uncommon, stage: 腹水}
+    - {symptom: sym_017, frequency: common, stage: 运动不耐受}
+    - {symptom: sym_016, frequency: uncommon, stage: 晕厥}
+    - {symptom: sym_015, frequency: uncommon, stage: 腹水}
 
   dis_080:  # 膀胱炎
-    - {symptom: sym_033, frequency: common, stage: 尿频}
-    - {symptom: sym_039, frequency: common, stage: 血尿}
-    - {symptom: sym_032, frequency: uncommon, stage: 腹痛}
+    - {symptom: sym_013, frequency: common, stage: 尿频}
+    - {symptom: sym_014, frequency: common, stage: 血尿}
+    - {symptom: sym_007, frequency: uncommon, stage: 腹痛}
 
   dis_081:  # 肾结石
-    - {symptom: sym_039, frequency: common, stage: 血尿}
-    - {symptom: sym_025, frequency: common, stage: 腰痛}
-    - {symptom: sym_033, frequency: uncommon, stage: 排尿障碍}
+    - {symptom: sym_014, frequency: common, stage: 血尿}
+    - {symptom: sym_007, frequency: common, stage: 腰痛}
+    - {symptom: sym_013, frequency: uncommon, stage: 排尿障碍}
 
   dis_082:  # 骨肉瘤
-    - {symptom: sym_043, frequency: common, stage: 跛行}
-    - {symptom: sym_025, frequency: common, stage: 骨痛}
-    - {symptom: sym_042, frequency: uncommon, stage: 病理性骨折}
+    - {symptom: sym_030, frequency: common, stage: 跛行}
+    - {symptom: sym_007, frequency: common, stage: 骨痛}
+    - {symptom: sym_043, frequency: uncommon, stage: 病理性骨折}
 
   dis_083:  # 黑色素瘤
-    - {symptom: sym_034, frequency: common, stage: 皮肤结节}
+    - {symptom: sym_037, frequency: common, stage: 皮肤结节}
     - {symptom: sym_032, frequency: uncommon, stage: 溃疡}
     - {symptom: sym_035, frequency: uncommon, stage: 区域性淋巴结肿大}
 

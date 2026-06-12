@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { invoke } from '@tauri-apps/api/core'
 import type { Disease, Tag } from '../../types'
 
 const route = useRoute()
+const router = useRouter()
 const disease = ref<Disease | null>(null)
 const symptoms = ref<any[]>([])
 const ddx = ref<any[]>([])
@@ -29,6 +30,14 @@ const mechanismTags = computed(() =>
 const damnitTags = computed(() =>
   entityTags.value.filter(t => t.tag_group === 'damnit_v')
 )
+
+function goBack() {
+  if (window.history.length > 1) {
+    router.back()
+    return
+  }
+  router.push('/diseases')
+}
 
 onMounted(async () => {
   const id = route.params.id as string
@@ -66,6 +75,7 @@ onMounted(async () => {
   <div v-if="loading" class="loading">加载中...</div>
   <div v-else-if="disease" class="detail-page">
     <div class="header">
+      <button type="button" class="exit-button" @click="goBack">退出</button>
       <h1>{{ disease.name_zh }}</h1>
       <span class="en-name">{{ disease.name_en }}</span>
       <span v-if="disease.name_latin" class="latin-name"><em>{{ disease.name_latin }}</em></span>
@@ -190,6 +200,25 @@ onMounted(async () => {
 
 <style scoped>
 .header { margin-bottom: 24px; }
+.exit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.exit-button:hover {
+  border-color: var(--color-primary);
+  background: #eff6ff;
+}
 .header h1 { font-size: 28px; font-weight: 700; }
 .en-name { font-size: 14px; color: var(--color-text-secondary); display: block; margin-top: 4px; }
 .latin-name { font-size: 13px; color: var(--color-text-secondary); display: block; margin-top: 2px; }

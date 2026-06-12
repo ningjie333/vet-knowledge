@@ -47,6 +47,19 @@ fn split_sql_statements(script: &str) -> Vec<&str> {
     statements
 }
 
+/// 去掉 SQL 脚本里所有 `--` 单行注释。
+/// 行为：行首 `--` 整行删除（inline `--` 不影响，SQLite 自己处理）。
+fn strip_sql_comments(script: &str) -> String {
+    script
+        .lines()
+        .filter(|l| !l.trim_start().starts_with("--"))
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+/// 当前种子数据版本。递增此值时，应用启动时会自动重新导入种子数据。
+const SEED_DATA_VERSION: i64 = 18;
+
 pub async fn init(app: &AppHandle) -> anyhow::Result<DbPool> {
     let app_dir = app.path().app_data_dir()
         .unwrap_or_else(|_| {
@@ -72,10 +85,13 @@ pub async fn init(app: &AppHandle) -> anyhow::Result<DbPool> {
     sqlx::query("PRAGMA temp_store = MEMORY").execute(&pool).await?;
 
     // 建表（使用安全的 SQL 分割）
-    let schema = include_str!("../../data/seed/schema.sql");
-    for stmt in split_sql_statements(schema) {
-        if !stmt.is_empty() && !stmt.starts_with("--") {
-            sqlx::query(stmt).execute(&pool).await.ok();
+    // 关键：先 strip_sql_comments 把 `--` 单行注释剥掉，
+    // 否则 split_sql_statements 输出的第一个 statement 会以 `--` 开头被跳过 → 表不建。
+    let schema = strip_sql_comments(include_str!("../../data/seed/schema.sql"));
+    for stmt in split_sql_statements(&schema) {
+        let t = stmt.trim();
+        if !t.is_empty() {
+            sqlx::query(t).execute(&pool).await?;
         }
     }
 
@@ -121,6 +137,32 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     .unwrap_or(None);
 
     let current = current.unwrap_or(0);
+
+    // 对全新数据库，schema.sql 已经是最新结构，不需要再回放历史迁移。
+    // 直接写入当前迁移基线，避免旧迁移在新 schema 上重复重建表。
+    if current == 0 {
+        for (version, description) in [
+            (1, "Initial schema: all tables + indexes + FTS + learning_progress"),
+            (2, "Add urgency_level to diseases, is_pathognomonic to disease_symptom"),
+            (3, "Rebuild disease_diagnostic with species in PK"),
+            (4, "Rebuild disease_treatment with species in PK"),
+            (5, "Add flashcard system tables"),
+            (6, "Add data_source and is_deleted to diseases"),
+            (7, "Tag system + disease/symptom/drug enhancements + treatments module"),
+            (8, "Add cases_fts for full-text search on cases"),
+            (9, "Rebuild tags table without UNIQUE(name_zh)"),
+        ] {
+            sqlx::query(
+                "INSERT OR IGNORE INTO schema_migrations (version, description)
+                 VALUES (?, ?)"
+            )
+            .bind(version)
+            .bind(description)
+            .execute(pool)
+            .await?;
+        }
+        return Ok(());
+    }
 
     // ── v1: 初始 schema（建表已在上面完成，此处记录版本基准） ──
     if current < 1 {
@@ -312,7 +354,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         sqlx::query(
             "CREATE TABLE IF NOT EXISTS tags (
                 id TEXT PRIMARY KEY,
-                name_zh TEXT NOT NULL UNIQUE,
+                name_zh TEXT NOT NULL,
                 name_en TEXT,
                 tag_group TEXT NOT NULL DEFAULT 'custom',
                 emergency_level TEXT CHECK(emergency_level IS NULL OR emergency_level IN ('red','orange','yellow','green')),
@@ -395,14 +437,60 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         .await?;
     }
 
+    // ── v9: tags.name_zh 去掉 UNIQUE，允许不同维度使用相同中文标签名 ──
+    if current >= 7 && current < 9 {
+        sqlx::query("PRAGMA foreign_keys = OFF").execute(pool).await?;
+        let mut tx = pool.begin().await?;
+        sqlx::query(
+            "CREATE TABLE tags_v2 (
+                id TEXT PRIMARY KEY,
+                name_zh TEXT NOT NULL,
+                name_en TEXT,
+                tag_group TEXT NOT NULL DEFAULT 'custom',
+                emergency_level TEXT CHECK(emergency_level IS NULL OR emergency_level IN ('red','orange','yellow','green')),
+                clinical_action TEXT,
+                textbook_logic TEXT,
+                typical_scenario TEXT,
+                color TEXT,
+                created_at TEXT DEFAULT (datetime('now'))
+            )"
+        )
+        .execute(&mut *tx)
+        .await?;
+        sqlx::query(
+            "INSERT INTO tags_v2 (
+                id, name_zh, name_en, tag_group, emergency_level,
+                clinical_action, textbook_logic, typical_scenario, color, created_at
+            )
+            SELECT
+                id, name_zh, name_en, tag_group, emergency_level,
+                clinical_action, textbook_logic, typical_scenario, color, created_at
+            FROM tags"
+        )
+        .execute(&mut *tx)
+        .await?;
+        sqlx::query("DROP TABLE tags").execute(&mut *tx).await?;
+        sqlx::query("ALTER TABLE tags_v2 RENAME TO tags")
+            .execute(&mut *tx)
+            .await?;
+        sqlx::query("CREATE INDEX IF NOT EXISTS idx_tags_group ON tags(tag_group)")
+            .execute(&mut *tx)
+            .await?;
+        sqlx::query(
+            "INSERT OR IGNORE INTO schema_migrations (version, description)
+             VALUES (9, 'Rebuild tags table without UNIQUE(name_zh)')"
+        )
+        .execute(&mut *tx)
+        .await?;
+        tx.commit().await?;
+        sqlx::query("PRAGMA foreign_keys = ON").execute(pool).await?;
+    }
+
     Ok(())
 }
 
 /// 种子数据导入：版本不匹配时全量重建。
-/// 使用 UPSERT（INSERT OR REPLACE）避免 DELETE 后再 INSERT 的外键问题。
 async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
-    const SEED_DATA_VERSION: i64 = 17;
-
     let stored: Option<i64> = sqlx::query_scalar(
         "SELECT value FROM app_meta WHERE key = 'seed_data_version'"
     )
@@ -420,38 +508,54 @@ async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
         return Ok(());
     }
 
-    let seed = include_str!("../../data/seed/001_initial.sql");
+    let seed = strip_sql_comments(include_str!("../../data/seed/001_initial.sql"));
 
-    // 按事务执行：先清空，再导入
+    // 按事务执行：先清空，再导入。
+    // 关键：循环中遇到失败时 *立即* 返回错误，事务 drop 时自动回滚，
+    // 从而 `seed_data_version` 不会被写入 → 下次启动会重试。
     let mut tx = pool.begin().await?;
 
-    // 清空数据表（保留表结构）
+    // 清空数据表（保留表结构）。容忍 "no such table"（WAL 未持久化等边缘情况）
     for tbl in &[
-        "case_disease", "disease_diagnostic", "disease_treatment",
-        "disease_symptom", "disease_ddx", "cases", "diagnostic_tests",
-        "drugs", "symptoms", "diseases",
+        "entity_tags",
+        "case_disease",
+        "disease_diagnostic",
+        "disease_treatment",
+        "disease_treatment_map",
+        "disease_symptom",
+        "disease_ddx",
+        "cases", "diagnostic_tests", "drugs", "symptoms", "diseases",
+        "treatments", "tags",
     ] {
-        sqlx::query(&format!("DELETE FROM {}", tbl))
+        let r = sqlx::query(&format!("DELETE FROM {}", tbl))
             .execute(&mut *tx)
-            .await
-            .ok();
+            .await;
+        match r {
+            Ok(_) => {},
+            Err(e) if e.to_string().contains("no such table") => {},
+            Err(e) => anyhow::bail!("DELETE FROM {} failed: {}", tbl, e),
+        }
     }
 
-    // 导入种子数据（使用安全的 SQL 分割）
-    for stmt in split_sql_statements(seed) {
+    // 导入种子数据：失败时用 ? 立即返回 Err
+    for (idx, stmt) in split_sql_statements(&seed).into_iter().enumerate() {
         let t = stmt.trim();
-        if !t.is_empty() && !t.starts_with("--") {
-            sqlx::query(t).execute(&mut *tx).await.ok();
+        if t.is_empty() {
+            continue;
         }
+        sqlx::query(t).execute(&mut *tx).await.map_err(|e| {
+            let snippet: String = t.chars().take(200).collect();
+            anyhow::anyhow!("seed import failed at stmt #{}: {} | sql: {}", idx, e, snippet)
+        })?;
     }
 
     // 重建 FTS 索引（cases_fts 使用 content 模式，需手动重建）
     sqlx::query("INSERT INTO cases_fts(cases_fts) VALUES('rebuild')")
         .execute(&mut *tx)
         .await
-        .ok();
+        .ok(); // FTS rebuild 失败不致命
 
-    // 记录数据版本
+    // 记录数据版本（最后一步：只有在前面全部成功的前提下才执行）
     sqlx::query(
         "INSERT OR REPLACE INTO app_meta (key, value) VALUES ('seed_data_version', ?)"
     )
@@ -462,6 +566,29 @@ async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
     tx.commit().await?;
 
     Ok(())
+}
+
+/// 把最后一次 import_seed_data 的失败细节写入 app_data_dir/seed_import_error.log。
+/// 由 lib.rs 的 setup hook 在 init 失败时调用，让 release 包的用户也能查错。
+pub fn write_import_error_log(app: &tauri::AppHandle, err: &anyhow::Error) {
+    let dir = match app.path().app_data_dir() {
+        Ok(d) => d,
+        Err(_) => return,
+    };
+    let path = dir.join("seed_import_error.log");
+    let body = format!(
+        "vet-knowledge seed import failed at {}\n\
+         SEED_DATA_VERSION: {}\n\n\
+         error chain:\n{}\n\n\
+         troubleshooting:\n\
+         - 关闭应用，删除以下目录后重启:\n  {}\n\
+         - 若问题持续，请把本文件提交到 GitHub issue\n",
+        chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
+        SEED_DATA_VERSION,
+        err.chain().map(|e| format!("  - {}", e)).collect::<Vec<_>>().join("\n"),
+        dir.display(),
+    );
+    let _ = std::fs::write(&path, body);
 }
 
 #[cfg(test)]
@@ -497,6 +624,7 @@ mod tests {
     fn test_split_sql_empty_and_comments() {
         let sql = "-- comment\n\nCREATE TABLE a (id TEXT);\n\n";
         let stmts = split_sql_statements(sql);
-        assert_eq!(stmts.len(), 2); // comment + CREATE
+        // 只有 `;` 前的内容算一个 statement，注释和空行不会单独分割
+        assert_eq!(stmts.len(), 1);
     }
 }

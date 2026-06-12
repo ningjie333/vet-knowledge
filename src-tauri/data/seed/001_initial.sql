@@ -1,10 +1,10 @@
 -- ============================================
 -- 兽医知识库 种子数据 v3.0 (Markdown+Frontmatter 驱动)
--- 84 疾病 + 39 症状 + 60 药物 + 36 检查 + 15 病例 + 6 治疗 + 标签系统 + 完整关联关系
--- 生成时间: 2026-05-16 12:29:46
+-- 84 疾病 + 43 症状 + 69 药物 + 36 检查 + 15 病例 + 6 治疗 + 标签系统 + 完整关联关系
+-- 生成时间: 2026-06-12 19:39:19
 -- ============================================
 
--- ===== 标签 (53个) =====
+-- ===== 标签 (43个) =====
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('body_cardiovascular', '心血管系统', 'body_system', '#E74C3C');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('body_digestive', '消化系统', 'body_system', '#E67E22');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('body_endocrine', '内分泌系统', 'body_system', '#1ABC9C');
@@ -48,16 +48,6 @@ INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('species_cattle', '牛'
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('species_dog', '犬', 'species', '#795548');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('species_exotic', '异宠', 'species', '#455A64');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('species_horse', '马', 'species', '#4E342E');
-INSERT INTO tags (id, name_zh, tag_group) VALUES ('免疫介导', '免疫介导', 'custom');
-INSERT INTO tags (id, name_zh, tag_group) VALUES ('呼吸系统', '呼吸系统', 'custom');
-INSERT INTO tags (id, name_zh, tag_group) VALUES ('心血管系统', '心血管系统', 'custom');
-INSERT INTO tags (id, name_zh, tag_group) VALUES ('感染', '感染', 'custom');
-INSERT INTO tags (id, name_zh, tag_group) VALUES ('梗阻', '梗阻', 'custom');
-INSERT INTO tags (id, name_zh, tag_group) VALUES ('消化系统', '消化系统', 'custom');
-INSERT INTO tags (id, name_zh, tag_group) VALUES ('炎症免疫', '炎症免疫', 'custom');
-INSERT INTO tags (id, name_zh, tag_group) VALUES ('疼痛信号', '疼痛信号', 'custom');
-INSERT INTO tags (id, name_zh, tag_group) VALUES ('血管循环', '血管循环', 'custom');
-INSERT INTO tags (id, name_zh, tag_group) VALUES ('退行性', '退行性', 'custom');
 
 -- ===== 疾病 (84种) =====
 INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_001', '肺炎', 'Pneumonia', 'Pneumonia', '["呼吸系统"]', '["犬", "猫"]', '呼吸系统', '感染性', '犬细菌性肺炎多发于幼犬及老年犬，尤其是免疫抑制个体；任何品种均可发病，短头品种风险略高。吸入性肺炎常见于灌食不当或食管疾病患犬。无明显季节性，但冬季因呼吸道感染高发而间接增加发病率。免疫功能低下动物全年均可发病。', '肺部炎症反应，可由细菌、病毒、真菌或吸入性因素引起。犬最常见为细菌性肺炎，猫多为吸入性或病毒性。', '["细菌感染(博德特氏菌、链球菌)", "病毒感染", "真菌感染", "吸入性因素"]', '病原体入侵肺泡后炎症介质释放，中性粒细胞浸润，肺泡充满渗出液导致气体交换障碍和低氧血症。', '病原体（细菌、病毒、真菌或吸入物）突破呼吸道防御机制后侵入肺泡，激活固有免疫反应。中性粒细胞和巨噬细胞募集至感染部位，释放促炎因子（IL-1、IL-6、TNF-α），导致肺泡毛细血管通透性增加，富含蛋白质的渗出液和中性粒细胞充填肺泡腔。肺实变区域气体交换面积减少，通气/血流比例失调，引起低氧血症。严重者可并发脓胸或急性呼吸窘迫综合征（ARDS）。', '早期治疗预后良好。', 'intermediate', 3);
@@ -570,7 +560,7 @@ INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_084', 'species_cat');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_084', 'species_dog');
 
--- ===== 症状 (39种) =====
+-- ===== 症状 (43种) =====
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_001', '咳嗽', 'Cough', '呼吸道受到刺激时产生的保护性反射动作，特征为突然的呼气性爆发声', '{"犬": "区分干咳(气管/支气管)和湿咳(肺实质)", "猫": "需与吐毛球鉴别"}', '咳嗽是呼吸道保护性反射，由气道黏膜下的机械感受器和化学感受器（C纤维和快适应感受器）受到刺激后，经迷走神经传入延髓咳嗽中枢，触发协调的呼气肌强烈收缩。炎症介质（组胺、前列腺素、缓激肽）降低感受器阈值，导致咳嗽反射敏感性升高。慢性咳嗽还与气道重塑和咳嗽中枢可塑性改变有关。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_002', '呼吸困难', 'Dyspnea', '呼吸做功增加的表现，包括张口呼吸、腹式呼吸、头颈伸展', '{"犬": "静息张口呼吸为急症信号", "猫": "张口呼吸在猫几乎总是急症"}', '呼吸困难是呼吸做功增加的代偿表现，源于肺顺应性下降、气道阻力增加或肺泡换气功能障碍。当PaO2降低或PaCO2升高时，颈动脉体和主动脉体化学感受器激活呼吸中枢，增加呼吸驱动。同时肺间质水肿或塌陷使肺顺应性降低，需更大的胸腔负压才能维持潮气量，表现为辅助呼吸肌参与、腹式呼吸和张口呼吸。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_003', '呼吸急促', 'Tachypnea', '呼吸频率异常增快。犬>30次/分，猫>40次/分为异常', NULL, '呼吸急促是机体对低氧血症或代谢性酸中毒的代偿反应。外周化学感受器感知PaO2下降，中枢化学感受器感知pH降低和PaCO2升高，共同兴奋延髓呼吸中枢使呼吸频率增快。肺实质病变时肺牵张反射和J感受器激活也促进呼吸加快，以增加每分钟通气量、改善氧合和排出CO2。');
@@ -601,13 +591,17 @@ INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiolog
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_028', '眼球震颤', 'Nystagmus', '眼球不自主的节律性摆动，可为水平、垂直或旋转性，提示前庭系统或小脑病变。', NULL, '眼球震颤是前庭系统或小脑对眼球运动调控功能异常的表现。前庭迷路或前庭神经损伤导致双侧前庭张力不对称，眼球缓慢向患侧偏斜（慢相），随后脑干快速纠正运动（快相）产生节律性摆动。中枢性病变（脑干、小脑）破坏前庭核与小脑和前庭眼反射通路的连接，产生不规则或垂直性眼震。前庭性眼震方向固定，中枢性眼震方向可随注视方向改变。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_029', '共济失调', 'Ataxia', '运动协调障碍，步态不稳，可见于小脑病变、前庭疾病或脊髓压迫。', NULL, '共济失调源于小脑、前庭系统或本体感觉通路的损伤。小脑性共济失调因小脑皮层（协调运动计划）或小脑核受损，导致运动幅度、速率和方向的判断失误，表现为辨距不良和意向性震颤。前庭性共济失调因前庭系统功能障碍导致躯体侧倾和平衡失调。感觉性共济失调（脊髓后索病变）时本体感觉传入中断，动物无法感知肢体位置，表现为高抬足和踏步样步态。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_030', '跛行', 'Lameness', '肢体负重异常导致的步态改变，可见于骨折、关节炎、韧带损伤或神经病变。', NULL, '跛行是肢体疼痛或结构异常导致的负重回避反应。骨和关节病变（骨折、关节炎、骨膜炎）激活骨膜和关节囊的伤害性感受器，传入疼痛信号使动物减轻患肢负重。软组织损伤（肌腱炎、韧带撕裂）导致运动时疼痛加剧或结构不稳定。神经根压迫（椎间盘突出）产生放射性疼痛和运动神经元损伤。跛行是疼痛和保护性抑制的结果，有助于鉴别病变部位。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_031', '行为改变', 'Behavioral Changes', '包括定向障碍、异常兴奋或反应迟钝等精神状态改变，常提示前脑病变。', NULL, '行为改变常见于前脑或边缘系统受累。颅内病变导致局部神经元功能紊乱、脑水肿和颅内压升高，可表现为定向障碍、异常安静、攻击性增加、昼夜节律改变或反应迟钝。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_032', '皮肤红斑', 'Erythema', '皮肤发红，由局部血管扩张引起，可见于过敏、感染或自身免疫性皮肤病。', NULL, '皮肤红斑由真皮层血管扩张和血流增加引起，是炎症反应的核心表现之一。炎性介质（组胺、前列腺素E2、NO）直接作用于血管平滑肌，使小动脉扩张、局部血流增加（主动性充血）。同时血管通透性增加导致间质水肿。红斑的颜色和分布有助于鉴别病因：感染性红斑常伴发热，过敏性红斑边界不清且发展迅速，自身免疫性红斑多呈特征性分布。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_034', '脱毛', 'Alopecia', '毛发脱落，可为局灶性或全身性，可见于内分泌疾病、寄生虫或真菌感染。', NULL, '脱毛源于毛囊生长周期异常或毛囊结构破坏。内分泌疾病（甲减、库欣、性激素异常）干扰毛囊从退行期（catagen）到休止期（telogen）的正常转换，导致毛发提前进入休止期并脱落。寄生虫感染和真菌（小孢子菌）直接破坏毛囊结构。自身免疫性毛囊炎（如毛囊扁平苔藓）通过淋巴细胞浸润破坏毛囊干细胞。此外，慢性炎症和纤维化使毛囊永久性萎缩，导致不可逆性脱毛。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_035', '区域性淋巴结肿大', 'Regional Lymphadenopathy', '邻近病灶引流区域的淋巴结体积增大，常见于肿瘤转移、感染或局部炎症。', NULL, '区域性淋巴结肿大多由局部炎症、感染或肿瘤转移引起。淋巴结内免疫细胞增殖、炎症细胞浸润或肿瘤细胞定植会导致体积增大、质地变硬，部分病例伴疼痛或与周围组织粘连。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_037', '皮下肿块', 'Subcutaneous Mass', '皮下可触及的肿物，可为脂肪瘤、肥大细胞瘤、囊肿或脓肿。', NULL, '皮下肿块源于皮下组织细胞的异常增殖或炎症反应。良性肿瘤（脂肪瘤）由成熟脂肪细胞在包膜内缓慢增殖形成。恶性肿瘤（肥大细胞瘤、软组织肉瘤）由细胞失控增殖和凋亡逃逸驱动，涉及原癌基因激活和抑癌基因失活。炎症性肿块（脓肿、肉芽肿）是免疫细胞浸润和局部组织修复反应的结果。囊肿由上皮细胞分泌液体在封闭腔隙内积聚形成。肿块的生物学行为取决于细胞来源和分化程度。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_038', '角膜混浊', 'Corneal Opacity', '角膜透明度下降，可见于角膜溃疡、青光眼、角膜水肿或角膜营养不良。', NULL, '角膜混浊由角膜正常透明结构的破坏引起。角膜水肿是最常见原因，内皮细胞泵功能失代偿或上皮屏障破坏使水分进入基质层，打乱胶原纤维的规则排列而失去透明性。炎症（角膜炎）时白细胞浸润和新生血管长入使角膜变混。角膜营养不良是遗传性基质或内皮细胞代谢异常导致的进行性混浊。瘢痕形成时胶原纤维无序修复替代正常基质结构，造成永久性混浊。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_039', '眼部分泌物增多', 'Ocular Discharge', '眼部分泌物增加，可为浆液性、黏液性或脓性，提示结膜炎、角膜溃疡或泪道阻塞。', NULL, '眼部分泌物增多是结膜或角膜炎症反应的表现。炎性介质刺激结膜杯状细胞和副泪腺分泌增加，同时血管通透性增高使血浆成分渗出。细菌感染时中性粒细胞浸润形成脓性分泌物。泪道阻塞（鼻泪管狭窄或闭锁）使正常泪液引流受阻而溢出。角膜溃疡刺激三叉神经眼支，反射性增加泪液分泌。分泌物的性状（浆液性、黏液性、脓性）有助于判断炎症类型和严重程度。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_040', '患肢肿胀', 'Limb Swelling', '单侧或双侧肢体体积增大，常伴疼痛或活动受限，提示血栓、炎症或淋巴回流障碍。', NULL, '患肢肿胀可由静脉回流受阻、淋巴回流障碍、炎症渗出或软组织损伤引起。血栓形成后静脉压升高，液体外渗到间质，局部可出现肿胀、皮温变化和疼痛。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_041', '里急后重', 'Tenesmus', '排便困难或频繁尝试排便但排出量少，可见于结肠炎、便秘或直肠肿物。', NULL, '里急后重由直肠或肛门区域的炎症和感觉过敏引起。结肠炎和直肠炎时，炎性介质（前列腺素、白三烯、5-HT）刺激直肠壁内机械感受器和伤害性感受器，持续产生排便冲动。直肠黏膜水肿和溃疡使直肠顺应性下降，少量粪便或黏液即可触发排便反射。肛门腺炎和直肠肿物通过局部压迫和炎症刺激产生类似效应。频繁的排便尝试导致直肠黏膜进一步损伤，形成恶性循环。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_042', '血便', 'Hematochezia/Melena', '粪便中带血，鲜红色为下消化道出血（hematochezia），黑色为上消化道出血（melena）。', NULL, '血便反映消化道出血，出血部位决定粪便性状。上消化道出血（胃、十二指肠）时血液经胃酸作用，血红蛋白转化为酸性血红素，形成黑色柏油样便（melena）。下消化道出血（结肠、直肠）时血液未经消化，呈鲜红色（hematachezia）。炎症性肠病、寄生虫感染和肿瘤侵蚀肠黏膜血管。凝血功能障碍（灭鼠药中毒、DIC）可导致全消化道弥漫性出血。出血量和速度决定临床表现的严重程度。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_043', '病理性骨折', 'Pathologic Fracture', '在肿瘤或骨质破坏基础上发生的骨折，往往由轻微外力触发，提示骨结构已严重受损。', NULL, '病理性骨折发生于原有骨结构已经被肿瘤、感染或代谢性骨病破坏的骨骼。骨皮质变薄、骨小梁断裂和局部承重能力下降使轻微外力即可导致骨折。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_044', '抽搐', 'Seizures', '肌肉不自主强直或阵挛性收缩，可见于癫痫、中毒、代谢性脑病或颅内占位。', NULL, '抽搐是运动皮层或皮层下结构异常放电引起的肌肉不自主收缩。癫痫源于大脑神经元兴奋-抑制失衡，谷氨酸能兴奋传递增强或GABA能抑制传递减弱导致异常放电扩散。代谢性原因（低血糖、低钙血症、肝性脑病）改变神经元膜电位和神经递质平衡。毒素（有机磷、士的宁）直接干扰离子通道或神经递质代谢。颅内占位和炎症破坏局部神经元网络稳定性，降低发作阈值。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_045', '前肢伸展/角弓反张', 'Opisthotonos', '头颈后仰、四肢强直伸展，提示严重脑膜脑炎或破伤风。', NULL, '角弓反张是全身伸肌张力极度增高的表现，源于脑干网状结构抑制通路受损。破伤风毒素（破伤风梭菌产生）经轴突逆行转运至中枢，不可逆地阻断抑制性中间神经元（Renshaw细胞）的甘氨酸和GABA释放，使运动神经元持续兴奋。脑膜脑炎时炎症直接损伤脑干网状结构，破坏对肌张力的下行抑制控制。这种去抑制状态导致全身伸肌和屈肌同时强直收缩，以伸肌优势表现为角弓反张姿态。');
 
@@ -657,17 +651,24 @@ INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_029', 'body_nervous');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_029', 'mech_pain');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_030', 'body_musculoskeletal');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_031', 'body_nervous');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_032', 'body_skin');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_032', 'mech_inflammation');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_034', 'body_skin');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_035', 'body_immune');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_035', 'mech_neoplastic');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_037', 'body_skin');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_037', 'mech_neoplastic');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_038', 'body_eye_ear');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_039', 'body_eye_ear');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_040', 'body_cardiovascular');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_040', 'mech_vascular');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_041', 'body_digestive');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_041', 'mech_inflammation');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_042', 'body_digestive');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_042', 'mech_inflammation');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_043', 'body_musculoskeletal');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_043', 'mech_neoplastic');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_044', 'body_nervous');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_044', 'mech_pain');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', 'sym_045', 'body_musculoskeletal');
@@ -960,47 +961,47 @@ INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomo
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_070', 'sym_019', 'common', '晚期');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_070', 'sym_018', 'uncommon', '转移');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_071', 'sym_001', 'common', '全程');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_071', 'sym_039', 'common', '分泌物');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_071', 'sym_004', 'uncommon', '发热');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_071', 'sym_004', 'common', '分泌物');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_071', 'sym_018', 'uncommon', '发热');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_071', 'sym_019', 'common', '全程');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomonic) VALUES ('dis_072', 'sym_034', 'common', '全程', 1);
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_072', 'sym_025', 'uncommon', '炎症');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_072', 'sym_032', 'uncommon', '病变区');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_073', 'sym_026', 'common', '颅内压');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_073', 'sym_005', 'common', '神经症状');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_073', 'sym_031', 'uncommon', '局部');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_073', 'sym_022', 'uncommon', '行为改变');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_073', 'sym_029', 'uncommon', '局部');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_073', 'sym_031', 'uncommon', '行为改变');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_074', 'sym_026', 'common', '颅内压');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_074', 'sym_005', 'common', '神经症状');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_074', 'sym_037', 'uncommon', '发育');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_075', 'sym_025', 'common', '腹痛');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_075', 'sym_016', 'common', '黄疸');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_075', 'sym_004', 'common', '发热');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_075', 'sym_008', 'uncommon', '呕吐');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_076', 'sym_025', 'common', '腹痛');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_076', 'sym_016', 'common', '黄疸');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_076', 'sym_008', 'uncommon', '呕吐');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_077', 'sym_010', 'common', '腹泻');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_077', 'sym_033', 'common', '里急后重');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_077', 'sym_039', 'common', '血便');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_078', 'sym_041', 'common', '患肢肿胀');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_078', 'sym_025', 'common', '疼痛');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_078', 'sym_040', 'uncommon', '呼吸困难');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_078', 'sym_004', 'uncommon', '发热');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_075', 'sym_007', 'common', '腹痛');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_075', 'sym_010', 'common', '黄疸');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_075', 'sym_018', 'common', '发热');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_075', 'sym_005', 'uncommon', '呕吐');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_076', 'sym_007', 'common', '腹痛');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_076', 'sym_010', 'common', '黄疸');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_076', 'sym_005', 'uncommon', '呕吐');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_077', 'sym_006', 'common', '腹泻');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_077', 'sym_041', 'common', '里急后重');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_077', 'sym_042', 'common', '血便');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_078', 'sym_040', 'common', '患肢肿胀');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_078', 'sym_007', 'common', '疼痛');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_078', 'sym_002', 'uncommon', '呼吸困难');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_078', 'sym_018', 'uncommon', '发热');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_079', 'sym_002', 'common', '呼吸困难');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_079', 'sym_036', 'common', '运动不耐受');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_079', 'sym_030', 'uncommon', '晕厥');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_079', 'sym_024', 'uncommon', '腹水');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_080', 'sym_033', 'common', '尿频');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_080', 'sym_039', 'common', '血尿');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_080', 'sym_032', 'uncommon', '腹痛');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_081', 'sym_039', 'common', '血尿');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_081', 'sym_025', 'common', '腰痛');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_081', 'sym_033', 'uncommon', '排尿障碍');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_082', 'sym_043', 'common', '跛行');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_082', 'sym_025', 'common', '骨痛');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_082', 'sym_042', 'uncommon', '病理性骨折');
-INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_083', 'sym_034', 'common', '皮肤结节');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_079', 'sym_017', 'common', '运动不耐受');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_079', 'sym_016', 'uncommon', '晕厥');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_079', 'sym_015', 'uncommon', '腹水');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_080', 'sym_013', 'common', '尿频');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_080', 'sym_014', 'common', '血尿');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_080', 'sym_007', 'uncommon', '腹痛');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_081', 'sym_014', 'common', '血尿');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_081', 'sym_007', 'common', '腰痛');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_081', 'sym_013', 'uncommon', '排尿障碍');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_082', 'sym_030', 'common', '跛行');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_082', 'sym_007', 'common', '骨痛');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_082', 'sym_043', 'uncommon', '病理性骨折');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_083', 'sym_037', 'common', '皮肤结节');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_083', 'sym_032', 'uncommon', '溃疡');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_083', 'sym_035', 'uncommon', '区域性淋巴结肿大');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_084', 'sym_004', 'common', '发热');
@@ -1060,7 +1061,7 @@ INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_
 INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_083', 'dis_043', '黑色素瘤有黑色结节，肥大细胞瘤有溃疡和组胺释放症状，病理可确诊');
 INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_084', 'dis_005', '弓形虫病有神经症状和眼部病变，AKI有肾功能异常和氮质血症，抗体检测可确诊');
 
--- ===== 药物 (60种) =====
+-- ===== 药物 (69种) =====
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_001', '阿莫西林-克拉维酸', 'Amoxicillin-Clavulanate', '抗生素（β-内酰胺类）', '阿莫西林为β-内酰胺类抗生素，通过与细菌青霉素结合蛋白（PBP）结合，抑制肽聚糖交联，干扰细胞壁合成，导致细菌溶菌死亡。克拉维酸为β-内酰胺酶抑制剂，自身抗菌活性弱，但能不可逆地与β-内酰胺酶结合，保护阿莫西林不被水解，从而扩展抗菌谱至产酶金黄色葡萄球菌、大肠埃希菌等。两者联用呈杀菌作用，对需氧革兰阳性菌和部分革兰阴性菌有效。', '口服吸收迅速，生物利用度犬约75%、猫约60%，食物对吸收影响小。广泛分布于组织液和体液中，可穿透胎盘屏障但脑脊液浓度低。阿莫西林主要经肾脏排泄，半衰期约1-1.5小时；克拉维酸半衰期相近，约1小时。两者配比（2:1或4:1）确保同步消除，维持有效血药浓度。肾功能不全时需调整剂量。', '["尿路感染", "皮肤感染", "软组织感染", "牙周感染", "呼吸道感染"]', '["青霉素过敏", "严重肾功能不全（需调整剂量）"]', '["胃肠道反应（呕吐、腹泻）", "过敏反应", "肠道菌群失调"]', '胃肠道反应因药物扰乱肠道正常菌群平衡，导致条件致病菌过度生长。过敏反应由β-内酰胺环作为半抗原与载体蛋白结合引发IgE介导的超敏反应。大剂量静脉注射偶见神经系统兴奋，与GABA受体竞争性抑制有关。', '{"犬": "dose=12.5-25 mg/kg, route=PO, frequency=q12h", "猫": "dose=12.5-25 mg/kg, route=PO, frequency=q12h"}');
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_002', '恩诺沙星', 'Enrofloxacin', '抗生素（氟喹诺酮类）', '恩诺沙星为氟喹诺酮类杀菌剂，通过抑制细菌DNA旋转酶（拓扑异构酶II）和拓扑异构酶IV，阻断DNA超螺旋化与解旋过程，导致DNA复制和转录受阻。对革兰阴性菌主要靶向DNA旋转酶，对革兰阳性菌主要靶向拓扑异构酶IV。药物在低浓度下呈抑菌作用，高浓度呈杀菌作用，抗菌谱覆盖革兰阴性菌、部分革兰阳性菌及支原体。', '口服生物利用度犬约65-80%、猫约50-70%，组织分布广泛，能穿透前列腺、肺组织和骨组织。在肝内部分代谢为活性代谢物环丙沙星（约30-40%），主要经肾脏排泄（原型+代谢物），半衰期犬约4-7小时、猫约6-8小时。属浓度依赖性抗菌药，AUC/MIC为关键PK/PD参数，建议每日一次给药以优化杀菌效果。', '["尿路感染", "皮肤感染", "呼吸道感染", "前列腺炎", "革兰阴性菌感染"]', '["幼龄动物（软骨毒性）", "猫高剂量（视网膜毒性）", "癫痫病史"]', '["胃肠道反应", "中枢神经系统兴奋", "幼畜软骨损伤", "猫视网膜病变（高剂量）"]', '幼畜软骨毒性因药物与软骨基质中镁离子螯合，抑制软骨细胞蛋白聚糖合成，导致关节软骨侵蚀。猫视网膜毒性因药物在视网膜色素上皮蓄积，产生活性氧自由基损伤光感受器细胞。中枢神经兴奋与抑制性神经递质GABA受体阻断有关。偶见结晶尿，因药物在酸性尿中溶解度降低。', '{"犬": "dose=5-20 mg/kg, route=PO/IV/SC, frequency=q24h", "猫": "dose=2.5-5 mg/kg, route=PO, frequency=q24h（不超过5mg/kg）"}');
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_003', '呋塞米', 'Furosemide', '利尿剂（袢利尿剂）', '呋塞米为高效能袢利尿剂，特异性抑制肾单位髓袢升支粗段管腔膜侧的Na⁺/K⁺/2Cl⁻共转运体（NKCC2），减少钠、氯、钾的重吸收，破坏肾髓质渗透梯度，降低尿液浓缩能力，产生强效利尿排钠效应。同时促进肾脏前列腺素合成，扩张肾血管，增加肾血流量约40%，进一步促进利尿。静脉注射后5分钟起效，利尿同时显著降低心脏前负荷。', '口服生物利用度犬约45-60%、猫约50%，起效时间口服30-60分钟、静脉注射5分钟。血浆蛋白结合率高（>95%），主要分布于细胞外液。约50%经肝脏葡萄糖醛酸化代谢，其余以原型经肾脏排泄，半衰期犬约1-1.5小时、猫约1.5-2小时。利尿效应与尿中药物浓度直接相关，反复给药可产生利尿抵抗（braking phenomenon），需间歇给药或联合用药。', '["充血性心力衰竭", "肺水肿", "胸腔积液", "急性肾损伤（促进利尿）", "高钙血症"]', '["脱水", "无尿", "低钾血症", "磺胺类过敏"]', '["脱水", "低钾血症", "低钠血症", "耳毒性（高剂量IV）", "肾前性氮质血症"]', '电解质紊乱（低钾、低钠、低氯性碱中毒）因髓袢Na⁺/K⁺/2Cl⁻转运抑制后，远端肾单位Na⁺-K⁺交换代偿性增加，同时Cl⁻丢失导致碳酸氢根重吸收增多。脱水与低血容量因过度利尿致有效循环血量减少。耳毒性在大剂量静脉推注时出现，因内淋巴液电解质成分改变损伤耳蜗毛细胞。', '{"犬": "dose=2-4 mg/kg, route=IV/IM/PO, frequency=q8-12h（急性）；1-2 mg/kg q12-24h（维持）", "猫": "dose=1-2 mg/kg, route=IV/IM/PO, frequency=q12-24h"}');
@@ -1121,6 +1122,15 @@ INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd,
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_058', '氟西汀', 'Fluoxetine', '行为调节药', '氟西汀为选择性5-羟色胺再摄取抑制剂（SSRI），阻断突触前膜5-HT转运体，增加突触间隙5-HT浓度，产生抗焦虑和抗强迫作用。用于犬猫行为问题。', '口服吸收良好。血浆蛋白结合率约95%，半衰期约1-3天（活性代谢物去甲氟西汀半衰期更长）。主要经肝脏CYP2D6代谢。', '["分离焦虑", "强迫行为", "猫喷尿标记"]', '["MAO抑制剂合用", "癫痫病史"]', '["食欲下降", "镇静", "胃肠道不适"]', '胃肠道反应（厌食、呕吐）。镇静或兴奋（初期）。与MAOI合用可致5-羟色胺综合征。', '{"犬": "1-2mg/kg q24h", "猫": "0.5-1mg/kg q24h"}');
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_059', '两性霉素B', 'Amphotericin B', '抗真菌药', '两性霉素B为多烯类抗真菌药，与真菌细胞膜上的麦角固醇结合，形成膜孔道，导致细胞内重要物质外漏和细胞死亡。对多种深部真菌有杀菌作用。', '口服几乎不吸收（仅用于肠道真菌感染）。静脉给药后血浆蛋白结合率>90%，半衰期约15天。主要经肝脏代谢。', '["全身性真菌感染"]', '["严重肾功能不全(普通剂型)"]', '["肾毒性(普通剂型)", "输液反应", "低钾血症"]', '肾毒性（最常见且严重，可致急性肾损伤）。输液反应（寒战、发热）。低钾血症。贫血。', '犬：普通剂型0.25-0.5mg/kg IV 隔日；脂质体剂型1-3mg/kg IV 每周2-3次');
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_060', '伊曲康唑', 'Itraconazole', '抗真菌药', '伊曲康唑为三唑类抗真菌药，抑制14α-去甲基酶，阻断麦角固醇合成。对皮肤癣菌、念珠菌、曲霉菌等均有活性。', '口服吸收受胃酸和食物影响。高度亲脂性。血浆蛋白结合率>99%，半衰期约12-15小时。主要经肝脏CYP450代谢。', '["皮肤真菌病", "全身性真菌感染"]', '["严重肝病", "妊娠"]', '["肝毒性", "食欲下降", "呕吐"]', '胃肠道反应。肝毒性。药物相互作用（CYP450抑制）。', '{"犬": "5-10mg/kg q24h", "猫": "5-10mg/kg q24h（口服液）"}');
+INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_061', '醋酸氢化可的松', 'Hydrocortisone Acetate', '糖皮质激素', '醋酸氢化可的松为短效糖皮质激素，通过激活糖皮质激素受体调节炎症反应、血糖稳态和应激代谢。在原发性肾上腺皮质功能减退中用于替代内源性皮质醇缺乏。', '口服后吸收较快，起效时间短，半衰期相对较短，需要根据临床应激状态调整剂量。主要在肝脏代谢，经肾脏排泄。', '["肾上腺皮质功能减退的糖皮质激素替代治疗", "急性应激期激素补充"]', '["未控制的系统性感染", "活动性消化道溃疡（需谨慎）"]', '["多饮多尿", "胃肠道刺激", "长期应用导致医源性库欣样改变"]', '长期使用可导致多饮多尿、胃肠道刺激、免疫抑制和医源性库欣样改变。突然停药可诱发肾上腺危象。', '{"犬": "依据替代治疗方案个体化调整，急性危象需应激剂量"}');
+INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_062', '氟氢可的松', 'Fludrocortisone', '盐皮质激素', '氟氢可的松兼具盐皮质激素和轻度糖皮质激素活性，通过促进肾小管钠重吸收和钾排泄纠正Addison病相关的低钠高钾和低血容量。', '口服吸收良好，半衰期较长，通常每日给药。主要在肝脏代谢，经肾脏排泄。', '["原发性肾上腺皮质功能减退的盐皮质激素替代治疗"]', '["未控制的高血压", "严重充血性心力衰竭"]', '["水钠潴留", "低钾血症", "多饮多尿"]', '过量可导致高血压、低钾血症和水钠潴留。长期使用可能诱发多饮多尿和体重增加。', '{"犬": "按体重和电解质监测结果个体化调整，通常每日口服"}');
+INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_066', '葡萄糖胺/硫酸软骨素', 'Glucosamine and Chondroitin', '关节营养补充剂', '葡萄糖胺和硫酸软骨素为软骨基质合成原料，可支持蛋白聚糖和胶原代谢，辅助减缓骨关节炎中软骨退变并改善关节润滑环境。', '口服吸收率中等，起效较慢，通常需持续使用数周至数月。主要经肝脏代谢并由肾脏排泄。', '["骨关节炎", "慢性关节退行性病变的长期辅助管理"]', '["对补充剂成分过敏"]', '["轻度胃肠道不适"]', '胃肠道反应较轻，偶见腹泻或拒食。贝类来源制剂在过敏体质动物需谨慎。', '{"犬": "按体重分级给药，连续使用至少 4-6 周评估效果"}');
+INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_069', '灰黄霉素', 'Griseofulvin', '抗真菌药', '灰黄霉素与真菌微管蛋白结合，抑制有丝分裂，并在新生角蛋白中蓄积，从而抑制皮肤癣菌继续扩散。', '口服吸收受脂肪餐促进，主要在肝脏代谢。需要持续给药至受感染角蛋白完全更新。', '["皮肤癣菌病"]', '["妊娠动物", "严重肝病", "骨髓抑制"]', '["骨髓抑制", "肝酶升高", "胃肠道不适"]', '可致骨髓抑制、肝毒性和胃肠道反应。猫更易发生不良反应，需严格监测。', '{"犬": "依据制剂和病情口服给药，疗程通常 4-8 周", "猫": "慎用并严密监测血常规"}');
+INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_070', '克霉唑', 'Clotrimazole', '外用抗真菌药', '克霉唑通过抑制真菌细胞膜麦角固醇合成，破坏细胞膜完整性，对皮肤浅表真菌感染和部分酵母菌有效。', '外用后系统吸收极少，局部组织浓度高。通常每日 1-2 次连续应用数周。', '["局灶性癣菌病", "浅表酵母菌感染"]', '["对咪唑类抗真菌药过敏"]', '["局部刺激", "轻度红斑"]', '局部刺激、红斑和轻度瘙痒较常见，过敏性接触性皮炎少见。', '局部外用，每日 1-2 次，持续至病灶完全恢复后再延长 1-2 周');
+INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_073', '西地那非', 'Sildenafil', '肺血管扩张剂', '西地那非选择性抑制 PDE-5，增加肺血管平滑肌内 cGMP 水平，从而促进血管舒张，降低肺血管阻力和肺动脉压。', '口服吸收较快，通常 1 小时内起效。半衰期较短，多需每日多次给药。主要在肝脏代谢。', '["肺动脉高压"]', '["严重低血压", "与强效血管扩张药联用时需谨慎"]', '["低血压", "胃肠道不适", "精神兴奋"]', '可引起低血压、面部潮红、胃肠不适和少数动物激动。与其他血管扩张药联用需谨慎。', '{"犬": "依据肺动脉高压严重程度分次口服给药"}');
+INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_074', '波生坦', 'Bosentan', '内皮素受体拮抗剂', '波生坦阻断内皮素 ETA/ETB 受体，减轻肺血管平滑肌收缩和重塑，降低肺动脉压力。', '口服吸收中等，主要经肝脏代谢。需持续给药维持肺血管扩张效果。', '["肺动脉高压"]', '["中重度肝功能不全", "明显低血压"]', '["肝酶升高", "低血压", "胃肠道不适"]', '可能导致肝酶升高、低血压和胃肠道不适，长期使用需监测肝功能。', '依据临床反应和耐受性个体化给药，需定期监测肝功能');
+INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_075', '低分子肝素', 'Low Molecular Weight Heparin', '抗凝药', '低分子肝素通过增强抗凝血酶 III 对 Xa 因子的抑制作用，减少凝血酶生成，是静脉血栓急性期常用抗凝方案。', '皮下注射吸收稳定，起效快。主要经肾脏清除，肾功能不全时需谨慎调整。', '["静脉血栓栓塞症", "高凝状态的短期抗凝"]', '["活动性出血", "严重血小板减少"]', '["出血", "注射部位血肿"]', '主要风险为出血，包括穿刺部位渗血、胃肠道出血和血尿。过量时可导致严重凝血功能障碍。', '依据抗凝目标和监测指标个体化皮下注射给药');
+INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_076', '华法林', 'Warfarin', '口服抗凝药', '华法林抑制维生素 K 环氧化物还原酶，减少 II、VII、IX、X 因子的活化，是需要长期维持抗凝时的传统方案。', '口服吸收良好，起效较慢，需依赖凝血指标监测调整剂量。主要经肝脏代谢。', '["需要长期口服抗凝管理的血栓性疾病"]', '["活动性出血", "无法监测凝血指标的场景"]', '["出血", "食欲下降", "药物相互作用多"]', '出血风险高，受饮食和药物相互作用影响明显。过量可导致危及生命的内出血。', '依据 INR 或其他凝血监测指标个体化调整');
 
 -- ===== 药物-标签关联 =====
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_001', 'mech_infectious');
@@ -1186,6 +1196,15 @@ INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_0
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_058', 'mech_metabolic');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_059', 'mech_infectious');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_060', 'mech_infectious');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_061', 'mech_metabolic');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_062', 'mech_metabolic');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_066', 'mech_degenerative');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_069', 'mech_infectious');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_070', 'mech_infectious');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_073', 'mech_vascular');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_074', 'mech_vascular');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_075', 'mech_vascular');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', 'drug_076', 'mech_vascular');
 
 -- ===== 诊断检查 (36项) =====
 INSERT INTO diagnostic_tests (id, name_zh, category, reference_ranges, interpretation, cost_estimate, turnaround_time) VALUES ('test_001', '全血细胞计数（CBC）', '血液学', '犬RBC: 5.5-8.5×10⁶/μL, WBC: 6-17×10³/μL, PLT: 200-500×10³/μL | 猫RBC: 5.0-10.0×10⁶/μL, WBC: 5.5-19.5×10³/μL, PLT: 300-700×10³/μL', '贫血（RBC↓）、感染/炎症（WBC↑↓）、免疫介导性疾病、血小板减少症（PLT↓）。白细胞分类计数可区分细菌感染（中性粒↑）与病毒感染（淋巴↑/↓）', 80, 15);
@@ -1421,61 +1440,57 @@ INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('d
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_066', 'drug_061', 'first', '犬', '醋酸氢化可的松替代糖皮质激素，是Addison病核心治疗');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_066', 'drug_062', 'first', '犬', '氟氢可的松替代盐皮质激素，与氢化可的松联用');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_066', 'drug_029', 'adjunctive', '犬', 'Addison危象时积极液体和电解质纠正');
-INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_066', 'drug_063', 'first', '犬', '泼尼松龙小剂量补充（与氟氢可的松联用时减少量）');
+INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_066', 'drug_004', 'first', '犬', '泼尼松龙小剂量补充（与氟氢可的松联用时减少量）');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_067', 'drug_009', 'first');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_067', 'drug_027', 'first');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_067', 'drug_001', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_067', 'drug_029', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_068', 'drug_049', 'first', '犬', '枸橼酸钾碱化尿液，溶解鸟粪石并防新结石');
-INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_068', 'drug_065', 'adjunctive', '犬', '处방粮（溶解型/防结石型）是长期管理核心');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_068', 'drug_001', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_068', 'drug_012', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_069', 'drug_012', 'first', '犬', '美洛昔康是骨关节炎疼痛管理的首选NSAIDs，需定期监测肾功能');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_069', 'drug_011', 'adjunctive', '犬', '曲马多用于中重度疼痛的辅助镇痛');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_069', 'drug_066', 'first', '犬', '葡萄糖胺+硫酸软骨素改善软骨代谢，配合控制炎症');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_069', 'drug_004', 'adjunctive', '犬', '严重疼痛时短期使用糖皮质激素');
-INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_070', 'drug_067', 'first', '犬', '手术切除是乳腺肿瘤根治方法，患侧乳腺全切+绝育');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_070', 'drug_004', 'adjunctive', '犬', '恶性乳腺腺癌术后可辅助化疗（环磷酰胺+多柔比星）');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_070', 'drug_029', 'adjunctive', '猫', '猫乳腺肿瘤预后差，手术后常需化疗');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_071', 'drug_001', 'first', '犬', '阿莫西林-克拉维酸用于细菌性鼻炎，疗程7-14天');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_071', 'drug_041', 'adjunctive', '犬', '抗组胺药缓解过敏性鼻炎的鼻漏和喷嚏');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_071', 'drug_009', 'adjunctive', '猫', '泛昔洛韦用于猫疱疹病毒I型鼻炎');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_071', 'drug_023', 'adjunctive');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_072', 'drug_068', 'first');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_072', 'drug_021', 'first');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_072', 'drug_069', 'second');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_072', 'drug_070', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_072', 'drug_029', 'adjunctive');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_073', 'drug_071', 'adjunctive');
-INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_073', 'drug_057', 'adjunctive', '犬', '苯巴比妥控制癫痫发作，脑肿瘤常见症状性癫痫');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_073', 'drug_004', 'adjunctive');
+INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_073', 'drug_016', 'adjunctive', '犬', '苯巴比妥控制癫痫发作，脑肿瘤常见症状性癫痫');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_073', 'drug_029', 'second');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_074', 'drug_071', 'first');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_074', 'drug_057', 'adjunctive');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_074', 'drug_004', 'first');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_074', 'drug_016', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_075', 'drug_001', 'first');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_075', 'drug_035', 'first');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_075', 'drug_071', 'adjunctive');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_076', 'drug_071', 'first');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_075', 'drug_014', 'first');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_075', 'drug_004', 'adjunctive');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_076', 'drug_004', 'first');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_076', 'drug_001', 'second');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_076', 'drug_035', 'second');
-INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_077', 'drug_040', 'first', '犬', '甲硝唑抗厌氧菌和免疫调节作用，是犬结肠炎首选');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_077', 'drug_005', 'first');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_076', 'drug_014', 'second');
+INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_077', 'drug_014', 'first', '犬', '甲硝唑抗厌氧菌和免疫调节作用，是犬结肠炎首选');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_077', 'drug_004', 'first');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_077', 'drug_021', 'adjunctive');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_078', 'drug_060', 'first');
-INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_078', 'drug_061', 'second', '犬', '华法林抗凝治疗，需监测INR调整剂量');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_078', 'drug_031', 'adjunctive');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_078', 'drug_075', 'first');
+INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_078', 'drug_076', 'second', '犬', '华法林抗凝治疗，需监测INR调整剂量');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_079', 'drug_073', 'first', '犬', '西地那非扩张肺血管，降低肺动脉压');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_079', 'drug_074', 'first');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_079', 'drug_044', 'adjunctive');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_079', 'drug_003', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_080', 'drug_001', 'first', '犬', '甲氧苄啶-磺胺甲噁唑是犬细菌性膀胱炎首选');
-INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_080', 'drug_006', 'first', '猫', '氟喹诺酮（恩诺沙星）穿透膀胱黏膜效果好，猫膀胱炎首选');
+INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_080', 'drug_002', 'first', '猫', '氟喹诺酮（恩诺沙星）穿透膀胱黏膜效果好，猫膀胱炎首选');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_080', 'drug_016', 'first');
-INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_081', 'drug_064', 'first', '犬', '石淋通或金钱草颗粒辅助化石，辅助治疗');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_081', 'drug_044', 'adjunctive');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_081', 'drug_016', 'adjunctive');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_081', 'drug_003', 'adjunctive');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_081', 'drug_001', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_082', 'drug_029', 'first', '犬', '顺铂或卡铂配合手术是骨肉瘤标准化疗方案');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_082', 'drug_072', 'adjunctive');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_082', 'drug_012', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_082', 'drug_038', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_083', 'drug_029', 'first', '犬', '卡铂或紫杉醇用于口腔黑色素瘤化疗');
-INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_083', 'drug_072', 'adjunctive');
+INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_083', 'drug_012', 'adjunctive');
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_083', 'drug_056', 'second', '犬', '干扰素-α免疫调节，用于黑色素瘤辅助治疗');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_084', 'drug_045', 'first');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_084', 'drug_046', 'first');
@@ -1635,17 +1650,6 @@ INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level,specie
 INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level,species,expected_result) VALUES ('dis_050', 'test_008', 'confirming', 'gold_standard', '猫', '子宫增大，腔内液性暗区');
 INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level,species,expected_result) VALUES ('dis_050', 'test_001', 'screening', 'supportive', '猫', '白细胞升高伴核左移');
 
--- ===== 疾病-治疗方案关联 =====
-INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_001', 'trt_001', 'first', '犬', '细菌性肺炎标准抗生素方案');
-INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_001', 'trt_001', 'first', '猫', '猫吸入性/细菌性肺炎');
-INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_002', 'trt_002', 'first', '犬', 'MMVD/DCM 充血性心衰标准三联');
-INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_014', 'trt_002', 'first', '犬', 'DCM 心衰方案');
-INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_003', 'trt_003', 'first', '猫', '猫哮喘阶梯式抗炎');
-INSERT INTO disease_treatment_map (disease_id,treatment_id,line) VALUES ('dis_009', 'trt_004', 'first');
-INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_025', 'trt_005', 'first', '犬', '细小病毒重症监护');
-INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_027', 'trt_005', 'first', '猫', '猫泛白细胞减少症类似方案');
-INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_029', 'trt_006', 'first', '犬', 'GDV 急救手术方案');
-
 -- ===== 治疗 (6个) =====
 INSERT INTO treatments (id, name_zh, name_en, therapy_type, principle, procedure_text, physiological_basis, prognosis_assessment) VALUES ('trt_001', '细菌性肺炎抗生素治疗方案', 'Bacterial Pneumonia Antibiotic Protocol', '药物疗法', '控制肺部感染、支持呼吸功能、预防并发症（肺脓肿/脓胸）', '1. 采样：气管灌洗或深部痰培养+药敏试验
 2. 经验性抗生素：阿莫西林-克拉维酸 12.5-25 mg/kg PO q12h
@@ -1691,25 +1695,36 @@ INSERT INTO treatments (id, name_zh, name_en, therapy_type, principle, procedure
 7. 监测：乳酸、PT/aPTT（排除 DIC）、连续 ECG', 'GDV 时胃内气体/液体潴留→胃扩张压迫后腔静脉→静脉回流骤降→心输出量下降→休克。胃壁缺血致再灌注损伤，自由基大量产生→心肌细胞损伤→室性心律失常（术后 24-72h 最高发）。乳酸升高反映组织低灌注程度，>6 mmol/L 预后不良。', '及时手术存活率 80-90%。预后不良指标：乳酸 >6、DIC、胃壁坏死需切除、术前心跳骤停。胃固定术可降低复发率至 <5%。');
 
 -- ===== 治疗-标签关联 =====
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_001', '呼吸系统');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_001', '感染');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_001', '炎症免疫');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_002', '心血管系统');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_002', '血管循环');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_002', '退行性');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_003', '呼吸系统');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_003', '炎症免疫');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_003', '免疫介导');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_004', '消化系统');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_004', '炎症免疫');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_004', '疼痛信号');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_005', '消化系统');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_005', '感染');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_005', '炎症免疫');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_006', '消化系统');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_006', '梗阻');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_006', '疼痛信号');
-INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_006', '血管循环');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_001', 'body_respiratory');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_001', 'mech_infectious');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_001', 'mech_inflammation');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_002', 'body_cardiovascular');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_002', 'mech_vascular');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_002', 'damnit_degenerative');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_003', 'body_respiratory');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_003', 'mech_inflammation');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_003', 'mech_immune_mediated');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_004', 'body_digestive');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_004', 'mech_inflammation');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_004', 'mech_pain');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_005', 'body_digestive');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_005', 'mech_infectious');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_005', 'mech_inflammation');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_006', 'body_digestive');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_006', 'mech_obstruction');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_006', 'mech_pain');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', 'trt_006', 'mech_vascular');
+
+-- ===== 疾病-治疗方案关联 =====
+INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_001', 'trt_001', 'first', '犬', '细菌性肺炎标准抗生素方案');
+INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_001', 'trt_001', 'first', '猫', '猫吸入性/细菌性肺炎');
+INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_002', 'trt_002', 'first', '犬', 'MMVD/DCM 充血性心衰标准三联');
+INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_014', 'trt_002', 'first', '犬', 'DCM 心衰方案');
+INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_003', 'trt_003', 'first', '猫', '猫哮喘阶梯式抗炎');
+INSERT INTO disease_treatment_map (disease_id,treatment_id,line) VALUES ('dis_009', 'trt_004', 'first');
+INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_025', 'trt_005', 'first', '犬', '细小病毒重症监护');
+INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_027', 'trt_005', 'first', '猫', '猫泛白细胞减少症类似方案');
+INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_029', 'trt_006', 'first', '犬', 'GDV 急救手术方案');
 
 -- ===== 病例 (15个) =====
 INSERT INTO cases (id, title, species, breed, age, weight, chief_complaint, history, physical_exam, lab_results, imaging, diagnosis, treatment, outcome, learning_points, difficulty) VALUES ('case_001', '3岁绝育雌性金毛猎犬 — 急性呕吐与祈祷姿势', '犬', '金毛猎犬', 3, 28, '呕吐24小时，弓背不愿活动，呈祈祷姿势', '昨晚偷吃了一整盘红烧肉。今早开始呕吐，呕吐物为未消化食物→黄色胆汁样。精神差，不愿走动，弓背，腹部触诊敏感。已绝育，定期免疫驱虫，既往体健。', 'T 39.5°C，HR 120bpm，RR 32次/分，脱水约7%。腹部触诊前腹敏感，呈祈祷姿势（前肢趴地后肢站立）。肠鸣音减弱。黏膜颜色正常，CRT 2秒。', 'cPLI: 850 μg/L（参考≤200）。CBC: WBC 18.5×10³/μL（参考6-17），中性粒85%。生化: ALT 180 U/L（轻度↑），ALP 250 U/L（轻度↑），BUN 35 mg/dL（轻度↑，脱水），GLU 160 mg/dL（轻度↑，应激）。', '腹部超声：胰腺弥漫性增大，周围脂肪回声增强（''毛玻璃样''改变），无游离液体，无异物征象。', '急性胰腺炎（高脂饮食诱发）', '1. 乳酸林格液 10 ml/kg/h IV 纠正脱水；2. 马罗匹坦 1 mg/kg SC q24h 止吐；3. 曲马多 3 mg/kg PO q8h 镇痛；4. 奥美拉唑 1 mg/kg PO q24h 胃保护；5. 禁食48-72h后逐步引入低脂饮食。', '治疗48h后呕吐停止，72h后开始进食低脂罐头，第5天出院。建议长期低脂饮食管理。', '① 祈祷姿势（prayer position）是犬胰腺炎的特征性表现；② cPLI>400 μg/L对犬胰腺炎敏感性82%、特异性95%；③ 高脂饮食是犬胰腺炎最常见诱因；④ 治疗核心是积极液体复苏+止吐+镇痛+禁食，不推荐常规使用抗生素。', 'basic');

@@ -198,12 +198,31 @@ with open(os.path.join(DATA_DIR, 'treatment_rules.yaml'), 'r', encoding='utf-8')
 
 # 1) 从 tags.yaml 加载预置标签
 tag_registry = {}
+tag_name_to_id = {}
 tags_yaml_path = os.path.join(DATA_DIR, 'tags.yaml')
 if os.path.exists(tags_yaml_path):
     with open(tags_yaml_path, 'r', encoding='utf-8') as f:
         preset_tags = yaml.safe_load(f) or []
     for tag in preset_tags:
         tag_registry[tag['id']] = tag
+        tag_name_to_id[tag['name_zh']] = tag['id']
+
+
+def resolve_tag_id(tag_ref):
+    """把 frontmatter 里的标签引用解析成规范 tag id。
+
+    支持三种写法：
+    - 预置 tag id，例如 body_respiratory
+    - 预置标签中文名，例如 呼吸系统
+    - 自定义标签文本，回退为 slug
+    """
+    if not tag_ref:
+        return ''
+    if tag_ref in tag_registry:
+        return tag_ref
+    if tag_ref in tag_name_to_id:
+        return tag_name_to_id[tag_ref]
+    return tag_ref.lower().replace(' ', '_').replace('#', '')
 
 # 2) 从实体 frontmatter.tags 收集标签（去重，不覆盖预置）
 def collect_tags(entity_list, default_group='custom'):
@@ -216,7 +235,7 @@ def collect_tags(entity_list, default_group='custom'):
             if not tag_ref:
                 continue
             # 支持两种格式：tag_id（直接引用预置标签）或 纯文本（自动创建）
-            tag_id = tag_ref.lower().replace(' ', '_').replace('#', '')
+            tag_id = resolve_tag_id(tag_ref)
             if tag_id not in tag_registry:
                 tag_registry[tag_id] = {
                     'id': tag_id,
@@ -300,7 +319,7 @@ for d in diseases_list:
     for tag_name in tags:
         if not tag_name:
             continue
-        tag_id = tag_name.lower().replace(' ', '_').replace('#', '')
+        tag_id = resolve_tag_id(tag_name)
         L.append(f"INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', {S(d['id'])}, {S(tag_id)});")
         et_count += 1
 L.append('')
@@ -325,7 +344,7 @@ for s in symptoms_list:
     for tag_name in tags:
         if not tag_name:
             continue
-        tag_id = tag_name.lower().replace(' ', '_').replace('#', '')
+        tag_id = resolve_tag_id(tag_name)
         L.append(f"INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom', {S(s['id'])}, {S(tag_id)});")
         et_count += 1
 L.append('')
@@ -388,7 +407,7 @@ for d in drugs_list:
     for tag_name in tags:
         if not tag_name:
             continue
-        tag_id = tag_name.lower().replace(' ', '_').replace('#', '')
+        tag_id = resolve_tag_id(tag_name)
         L.append(f"INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug', {S(d['id'])}, {S(tag_id)});")
         et_count += 1
 L.append('')
@@ -451,29 +470,6 @@ for r in dd_list:
         )
 L.append('')
 
-# ===== 疾病-治疗方案关联 =====
-L.append('-- ===== 疾病-治疗方案关联 =====')
-dtm_list = treatment_rules.get('disease_treatment_map', [])
-for r in dtm_list:
-    species = r.get('species', '')
-    notes = r.get('notes', '')
-    if species and notes:
-        L.append(
-            f"INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) "
-            f"VALUES ({S(r['disease'])}, {S(r['treatment'])}, {S(r['line'])}, {S(species)}, {S(notes)});"
-        )
-    elif species:
-        L.append(
-            f"INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species) "
-            f"VALUES ({S(r['disease'])}, {S(r['treatment'])}, {S(r['line'])}, {S(species)});"
-        )
-    else:
-        L.append(
-            f"INSERT INTO disease_treatment_map (disease_id,treatment_id,line) "
-            f"VALUES ({S(r['disease'])}, {S(r['treatment'])}, {S(r['line'])});"
-        )
-L.append('')
-
 # ===== 治疗 =====
 L.append(f'-- ===== 治疗 ({len(treatments_list)}个) =====')
 treatment_cols = ['id', 'name_zh', 'name_en', 'therapy_type', 'principle',
@@ -496,9 +492,32 @@ for t in treatments_list:
     for tag_name in tags:
         if not tag_name:
             continue
-        tag_id = tag_name.lower().replace(' ', '_').replace('#', '')
+        tag_id = resolve_tag_id(tag_name)
         L.append(f"INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment', {S(t['id'])}, {S(tag_id)});")
         et_count += 1
+L.append('')
+
+# ===== 疾病-治疗方案关联 =====
+L.append('-- ===== 疾病-治疗方案关联 =====')
+dtm_list = treatment_rules.get('disease_treatment_map', [])
+for r in dtm_list:
+    species = r.get('species', '')
+    notes = r.get('notes', '')
+    if species and notes:
+        L.append(
+            f"INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) "
+            f"VALUES ({S(r['disease'])}, {S(r['treatment'])}, {S(r['line'])}, {S(species)}, {S(notes)});"
+        )
+    elif species:
+        L.append(
+            f"INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species) "
+            f"VALUES ({S(r['disease'])}, {S(r['treatment'])}, {S(r['line'])}, {S(species)});"
+        )
+    else:
+        L.append(
+            f"INSERT INTO disease_treatment_map (disease_id,treatment_id,line) "
+            f"VALUES ({S(r['disease'])}, {S(r['treatment'])}, {S(r['line'])});"
+        )
 L.append('')
 
 # ===== 病例 =====

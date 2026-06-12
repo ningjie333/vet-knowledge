@@ -3,6 +3,8 @@ chcp 65001 >nul 2>&1
 title 兽医知识库 - 启动中
 
 cd /d "%~dp0"
+set "PATH=%USERPROFILE%\.cargo\bin;%PATH%"
+set "NPM_CONFIG_CACHE=%~dp0\.npm-cache"
 
 :: 关闭可能残留的旧进程
 taskkill /IM vet-knowledge.exe /F >nul 2>&1

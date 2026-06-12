@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS treatments (
 
 CREATE TABLE IF NOT EXISTS tags (
     id TEXT PRIMARY KEY,
-    name_zh TEXT NOT NULL UNIQUE,
+    name_zh TEXT NOT NULL,
     name_en TEXT,
     tag_group TEXT NOT NULL DEFAULT 'custom',
     -- tag_group: body_system / mechanism / emergency / damnit_v / species / custom

@@ -8,10 +8,19 @@ pub fn run() {
         .setup(|app| {
             let ah = app.handle().clone();
             tauri::async_runtime::block_on(async move {
-                let db = db::init(&ah).await.expect("DB init failed");
-                ah.manage(db);
-                // Search is handled via command handlers directly
-                ah.manage(engine::InferenceEngine::new());
+                match db::init(&ah).await {
+                    Ok(db) => {
+                        ah.manage(db);
+                        // Search is handled via command handlers directly
+                        ah.manage(engine::InferenceEngine::new());
+                    }
+                    Err(e) => {
+                        // 把完整错误链写到 app_data_dir/seed_import_error.log
+                        db::write_import_error_log(&ah, &e);
+                        eprintln!("[vet-knowledge] DB init failed: {}", e);
+                        panic!("DB init failed: {}", e);
+                    }
+                }
             });
             Ok(())
         })

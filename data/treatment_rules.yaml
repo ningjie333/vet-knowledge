@@ -350,7 +350,7 @@ disease_treatment:
   - {disease: dis_066, drug: drug_061, line: first, species: 犬, notes: "醋酸氢化可的松替代糖皮质激素，是Addison病核心治疗"}
   - {disease: dis_066, drug: drug_062, line: first, species: 犬, notes: "氟氢可的松替代盐皮质激素，与氢化可的松联用"}
   - {disease: dis_066, drug: drug_029, line: adjunctive, species: 犬, notes: "Addison危象时积极液体和电解质纠正"}
-  - {disease: dis_066, drug: drug_063, line: first, species: 犬, notes: "泼尼松龙小剂量补充（与氟氢可的松联用时减少量）"}
+  - {disease: dis_066, drug: drug_004, line: first, species: 犬, notes: "泼尼松龙小剂量补充（与氟氢可的松联用时减少量）"}
 
   # 胃溃疡
   - {disease: dis_067, drug: drug_009, line: first, species: null, notes: "奥美拉唑是胃溃疡一线药物，抑制胃酸分泌"}
@@ -360,7 +360,6 @@ disease_treatment:
 
   # 尿石症
   - {disease: dis_068, drug: drug_049, line: first, species: 犬, notes: "枸橼酸钾碱化尿液，溶解鸟粪石并防新结石"}
-  - {disease: dis_068, drug: drug_065, line: adjunctive, species: 犬, notes: "处방粮（溶解型/防结石型）是长期管理核心"}
   - {disease: dis_068, drug: drug_001, line: adjunctive, species: null, notes: "抗生素用于结石相关感染"}
   - {disease: dis_068, drug: drug_012, line: adjunctive, species: null, notes: "NSAIDs控制结石引发的疼痛和炎症"}
 
@@ -371,7 +370,6 @@ disease_treatment:
   - {disease: dis_069, drug: drug_004, line: adjunctive, species: 犬, notes: "严重疼痛时短期使用糖皮质激素"}
 
   # 乳腺肿瘤
-  - {disease: dis_070, drug: drug_067, line: first, species: 犬, notes: "手术切除是乳腺肿瘤根治方法，患侧乳腺全切+绝育"}
   - {disease: dis_070, drug: drug_004, line: adjunctive, species: 犬, notes: "恶性乳腺腺癌术后可辅助化疗（环磷酰胺+多柔比星）"}
   - {disease: dis_070, drug: drug_029, line: adjunctive, species: 猫, notes: "猫乳腺肿瘤预后差，手术后常需化疗"}
 
@@ -382,63 +380,61 @@ disease_treatment:
   - {disease: dis_071, drug: drug_023, line: adjunctive, species: null, notes: "局部减充血剂缓解鼻塞（如羟甲唑啉滴鼻剂，应急用）"}
 
   # 癣菌病
-  - {disease: dis_072, drug: drug_068, line: first, species: null, notes: "特比萘芬是癣菌病一线口服抗真菌药，比灰黄霉素更安全"}
+  - {disease: dis_072, drug: drug_021, line: first, species: null, notes: "特比萘芬是癣菌病一线口服抗真菌药，比灰黄霉素更安全"}
   - {disease: dis_072, drug: drug_069, line: second, species: null, notes: "灰黄霉素是癣菌病传统用药，但需监测肝功能"}
   - {disease: dis_072, drug: drug_070, line: adjunctive, species: null, notes: "外用抗真菌药膏（克霉唑）配合口服药用于局部病变"}
   - {disease: dis_072, drug: drug_029, line: adjunctive, species: null, notes: "严重全身型需配合全身用药和药浴"}
 
   # 脑肿瘤
-  - {disease: dis_073, drug: drug_071, line: adjunctive, species: null, notes: "皮质类固醇（泼尼松龙）降低颅内压，缓解水肿"}
-  - {disease: dis_073, drug: drug_057, line: adjunctive, species: 犬, notes: "苯巴比妥控制癫痫发作，脑肿瘤常见症状性癫痫"}
+  - {disease: dis_073, drug: drug_004, line: adjunctive, species: null, notes: "皮质类固醇（泼尼松龙）降低颅内压，缓解水肿"}
+  - {disease: dis_073, drug: drug_016, line: adjunctive, species: 犬, notes: "苯巴比妥控制癫痫发作，脑肿瘤常见症状性癫痫"}
   - {disease: dis_073, drug: drug_029, line: second, species: null, notes: "化疗（卡铂、洛莫司汀）用于无法手术的脑肿瘤"}
 
   # 脑积水
-  - {disease: dis_074, drug: drug_071, line: first, species: null, notes: "皮质类固醇（泼尼松龙）降低颅内压，缓解症状"}
-  - {disease: dis_074, drug: drug_057, line: adjunctive, species: null, notes: "苯巴比妥控制癫痫发作"}
+  - {disease: dis_074, drug: drug_004, line: first, species: null, notes: "皮质类固醇（泼尼松龙）降低颅内压，缓解症状"}
+  - {disease: dis_074, drug: drug_016, line: adjunctive, species: null, notes: "苯巴比妥控制癫痫发作"}
 
   # 胆囊炎
   - {disease: dis_075, drug: drug_001, line: first, species: null, notes: "阿莫西林-克拉维酸是胆道感染首选抗生素，可穿透胆道"}
-  - {disease: dis_075, drug: drug_035, line: first, species: null, notes: "甲硝唑抗厌氧菌，胆道感染常见厌氧菌"}
-  - {disease: dis_075, drug: drug_071, line: adjunctive, species: null, notes: "严重病例用皮质类固醇减轻炎症反应"}
+  - {disease: dis_075, drug: drug_014, line: first, species: null, notes: "甲硝唑抗厌氧菌，胆道感染常见厌氧菌"}
+  - {disease: dis_075, drug: drug_004, line: adjunctive, species: null, notes: "严重病例用皮质类固醇减轻炎症反应"}
 
   # 胆石症
-  - {disease: dis_076, drug: drug_071, line: first, species: null, notes: "皮质类固醇减轻胆道炎症和疼痛"}
+  - {disease: dis_076, drug: drug_004, line: first, species: null, notes: "皮质类固醇减轻胆道炎症和疼痛"}
   - {disease: dis_076, drug: drug_001, line: second, species: null, notes: "抗生素预防继发感染"}
-  - {disease: dis_076, drug: drug_035, line: second, species: null, notes: "甲硝唑配合抗感染"}
+  - {disease: dis_076, drug: drug_014, line: second, species: null, notes: "甲硝唑配合抗感染"}
 
   # 结肠炎
-  - {disease: dis_077, drug: drug_040, line: first, species: 犬, notes: "甲硝唑抗厌氧菌和免疫调节作用，是犬结肠炎首选"}
-  - {disease: dis_077, drug: drug_005, line: first, species: null, notes: "泼尼松龙用于炎症性结肠炎（IBD型）"}
+  - {disease: dis_077, drug: drug_014, line: first, species: 犬, notes: "甲硝唑抗厌氧菌和免疫调节作用，是犬结肠炎首选"}
+  - {disease: dis_077, drug: drug_004, line: first, species: null, notes: "泼尼松龙用于炎症性结肠炎（IBD型）"}
   - {disease: dis_077, drug: drug_021, line: adjunctive, species: null, notes: "高纤维处方粮辅助管理慢性结肠炎"}
 
   # 静脉血栓
-  - {disease: dis_078, drug: drug_060, line: first, species: null, notes: "低分子肝素（那屈肝素）是犬猫静脉血栓首选抗凝药"}
-  - {disease: dis_078, drug: drug_061, line: second, species: 犬, notes: "华法林抗凝治疗，需监测INR调整剂量"}
-  - {disease: dis_078, drug: drug_031, line: adjunctive, species: null, notes: "阿司匹林抗血小板，辅助抗凝"}
+  - {disease: dis_078, drug: drug_075, line: first, species: null, notes: "低分子肝素（那屈肝素）是犬猫静脉血栓首选抗凝药"}
+  - {disease: dis_078, drug: drug_076, line: second, species: 犬, notes: "华法林抗凝治疗，需监测INR调整剂量"}
 
   # 肺动脉高压
   - {disease: dis_079, drug: drug_073, line: first, species: 犬, notes: "西地那非扩张肺血管，降低肺动脉压"}
   - {disease: dis_079, drug: drug_074, line: first, species: null, notes: "波生坦内皮素受体拮抗剂，用于肺动脉高压"}
-  - {disease: dis_079, drug: drug_044, line: adjunctive, species: null, notes: "利尿剂（呋塞米）减轻右心负荷和腹水"}
+  - {disease: dis_079, drug: drug_003, line: adjunctive, species: null, notes: "利尿剂（呋塞米）减轻右心负荷和腹水"}
 
   # 膀胱炎
   - {disease: dis_080, drug: drug_001, line: first, species: 犬, notes: "甲氧苄啶-磺胺甲噁唑是犬细菌性膀胱炎首选"}
-  - {disease: dis_080, drug: drug_006, line: first, species: 猫, notes: "氟喹诺酮（恩诺沙星）穿透膀胱黏膜效果好，猫膀胱炎首选"}
+  - {disease: dis_080, drug: drug_002, line: first, species: 猫, notes: "氟喹诺酮（恩诺沙星）穿透膀胱黏膜效果好，猫膀胱炎首选"}
   - {disease: dis_080, drug: drug_016, line: first, species: null, notes: "呋喃妥因尿路感染常用，但猫慎用（肺纤维化风险）"}
 
   # 肾结石
-  - {disease: dis_081, drug: drug_064, line: first, species: 犬, notes: "石淋通或金钱草颗粒辅助化石，辅助治疗"}
-  - {disease: dis_081, drug: drug_044, line: adjunctive, species: null, notes: "呋塞米增加尿量，帮助小结石自然排出"}
-  - {disease: dis_081, drug: drug_016, line: adjunctive, species: null, notes: "抗生素预防结石相关感染"}
+  - {disease: dis_081, drug: drug_003, line: adjunctive, species: null, notes: "呋塞米增加尿量，帮助小结石自然排出"}
+  - {disease: dis_081, drug: drug_001, line: adjunctive, species: null, notes: "抗生素预防结石相关感染"}
 
   # 骨肉瘤
   - {disease: dis_082, drug: drug_029, line: first, species: 犬, notes: "顺铂或卡铂配合手术是骨肉瘤标准化疗方案"}
-  - {disease: dis_082, drug: drug_072, line: adjunctive, species: null, notes: "美洛昔康缓解骨痛和前列腺素介导的疼痛"}
+  - {disease: dis_082, drug: drug_012, line: adjunctive, species: null, notes: "美洛昔康缓解骨痛和前列腺素介导的疼痛"}
   - {disease: dis_082, drug: drug_038, line: adjunctive, species: null, notes: "阿片类镇痛药（吗啡/芬太尼）用于严重骨痛"}
 
   # 黑色素瘤
   - {disease: dis_083, drug: drug_029, line: first, species: 犬, notes: "卡铂或紫杉醇用于口腔黑色素瘤化疗"}
-  - {disease: dis_083, drug: drug_072, line: adjunctive, species: null, notes: "美洛昔康缓解肿瘤相关疼痛"}
+  - {disease: dis_083, drug: drug_012, line: adjunctive, species: null, notes: "美洛昔康缓解肿瘤相关疼痛"}
   - {disease: dis_083, drug: drug_056, line: second, species: 犬, notes: "干扰素-α免疫调节，用于黑色素瘤辅助治疗"}
 
   # 弓形虫病
