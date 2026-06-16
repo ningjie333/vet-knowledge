@@ -329,35 +329,27 @@ pub async fn review_flashcard(
 pub async fn get_review_stats(
     pool: tauri::State<'_, DbPool>,
 ) -> Result<ReviewStats, String> {
-    let total_cards: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM flashcards")
-        .fetch_one(&*pool).await.map_err(|e| e.to_string())?;
-
-    let due_today: i64 = sqlx::query_scalar(
-        "SELECT COUNT(DISTINCT f.id) FROM flashcards f
-         LEFT JOIN (
-             SELECT card_id, MAX(id) AS max_id FROM flashcard_reviews GROUP BY card_id
-         ) latest ON latest.card_id = f.id
-         LEFT JOIN flashcard_reviews fr ON fr.id = latest.max_id
-         WHERE fr.next_review IS NULL OR fr.next_review <= datetime('now')"
-    ).fetch_one(&*pool).await.map_err(|e| e.to_string())?;
-
-    let reviewed_today: i64 = sqlx::query_scalar(
-        "SELECT COUNT(*) FROM flashcard_reviews WHERE date(reviewed_at) = date('now')"
-    ).fetch_one(&*pool).await.map_err(|e| e.to_string())?;
-
-    let mastered: i64 = sqlx::query_scalar(
-        "SELECT COUNT(DISTINCT f.id) FROM flashcards f
-         INNER JOIN (
-             SELECT card_id, MAX(id) AS max_id FROM flashcard_reviews GROUP BY card_id
-         ) latest ON latest.card_id = f.id
-         INNER JOIN flashcard_reviews fr ON fr.id = latest.max_id
-         WHERE fr.ease_factor >= 2.3 AND fr.interval_days >= 21"
-    ).fetch_one(&*pool).await.map_err(|e| e.to_string())?;
+    let row = sqlx::query(
+        "SELECT
+          (SELECT COUNT(*) FROM flashcards) AS total_cards,
+          (SELECT COUNT(DISTINCT f.id) FROM flashcards f
+           LEFT JOIN (SELECT card_id, MAX(id) AS max_id FROM flashcard_reviews GROUP BY card_id) latest ON latest.card_id = f.id
+           LEFT JOIN flashcard_reviews fr ON fr.id = latest.max_id
+           WHERE fr.next_review IS NULL OR fr.next_review <= datetime('now')) AS due_today,
+          (SELECT COUNT(*) FROM flashcard_reviews WHERE date(reviewed_at) = date('now')) AS reviewed_today,
+          (SELECT COUNT(DISTINCT f.id) FROM flashcards f
+           INNER JOIN (SELECT card_id, MAX(id) AS max_id FROM flashcard_reviews GROUP BY card_id) latest ON latest.card_id = f.id
+           INNER JOIN flashcard_reviews fr ON fr.id = latest.max_id
+           WHERE fr.ease_factor >= 2.3 AND fr.interval_days >= 21) AS mastered"
+    )
+    .fetch_one(&*pool)
+    .await
+    .map_err(|e| e.to_string())?;
 
     Ok(ReviewStats {
-        total_cards,
-        due_today,
-        reviewed_today,
-        mastered,
+        total_cards: row.get("total_cards"),
+        due_today: row.get("due_today"),
+        reviewed_today: row.get("reviewed_today"),
+        mastered: row.get("mastered"),
     })
 }

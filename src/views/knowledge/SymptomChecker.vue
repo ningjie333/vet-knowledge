@@ -13,7 +13,7 @@ const diseaseDetails = ref<Map<string, any>>(new Map())
 onMounted(async () => {
   try {
     allSymptoms.value = await invoke('get_symptoms')
-  } catch (e) { console.error(e) }
+  } catch { /* silently fail, allSymptoms stays [] */ }
 })
 
 function toggleSymptom(name: string) {

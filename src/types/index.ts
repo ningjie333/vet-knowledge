@@ -132,5 +132,4 @@ export interface TestSuggestion {
   test_id: string
   test_name: string
   purpose: string
-  info_gain: number
 }

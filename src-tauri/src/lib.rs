@@ -11,11 +11,8 @@ pub fn run() {
                 match db::init(&ah).await {
                     Ok(db) => {
                         ah.manage(db);
-                        // Search is handled via command handlers directly
-                        ah.manage(engine::InferenceEngine::new());
                     }
                     Err(e) => {
-                        // 把完整错误链写到 app_data_dir/seed_import_error.log
                         db::write_import_error_log(&ah, &e);
                         eprintln!("[vet-knowledge] DB init failed: {}", e);
                         panic!("DB init failed: {}", e);
@@ -53,8 +50,6 @@ pub fn run() {
             commands::treatments::remove_entity_tag,
             commands::search::full_text_search,
             commands::diagnose::infer_diagnosis,
-            commands::import_export::export_data,
-            commands::import_export::import_data,
             // 闪卡系统
             commands::flashcards::get_due_flashcards,
             commands::flashcards::get_all_flashcards,

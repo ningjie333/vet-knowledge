@@ -8,16 +8,15 @@ pub async fn get_treatments(
     pool: tauri::State<'_, DbPool>,
     therapy_type: Option<String>,
 ) -> Result<Vec<Treatment>, String> {
+    let therapy_type = therapy_type.unwrap_or_default();
+    let has_type = !therapy_type.is_empty();
+
     let mut query = String::from("SELECT * FROM treatments WHERE 1=1");
-    if therapy_type.is_some() {
-        query.push_str(" AND therapy_type = ?");
-    }
+    if has_type { query.push_str(" AND therapy_type = ?"); }
     query.push_str(" ORDER BY name_zh");
 
     let mut q = sqlx::query_as::<_, Treatment>(&query);
-    if let Some(t) = therapy_type {
-        q = q.bind(t);
-    }
+    if has_type { q = q.bind(therapy_type); }
 
     q.fetch_all(&*pool).await.map_err(|e| e.to_string())
 }
@@ -77,16 +76,15 @@ pub async fn get_tags(
     pool: tauri::State<'_, DbPool>,
     tag_group: Option<String>,
 ) -> Result<Vec<Tag>, String> {
+    let tag_group = tag_group.unwrap_or_default();
+    let has_group = !tag_group.is_empty();
+
     let mut query = String::from("SELECT * FROM tags WHERE 1=1");
-    if tag_group.is_some() {
-        query.push_str(" AND tag_group = ?");
-    }
+    if has_group { query.push_str(" AND tag_group = ?"); }
     query.push_str(" ORDER BY tag_group, name_zh");
 
     let mut q = sqlx::query_as::<_, Tag>(&query);
-    if let Some(g) = tag_group {
-        q = q.bind(g);
-    }
+    if has_group { q = q.bind(tag_group); }
 
     q.fetch_all(&*pool).await.map_err(|e| e.to_string())
 }

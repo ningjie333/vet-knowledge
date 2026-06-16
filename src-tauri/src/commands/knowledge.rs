@@ -9,22 +9,19 @@ pub async fn get_diseases(
     species: Option<String>,
     category: Option<String>,
 ) -> Result<Vec<Disease>, String> {
+    let species = species.unwrap_or_default();
+    let category = category.unwrap_or_default();
+    let has_species = !species.is_empty();
+    let has_category = !category.is_empty();
+
     let mut query = String::from("SELECT * FROM diseases WHERE 1=1");
-    if species.is_some() {
-        query.push_str(" AND species LIKE ?");
-    }
-    if category.is_some() {
-        query.push_str(" AND category LIKE ?");
-    }
+    if has_species { query.push_str(" AND species LIKE ?"); }
+    if has_category { query.push_str(" AND category LIKE ?"); }
     query.push_str(" ORDER BY name_zh");
 
     let mut q = sqlx::query_as::<_, Disease>(&query);
-    if let Some(s) = species {
-        q = q.bind(format!("%{}%", s));
-    }
-    if let Some(c) = category {
-        q = q.bind(format!("%{}%", c));
-    }
+    if has_species { q = q.bind(format!("%{}%", species)); }
+    if has_category { q = q.bind(format!("%{}%", category)); }
 
     q.fetch_all(&*pool).await.map_err(|e| e.to_string())
 }
@@ -396,16 +393,15 @@ pub async fn get_drugs(
     pool: tauri::State<'_, DbPool>,
     drug_class: Option<String>,
 ) -> Result<Vec<Drug>, String> {
+    let drug_class = drug_class.unwrap_or_default();
+    let has_class = !drug_class.is_empty();
+
     let mut query = String::from("SELECT * FROM drugs WHERE 1=1");
-    if drug_class.is_some() {
-        query.push_str(" AND drug_class LIKE ?");
-    }
+    if has_class { query.push_str(" AND drug_class LIKE ?"); }
     query.push_str(" ORDER BY name_zh");
 
     let mut q = sqlx::query_as::<_, Drug>(&query);
-    if let Some(c) = drug_class {
-        q = q.bind(format!("%{}%", c));
-    }
+    if has_class { q = q.bind(format!("%{}%", drug_class)); }
 
     q.fetch_all(&*pool).await.map_err(|e| e.to_string())
 }
@@ -471,18 +467,19 @@ pub async fn get_cases(
     species: Option<String>,
     difficulty: Option<String>,
 ) -> Result<Vec<Case>, String> {
+    let species = species.unwrap_or_default();
+    let difficulty = difficulty.unwrap_or_default();
+    let has_species = !species.is_empty();
+    let has_difficulty = !difficulty.is_empty();
+
     let mut query = String::from("SELECT * FROM cases WHERE 1=1");
-    if species.is_some() {
-        query.push_str(" AND species = ?");
-    }
-    if difficulty.is_some() {
-        query.push_str(" AND difficulty = ?");
-    }
+    if has_species { query.push_str(" AND species = ?"); }
+    if has_difficulty { query.push_str(" AND difficulty = ?"); }
     query.push_str(" ORDER BY title");
 
     let mut q = sqlx::query_as::<_, Case>(&query);
-    if let Some(s) = species { q = q.bind(s); }
-    if let Some(d) = difficulty { q = q.bind(d); }
+    if has_species { q = q.bind(species); }
+    if has_difficulty { q = q.bind(difficulty); }
 
     q.fetch_all(&*pool).await.map_err(|e| e.to_string())
 }

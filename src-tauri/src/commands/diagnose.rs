@@ -1,11 +1,10 @@
 use crate::db::DbPool;
-use crate::engine::{InferenceEngine, DiagnosisInput, DiagnosisCandidate};
+use crate::engine::{infer, DiagnosisInput, DiagnosisCandidate};
 use sqlx::Row;
 
 #[tauri::command]
 pub async fn infer_diagnosis(
     pool: tauri::State<'_, DbPool>,
-    engine: tauri::State<'_, InferenceEngine>,
     symptoms: Vec<String>,
     species: String,
     age: Option<f64>,
@@ -18,7 +17,6 @@ pub async fn infer_diagnosis(
         breed,
     };
 
-    // 1. 获取匹配物种的所有疾病（去重）
     let disease_list: Vec<(String, String)> = sqlx::query(
         "SELECT DISTINCT d.id, d.name_zh
          FROM diseases d
@@ -36,10 +34,8 @@ pub async fn infer_diagnosis(
     ))
     .collect();
 
-    // 2. 批量获取所有疾病的症状列表（单次查询替代 N 次循环）
     let mut all_disease_symptoms: std::collections::HashMap<String, Vec<(String, String, i64)>> = std::collections::HashMap::new();
     if !disease_list.is_empty() {
-        // 构建 IN 子句的占位符
         let placeholders: Vec<String> = disease_list.iter().map(|_| "?".to_string()).collect();
         let query = format!(
             "SELECT ds.disease_id, s.name_zh, ds.frequency, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
@@ -63,7 +59,6 @@ pub async fn infer_diagnosis(
         }
     }
 
-    // 3. 批量获取诊断检查建议（单次查询替代 N 次循环）
     let mut diagnostics: std::collections::HashMap<String, Vec<(String, String)>> = std::collections::HashMap::new();
     if !disease_list.is_empty() {
         let placeholders: Vec<String> = disease_list.iter().map(|_| "?".to_string()).collect();
@@ -87,9 +82,7 @@ pub async fn infer_diagnosis(
         }
     }
 
-    // 4. 运行推理引擎
-    let candidates = engine.infer(&input, &disease_list, &all_disease_symptoms, &diagnostics);
+    let candidates = infer(&input, &disease_list, &all_disease_symptoms, &diagnostics);
 
-    // 5. 补充疾病名称（从 name_zh 已经在 disease_list 中）
     Ok(candidates)
 }
