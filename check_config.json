@@ -22,12 +22,25 @@
   },
 
   "type_check": {
-    "enabled": false,
+    "enabled": true,
     "frontend_types_dir": "src/types",
     "backend_models_file": "src-tauri/src/db/models.rs",
-    "entity_map": {},
+    "entity_map": {
+      "Disease": "Disease",
+      "Symptom": "Symptom",
+      "Drug": "Drug",
+      "Treatment": "Treatment",
+      "DiagnosticTest": "DiagnosticTest",
+      "Case": "Case",
+      "Tag": "Tag",
+      "EntityTag": "EntityTag",
+      "DiseaseTreatmentMap": "DiseaseTreatmentMap",
+      "DiagnosisCandidate": "DiagnosisCandidate",
+      "TestSuggestion": "TestSuggestion",
+      "SearchResult": "SearchResult"
+    },
     "field_map": {},
-    "ignore_fields": ["created_at", "updated_at", "deleted_at"]
+    "ignore_fields": ["created_at", "updated_at", "deleted_at", "tags"]
   },
 
   "empty_check": {

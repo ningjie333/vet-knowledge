@@ -166,22 +166,10 @@ CREATE TABLE IF NOT EXISTS case_disease (
     PRIMARY KEY (case_id, disease_id)
 );
 
--- ── 全文搜索 ──
-
-CREATE VIRTUAL TABLE IF NOT EXISTS diseases_fts USING fts5(
-    name_zh, name_en, overview, content='diseases', content_rowid='rowid'
-);
-CREATE VIRTUAL TABLE IF NOT EXISTS symptoms_fts USING fts5(
-    name_zh, name_en, definition, content='symptoms', content_rowid='rowid'
-);
-CREATE VIRTUAL TABLE IF NOT EXISTS drugs_fts USING fts5(
-    name_zh, name_en, drug_class, content='drugs', content_rowid='rowid'
-);
-CREATE VIRTUAL TABLE IF NOT EXISTS cases_fts USING fts5(
-    title, chief_complaint, diagnosis, content='cases', content_rowid='rowid'
-);
-
 -- ── Schema 版本管理 ──
+-- 注：曾在此处定义 diseases_fts / symptoms_fts / drugs_fts / cases_fts 四个 FTS5 虚表，
+-- 但 search.rs 始终使用 LIKE 查询而非 FTS5 MATCH，这些虚表从未被使用。
+-- v10 migration 已 DROP 这些虚表，schema.sql 也不再创建，避免资源浪费。
 
 CREATE TABLE IF NOT EXISTS schema_migrations (
     version INTEGER PRIMARY KEY,

@@ -31,3 +31,9 @@ Thumbs.db
 .npm-cache/
 __pycache__/
 *.pyc
+
+# Windows drive-letter paths (junction 破坏 / 全角冒号伪装路径)
+D:/      # Unix-style D: 路径（Git Bash mingw 转换产物）
+D:\\     # Windows-style D:\ 路径
+# D:\dev-cache\npm 等 junction 污染衍生物（npm cache bug 6/13）
+# 排除这些防止 git add 误入

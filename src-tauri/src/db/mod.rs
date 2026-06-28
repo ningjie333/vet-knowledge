@@ -57,6 +57,19 @@ fn strip_sql_comments(script: &str) -> String {
         .join("\n")
 }
 
+/// 容忍错误的 SQL 执行（仅用于无法用 `IF NOT EXISTS` 的场景，如 ALTER TABLE ADD COLUMN / FTS5 操作）。
+///
+/// 失败原因记录到 stderr 但不阻断迁移流程。依据 E-08 规范：
+/// 不允许 `.ok()` 完全静默吞掉错误，必须至少有日志输出。
+///
+/// 对于幂等的 `CREATE/DROP/INDEX IF NOT EXISTS` 语句，应该用 `?` 让错误传播，
+/// 而不是用本函数。
+async fn execute_tolerant(pool: &DbPool, sql: &str, ctx: &str) {
+    if let Err(e) = sqlx::query(sql).execute(pool).await {
+        eprintln!("[migration {}] SQL failed: {} | error: {}", ctx, sql, e);
+    }
+}
+
 /// 当前种子数据版本。递增此值时，应用启动时会自动重新导入种子数据。
 const SEED_DATA_VERSION: i64 = 18;
 
@@ -142,15 +155,16 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     // 直接写入当前迁移基线，避免旧迁移在新 schema 上重复重建表。
     if current == 0 {
         for (version, description) in [
-            (1, "Initial schema: all tables + indexes + FTS + learning_progress"),
+            (1, "Initial schema: all tables + indexes + learning_progress"),
             (2, "Add urgency_level to diseases, is_pathognomonic to disease_symptom"),
             (3, "Rebuild disease_diagnostic with species in PK"),
             (4, "Rebuild disease_treatment with species in PK"),
             (5, "Add flashcard system tables"),
             (6, "Add data_source and is_deleted to diseases"),
             (7, "Tag system + disease/symptom/drug enhancements + treatments module"),
-            (8, "Add cases_fts for full-text search on cases"),
+            (8, "Add cases_fts for full-text search on cases (deprecated in v10)"),
             (9, "Rebuild tags table without UNIQUE(name_zh)"),
+            (10, "Drop unused FTS5 virtual tables (diseases_fts, symptoms_fts, drugs_fts, cases_fts)"),
         ] {
             sqlx::query(
                 "INSERT OR IGNORE INTO schema_migrations (version, description)
@@ -175,19 +189,19 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     }
 
     // ── v2: 新增 urgency_level 和 is_pathognomonic ──
+    // SQLite 不支持 ALTER TABLE ADD COLUMN IF NOT EXISTS，重复执行会报 "duplicate column name"。
+    // 使用 execute_tolerant 容忍已知错误，但通过 stderr 日志保留可追溯性（依据 E-08 规范）。
     if current < 2 {
-        sqlx::query(
-            "ALTER TABLE diseases ADD COLUMN urgency_level INTEGER DEFAULT 3 CHECK(urgency_level BETWEEN 1 AND 5)"
-        )
-        .execute(pool)
-        .await
-        .ok();
-        sqlx::query(
-            "ALTER TABLE disease_symptom ADD COLUMN is_pathognomonic INTEGER DEFAULT 0 CHECK(is_pathognomonic IN (0, 1))"
-        )
-        .execute(pool)
-        .await
-        .ok();
+        execute_tolerant(
+            pool,
+            "ALTER TABLE diseases ADD COLUMN urgency_level INTEGER DEFAULT 3 CHECK(urgency_level BETWEEN 1 AND 5)",
+            "v2: diseases.urgency_level"
+        ).await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE disease_symptom ADD COLUMN is_pathognomonic INTEGER DEFAULT 0 CHECK(is_pathognomonic IN (0, 1))",
+            "v2: disease_symptom.is_pathognomonic"
+        ).await;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
              VALUES (2, 'Add urgency_level to diseases, is_pathognomonic to disease_symptom')"
@@ -197,6 +211,11 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     }
 
     // ── v3: disease_diagnostic 主键增加 species（重建表） ──
+    // 表重建链路：CREATE v2 → INSERT SELECT → DROP old → RENAME v2 to old
+    // - CREATE 已用 IF NOT EXISTS（幂等）→ 错误传播
+    // - INSERT SELECT 可能因旧表未建而失败（旧库场景）→ execute_tolerant
+    // - DROP 已用 IF EXISTS（幂等）→ 错误传播
+    // - RENAME 失败需通过日志排查 → execute_tolerant
     if current < 3 {
         sqlx::query(
             "CREATE TABLE IF NOT EXISTS disease_diagnostic_v2 (
@@ -210,20 +229,21 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             )"
         )
         .execute(pool)
-        .await
-        .ok();
-        sqlx::query(
+        .await?;
+        execute_tolerant(
+            pool,
             "INSERT INTO disease_diagnostic_v2 (disease_id, test_id, purpose, evidence_level, species, expected_result)
-             SELECT disease_id, test_id, purpose, 'supportive', NULL, expected_result FROM disease_diagnostic"
-        )
-        .execute(pool)
-        .await
-        .ok();
-        sqlx::query("DROP TABLE IF EXISTS disease_diagnostic").execute(pool).await.ok();
-        sqlx::query("ALTER TABLE disease_diagnostic_v2 RENAME TO disease_diagnostic")
+             SELECT disease_id, test_id, purpose, 'supportive', NULL, expected_result FROM disease_diagnostic",
+            "v3: migrate disease_diagnostic data"
+        ).await;
+        sqlx::query("DROP TABLE IF EXISTS disease_diagnostic")
             .execute(pool)
-            .await
-            .ok();
+            .await?;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE disease_diagnostic_v2 RENAME TO disease_diagnostic",
+            "v3: rename disease_diagnostic_v2"
+        ).await;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
              VALUES (3, 'Rebuild disease_diagnostic with species in PK')"
@@ -233,6 +253,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     }
 
     // ── v4: disease_treatment 主键增加 species（重建表） ──
+    // 同 v3 的表重建链路策略
     if current < 4 {
         sqlx::query(
             "CREATE TABLE IF NOT EXISTS disease_treatment_v2 (
@@ -245,20 +266,21 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             )"
         )
         .execute(pool)
-        .await
-        .ok();
-        sqlx::query(
+        .await?;
+        execute_tolerant(
+            pool,
             "INSERT INTO disease_treatment_v2 (disease_id, drug_id, line, species, notes)
-             SELECT disease_id, drug_id, line, NULL, notes FROM disease_treatment"
-        )
-        .execute(pool)
-        .await
-        .ok();
-        sqlx::query("DROP TABLE IF EXISTS disease_treatment").execute(pool).await.ok();
-        sqlx::query("ALTER TABLE disease_treatment_v2 RENAME TO disease_treatment")
+             SELECT disease_id, drug_id, line, NULL, notes FROM disease_treatment",
+            "v4: migrate disease_treatment data"
+        ).await;
+        sqlx::query("DROP TABLE IF EXISTS disease_treatment")
             .execute(pool)
-            .await
-            .ok();
+            .await?;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE disease_treatment_v2 RENAME TO disease_treatment",
+            "v4: rename disease_treatment_v2"
+        ).await;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
              VALUES (4, 'Rebuild disease_treatment with species in PK')"
@@ -268,6 +290,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     }
 
     // ── v5: 闪卡系统 ──
+    // CREATE TABLE/INDEX IF NOT EXISTS 已幂等，错误应传播而非吞没
     if current < 5 {
         sqlx::query(
             "CREATE TABLE IF NOT EXISTS flashcards (
@@ -281,8 +304,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             )"
         )
         .execute(pool)
-        .await
-        .ok();
+        .await?;
         sqlx::query(
             "CREATE TABLE IF NOT EXISTS flashcard_reviews (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -295,14 +317,12 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             )"
         )
         .execute(pool)
-        .await
-        .ok();
+        .await?;
         sqlx::query(
             "CREATE INDEX IF NOT EXISTS idx_flashcard_reviews_next ON flashcard_reviews(card_id, next_review)"
         )
         .execute(pool)
-        .await
-        .ok();
+        .await?;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
              VALUES (5, 'Add flashcard system tables')"
@@ -312,19 +332,18 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     }
 
     // ── v6: diseases 表新增 data_source / is_deleted ──
+    // 同 v2，ALTER TABLE ADD COLUMN 无法用 IF NOT EXISTS，使用 execute_tolerant 容忍并日志
     if current < 6 {
-        sqlx::query(
-            "ALTER TABLE diseases ADD COLUMN data_source TEXT DEFAULT 'seed' CHECK(data_source IN ('seed', 'user', 'imported'))"
-        )
-        .execute(pool)
-        .await
-        .ok();
-        sqlx::query(
-            "ALTER TABLE diseases ADD COLUMN is_deleted INTEGER DEFAULT 0"
-        )
-        .execute(pool)
-        .await
-        .ok();
+        execute_tolerant(
+            pool,
+            "ALTER TABLE diseases ADD COLUMN data_source TEXT DEFAULT 'seed' CHECK(data_source IN ('seed', 'user', 'imported'))",
+            "v6: diseases.data_source"
+        ).await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE diseases ADD COLUMN is_deleted INTEGER DEFAULT 0",
+            "v6: diseases.is_deleted"
+        ).await;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
              VALUES (6, 'Add data_source and is_deleted to diseases')"
@@ -335,22 +354,22 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
 
     // ── v7: 标签系统 + 四维度增强 + 治疗模块 ──
     if current < 7 {
-        // diseases 新增字段
-        sqlx::query("ALTER TABLE diseases ADD COLUMN name_latin TEXT").execute(pool).await.ok();
-        sqlx::query("ALTER TABLE diseases ADD COLUMN pathogenic_type TEXT").execute(pool).await.ok();
-        sqlx::query("ALTER TABLE diseases ADD COLUMN epidemiology TEXT").execute(pool).await.ok();
-        sqlx::query("ALTER TABLE diseases ADD COLUMN body_system TEXT").execute(pool).await.ok();
-        sqlx::query("ALTER TABLE diseases ADD COLUMN physiological_basis TEXT").execute(pool).await.ok();
+        // diseases 新增字段（ALTER TABLE ADD COLUMN 用 execute_tolerant）
+        execute_tolerant(pool, "ALTER TABLE diseases ADD COLUMN name_latin TEXT", "v7: diseases.name_latin").await;
+        execute_tolerant(pool, "ALTER TABLE diseases ADD COLUMN pathogenic_type TEXT", "v7: diseases.pathogenic_type").await;
+        execute_tolerant(pool, "ALTER TABLE diseases ADD COLUMN epidemiology TEXT", "v7: diseases.epidemiology").await;
+        execute_tolerant(pool, "ALTER TABLE diseases ADD COLUMN body_system TEXT", "v7: diseases.body_system").await;
+        execute_tolerant(pool, "ALTER TABLE diseases ADD COLUMN physiological_basis TEXT", "v7: diseases.physiological_basis").await;
 
         // symptoms 新增字段
-        sqlx::query("ALTER TABLE symptoms ADD COLUMN physiological_basis TEXT").execute(pool).await.ok();
+        execute_tolerant(pool, "ALTER TABLE symptoms ADD COLUMN physiological_basis TEXT", "v7: symptoms.physiological_basis").await;
 
         // drugs 新增字段
-        sqlx::query("ALTER TABLE drugs ADD COLUMN mechanism_of_action TEXT").execute(pool).await.ok();
-        sqlx::query("ALTER TABLE drugs ADD COLUMN pk_pd TEXT").execute(pool).await.ok();
-        sqlx::query("ALTER TABLE drugs ADD COLUMN adverse_mechanism TEXT").execute(pool).await.ok();
+        execute_tolerant(pool, "ALTER TABLE drugs ADD COLUMN mechanism_of_action TEXT", "v7: drugs.mechanism_of_action").await;
+        execute_tolerant(pool, "ALTER TABLE drugs ADD COLUMN pk_pd TEXT", "v7: drugs.pk_pd").await;
+        execute_tolerant(pool, "ALTER TABLE drugs ADD COLUMN adverse_mechanism TEXT", "v7: drugs.adverse_mechanism").await;
 
-        // 标签系统
+        // 标签系统（CREATE TABLE IF NOT EXISTS 已幂等 → 错误传播）
         sqlx::query(
             "CREATE TABLE IF NOT EXISTS tags (
                 id TEXT PRIMARY KEY,
@@ -364,7 +383,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
                 color TEXT,
                 created_at TEXT DEFAULT (datetime('now'))
             )"
-        ).execute(pool).await.ok();
+        ).execute(pool).await?;
 
         sqlx::query(
             "CREATE TABLE IF NOT EXISTS entity_tags (
@@ -373,7 +392,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
                 tag_id TEXT NOT NULL REFERENCES tags(id),
                 PRIMARY KEY (entity_type, entity_id, tag_id)
             )"
-        ).execute(pool).await.ok();
+        ).execute(pool).await?;
 
         // 治疗模块
         sqlx::query(
@@ -388,7 +407,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
                 prognosis_assessment TEXT,
                 created_at TEXT DEFAULT (datetime('now'))
             )"
-        ).execute(pool).await.ok();
+        ).execute(pool).await?;
 
         sqlx::query(
             "CREATE TABLE IF NOT EXISTS disease_treatment_map (
@@ -399,12 +418,12 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
                 notes TEXT,
                 PRIMARY KEY (disease_id, treatment_id, species)
             )"
-        ).execute(pool).await.ok();
+        ).execute(pool).await?;
 
-        // 索引
-        sqlx::query("CREATE INDEX IF NOT EXISTS idx_entity_tags_type ON entity_tags(entity_type, entity_id)").execute(pool).await.ok();
-        sqlx::query("CREATE INDEX IF NOT EXISTS idx_entity_tags_tag ON entity_tags(tag_id)").execute(pool).await.ok();
-        sqlx::query("CREATE INDEX IF NOT EXISTS idx_tags_group ON tags(tag_group)").execute(pool).await.ok();
+        // 索引（CREATE INDEX IF NOT EXISTS 已幂等 → 错误传播）
+        sqlx::query("CREATE INDEX IF NOT EXISTS idx_entity_tags_type ON entity_tags(entity_type, entity_id)").execute(pool).await?;
+        sqlx::query("CREATE INDEX IF NOT EXISTS idx_entity_tags_tag ON entity_tags(tag_id)").execute(pool).await?;
+        sqlx::query("CREATE INDEX IF NOT EXISTS idx_tags_group ON tags(tag_group)").execute(pool).await?;
 
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
@@ -414,24 +433,13 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         .await?;
     }
 
-    // ── v8: 病例全文搜索 ──
+    // ── v8: 病例全文搜索（已废弃，由 v10 删除虚表） ──
+    // 历史上 v8 创建了 cases_fts 虚表，但 search.rs 始终使用 LIKE 查询而非 FTS5 MATCH。
+    // 为了消除资源浪费，v10 把虚表 DROP，v8 不再创建。
     if current < 8 {
         sqlx::query(
-            "CREATE VIRTUAL TABLE IF NOT EXISTS cases_fts USING fts5(
-                title, chief_complaint, diagnosis, content='cases', content_rowid='rowid'
-            )"
-        )
-        .execute(pool)
-        .await
-        .ok();
-        // 重建 FTS 索引（如果 cases 表已有数据）
-        sqlx::query("INSERT INTO cases_fts(cases_fts) VALUES('rebuild')")
-            .execute(pool)
-            .await
-            .ok();
-        sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (8, 'Add cases_fts for full-text search on cases')"
+             VALUES (8, 'Add cases_fts for full-text search on cases (deprecated in v10)')"
         )
         .execute(pool)
         .await?;
@@ -484,6 +492,24 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         .await?;
         tx.commit().await?;
         sqlx::query("PRAGMA foreign_keys = ON").execute(pool).await?;
+    }
+
+    // ── v10: 删除未使用的 FTS5 虚表 ──
+    // schema.sql 中曾定义 diseases_fts / symptoms_fts / drugs_fts / cases_fts 四个 FTS5 虚表，
+    // 但 search.rs 始终使用 LIKE 查询而非 FTS5 MATCH，这些虚表从未被使用。
+    // FTS5 虚表占用存储空间且需要 rebuild 维护，属于资源浪费，予以删除。
+    // DROP TABLE IF EXISTS 已幂等，错误应传播。
+    if current < 10 {
+        sqlx::query("DROP TABLE IF EXISTS diseases_fts").execute(pool).await?;
+        sqlx::query("DROP TABLE IF EXISTS symptoms_fts").execute(pool).await?;
+        sqlx::query("DROP TABLE IF EXISTS drugs_fts").execute(pool).await?;
+        sqlx::query("DROP TABLE IF EXISTS cases_fts").execute(pool).await?;
+        sqlx::query(
+            "INSERT OR IGNORE INTO schema_migrations (version, description)
+             VALUES (10, 'Drop unused FTS5 virtual tables (diseases_fts, symptoms_fts, drugs_fts, cases_fts)')"
+        )
+        .execute(pool)
+        .await?;
     }
 
     Ok(())
@@ -549,11 +575,8 @@ async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
         })?;
     }
 
-    // 重建 FTS 索引（cases_fts 使用 content 模式，需手动重建）
-    sqlx::query("INSERT INTO cases_fts(cases_fts) VALUES('rebuild')")
-        .execute(&mut *tx)
-        .await
-        .ok(); // FTS rebuild 失败不致命
+    // 注：历史上此处会执行 cases_fts 的 FTS rebuild，但 v10 migration 已删除 cases_fts 虚表
+    // （search.rs 始终使用 LIKE 查询，FTS5 虚表属于资源浪费），此处无需再 rebuild。
 
     // 记录数据版本（最后一步：只有在前面全部成功的前提下才执行）
     sqlx::query(

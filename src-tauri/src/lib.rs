@@ -1,10 +1,12 @@
 mod commands; mod db; mod engine;
 use tauri::Manager;
+use tauri_plugin_dialog::DialogExt;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             let ah = app.handle().clone();
             tauri::async_runtime::block_on(async move {
@@ -15,7 +17,17 @@ pub fn run() {
                     Err(e) => {
                         db::write_import_error_log(&ah, &e);
                         eprintln!("[vet-knowledge] DB init failed: {}", e);
-                        panic!("DB init failed: {}", e);
+                        // 用 dialog 弹窗显示错误，让用户能看到失败原因（替代 panic! 闪退）
+                        // 依据 E-04 规范：panic! 只用于不可恢复的程序状态错误；
+                        // 数据库初始化失败对用户而言是可恢复的（重新启动或修复文件）
+                        let err_msg = format!(
+                            "【启动失败】兽医知识库数据库初始化失败：\n\n{}\n\n错误日志已写入应用数据目录的 seed_import_error.log。\n请重启应用；若问题持续，请删除应用数据目录后重试。",
+                            e
+                        );
+                        ah.dialog()
+                            .message(err_msg)
+                            .blocking_show();
+                        std::process::exit(1);
                     }
                 }
             });

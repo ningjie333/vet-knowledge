@@ -67,9 +67,9 @@ export interface Treatment {
   name_en: string | null
   therapy_type: string | null
   principle: string | null
-  procedure: string | null
+  procedure_text: string | null
   physiological_basis: string | null
-  prognosis_eval: string | null
+  prognosis_assessment: string | null
   tags: string[]
 }
 
@@ -122,6 +122,7 @@ export interface DiagnosisCandidate {
   disease_id: string
   disease_name: string
   match_score: number
+  input_coverage: number
   matched_symptoms: string[]
   missing_key_symptoms: string[]
   suggested_tests: TestSuggestion[]
