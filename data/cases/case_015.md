@@ -1,11 +1,13 @@
 ---
-id: "case_015"
-title: "4岁绝育雌性拉布拉多犬 - 跛行与关节肿胀"
-species: "犬"
-breed: "拉布拉多犬"
 age: 4
+breed: 拉布拉多犬
+difficulty: intermediate
+diseases:
+- dis_032
+id: case_015
+species: 犬
+title: 4岁绝育雌性拉布拉多犬 - 跛行与关节肿胀
 weight: 32
-difficulty: "intermediate"
 ---
 
 ## 主诉

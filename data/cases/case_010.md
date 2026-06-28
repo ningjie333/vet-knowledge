@@ -1,11 +1,13 @@
 ---
-id: "case_010"
-title: "7岁绝育雄性比格犬 — 癫痫持续状态"
-species: "犬"
-breed: "比格犬"
 age: 7
+breed: 比格犬
+difficulty: intermediate
+diseases:
+- dis_031
+id: case_010
+species: 犬
+title: 7岁绝育雄性比格犬 — 癫痫持续状态
 weight: 14
-difficulty: "intermediate"
 ---
 
 ## 主诉

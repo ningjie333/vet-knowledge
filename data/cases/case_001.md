@@ -1,11 +1,13 @@
 ---
-id: "case_001"
-title: "3岁绝育雌性金毛猎犬 — 急性呕吐与祈祷姿势"
-species: "犬"
-breed: "金毛猎犬"
 age: 3
+breed: 金毛猎犬
+difficulty: basic
+diseases:
+- dis_009
+id: case_001
+species: 犬
+title: 3岁绝育雌性金毛猎犬 — 急性呕吐与祈祷姿势
 weight: 28
-difficulty: "basic"
 ---
 
 ## 主诉

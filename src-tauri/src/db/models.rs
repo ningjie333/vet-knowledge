@@ -114,53 +114,34 @@ pub struct DiseaseWithSymptom {
     pub is_pathognomonic: i64,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
-pub struct EntityTag {
+// ── DTO（数据传输对象，不映射数据库表） ──
+// 诊断推理引擎的输出结构，由 engine.rs 构造，通过 diagnose 命令返回前端
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TestSuggestion {
+    pub test_id: String,
+    pub test_name: String,
+    pub purpose: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DiagnosisCandidate {
+    pub disease_id: String,
+    pub disease_name: String,
+    pub match_score: f64,
+    pub input_coverage: f64,
+    pub matched_symptoms: Vec<String>,
+    pub missing_key_symptoms: Vec<String>,
+    pub suggested_tests: Vec<TestSuggestion>,
+    pub distinguishing_features: Vec<String>,
+}
+
+// 搜索命令的返回结构
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SearchResult {
     pub entity_type: String,
     pub entity_id: String,
-    pub tag_id: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, FromRow)]
-pub struct DiseaseSymptom {
-    pub disease_id: String,
-    pub symptom_id: String,
-    pub frequency: Option<String>,
-    pub stage: Option<String>,
-    pub is_pathognomonic: Option<i64>,
-}
-
-#[derive(Debug, Serialize, Deserialize, FromRow)]
-pub struct DiseaseDdx {
-    pub disease_id: String,
-    pub ddx_id: String,
-    pub distinguishing_feature: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, FromRow)]
-pub struct DiseaseTreatment {
-    pub disease_id: String,
-    pub drug_id: String,
-    pub line: Option<String>,
-    pub species: Option<String>,
-    pub notes: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, FromRow)]
-pub struct DiseaseDiagnostic {
-    pub disease_id: String,
-    pub test_id: String,
-    pub purpose: Option<String>,
-    pub evidence_level: Option<String>,
-    pub species: Option<String>,
-    pub expected_result: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, FromRow)]
-pub struct DiseaseTreatmentMap {
-    pub disease_id: String,
-    pub treatment_id: String,
-    pub line: Option<String>,
-    pub species: Option<String>,
-    pub notes: Option<String>,
+    pub title: String,
+    pub snippet: String,
+    pub relevance: f64,
 }

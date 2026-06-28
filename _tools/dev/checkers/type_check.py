@@ -205,9 +205,10 @@ def run(config: dict) -> CheckResult:
             fe_fields_mapped.add(fm.get(f, f))
 
         be_fields_filtered = be_fields - ignore_fields
+        fe_fields_filtered = fe_fields_mapped - ignore_fields
 
         # 前端有但后端没有
-        missing_in_backend = fe_fields_mapped - (be_fields_filtered | set(fm.values()))
+        missing_in_backend = fe_fields_filtered - (be_fields_filtered | set(fm.values()))
         for field in sorted(missing_in_backend):
             result.review_needed.append(
                 f"类型检查 -> 前端字段 '{frontend_entity}.{field}' 在后端模型 '{backend_entity}' 中未找到（可能是 UI 专用字段）"

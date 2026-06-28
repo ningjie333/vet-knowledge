@@ -1,11 +1,13 @@
 ---
-id: "case_002"
-title: "8岁未绝育雌性家短毛猫 — 多饮多尿与体重下降"
-species: "猫"
-breed: "家短毛猫"
 age: 8
+breed: 家短毛猫
+difficulty: basic
+diseases:
+- dis_019
+id: case_002
+species: 猫
+title: 8岁未绝育雌性家短毛猫 — 多饮多尿与体重下降
 weight: 3.2
-difficulty: "basic"
 ---
 
 ## 主诉

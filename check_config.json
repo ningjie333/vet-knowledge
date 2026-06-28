@@ -33,8 +33,6 @@
       "DiagnosticTest": "DiagnosticTest",
       "Case": "Case",
       "Tag": "Tag",
-      "EntityTag": "EntityTag",
-      "DiseaseTreatmentMap": "DiseaseTreatmentMap",
       "DiagnosisCandidate": "DiagnosisCandidate",
       "TestSuggestion": "TestSuggestion",
       "SearchResult": "SearchResult"

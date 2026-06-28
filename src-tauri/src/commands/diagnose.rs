@@ -1,5 +1,6 @@
 use crate::db::DbPool;
-use crate::engine::{infer, DiagnosisInput, DiagnosisCandidate};
+use crate::db::models::DiagnosisCandidate;
+use crate::engine::{infer, DiagnosisInput};
 use sqlx::Row;
 
 #[tauri::command]

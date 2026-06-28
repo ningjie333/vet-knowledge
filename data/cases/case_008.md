@@ -1,11 +1,13 @@
 ---
-id: "case_008"
-title: "10岁绝育雌性可卡犬 — 多饮多尿与对称性脱毛"
-species: "犬"
-breed: "可卡犬"
 age: 10
+breed: 可卡犬
+difficulty: intermediate
+diseases:
+- dis_018
+id: case_008
+species: 犬
+title: 10岁绝育雌性可卡犬 — 多饮多尿与对称性脱毛
 weight: 12
-difficulty: "intermediate"
 ---
 
 ## 主诉

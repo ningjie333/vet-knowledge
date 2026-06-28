@@ -1,11 +1,13 @@
 ---
-id: "case_014"
-title: "2岁未绝育雄性家短毛猫 - 发热、腹水与黄疸"
-species: "猫"
-breed: "家短毛猫"
 age: 2
+breed: 家短毛猫
+difficulty: advanced
+diseases:
+- dis_028
+id: case_014
+species: 猫
+title: 2岁未绝育雄性家短毛猫 - 发热、腹水与黄疸
 weight: 3.8
-difficulty: "advanced"
 ---
 
 ## 主诉

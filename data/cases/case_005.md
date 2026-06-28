@@ -1,11 +1,13 @@
 ---
-id: "case_005"
-title: "12岁绝育雌性贵宾犬 — 咳嗽与呼吸困难"
-species: "犬"
-breed: "贵宾犬"
 age: 12
+breed: 贵宾犬
+difficulty: intermediate
+diseases:
+- dis_004
+id: case_005
+species: 犬
+title: 12岁绝育雌性贵宾犬 — 咳嗽与呼吸困难
 weight: 4.5
-difficulty: "intermediate"
 ---
 
 ## 主诉

@@ -1,11 +1,13 @@
 ---
-id: "case_012"
-title: "10岁绝育雌性贵宾犬 - 双侧后肢无力与多饮多尿"
-species: "犬"
-breed: "贵宾犬"
 age: 10
+breed: 贵宾犬
+difficulty: intermediate
+diseases:
+- dis_018
+id: case_012
+species: 犬
+title: 10岁绝育雌性贵宾犬 - 双侧后肢无力与多饮多尿
 weight: 6.5
-difficulty: "intermediate"
 ---
 
 ## 主诉

@@ -1,15 +1,6 @@
 use crate::db::DbPool;
-use serde::Serialize;
+use crate::db::models::SearchResult;
 use sqlx::Row;
-
-#[derive(Serialize)]
-pub struct SearchResult {
-    pub entity_type: String,
-    pub entity_id: String,
-    pub title: String,
-    pub snippet: String,
-    pub relevance: f64,
-}
 
 #[tauri::command]
 pub async fn full_text_search(

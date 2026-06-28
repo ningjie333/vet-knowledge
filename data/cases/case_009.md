@@ -1,11 +1,13 @@
 ---
-id: "case_009"
-title: "2岁未绝育雌性家短毛猫 — 发热与腹水"
-species: "猫"
-breed: "家短毛猫"
 age: 2
+breed: 家短毛猫
+difficulty: advanced
+diseases:
+- dis_028
+id: case_009
+species: 猫
+title: 2岁未绝育雌性家短毛猫 — 发热与腹水
 weight: 2.8
-difficulty: "advanced"
 ---
 
 ## 主诉

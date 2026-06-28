@@ -1,11 +1,13 @@
 ---
-id: "case_004"
-title: "1岁未免疫雄性拉布拉多犬 — 血性腹泻与白细胞危机"
-species: "犬"
-breed: "拉布拉多犬"
 age: 1
+breed: 拉布拉多犬
+difficulty: intermediate
+diseases:
+- dis_025
+id: case_004
+species: 犬
+title: 1岁未免疫雄性拉布拉多犬 — 血性腹泻与白细胞危机
 weight: 22
-difficulty: "intermediate"
 ---
 
 ## 主诉

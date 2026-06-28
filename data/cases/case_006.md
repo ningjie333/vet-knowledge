@@ -1,11 +1,13 @@
 ---
-id: "case_006"
-title: "6岁绝育雌性家短毛猫 — 后肢突然瘫痪"
-species: "猫"
-breed: "家短毛猫"
 age: 6
+breed: 家短毛猫
+difficulty: advanced
+diseases:
+- dis_015
+id: case_006
+species: 猫
+title: 6岁绝育雌性家短毛猫 — 后肢突然瘫痪
 weight: 5.5
-difficulty: "advanced"
 ---
 
 ## 主诉

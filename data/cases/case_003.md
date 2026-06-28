@@ -1,11 +1,13 @@
 ---
-id: "case_003"
-title: "5岁雄性绝育杜宾犬 — 运动不耐受与晕厥"
-species: "犬"
-breed: "杜宾犬"
 age: 5
+breed: 杜宾犬
+difficulty: advanced
+diseases:
+- dis_014
+id: case_003
+species: 犬
+title: 5岁雄性绝育杜宾犬 — 运动不耐受与晕厥
 weight: 35
-difficulty: "advanced"
 ---
 
 ## 主诉

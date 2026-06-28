@@ -1,5 +1,6 @@
 use serde::Serialize;
 use std::collections::HashMap;
+use crate::db::models::{DiagnosisCandidate, TestSuggestion};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct DiagnosisInput {
@@ -7,25 +8,6 @@ pub struct DiagnosisInput {
     pub species: String,
     pub age: Option<f64>,
     pub breed: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub struct DiagnosisCandidate {
-    pub disease_id: String,
-    pub disease_name: String,
-    pub match_score: f64,
-    pub input_coverage: f64,
-    pub matched_symptoms: Vec<String>,
-    pub missing_key_symptoms: Vec<String>,
-    pub suggested_tests: Vec<TestSuggestion>,
-    pub distinguishing_features: Vec<String>,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub struct TestSuggestion {
-    pub test_id: String,
-    pub test_name: String,
-    pub purpose: String,
 }
 
 pub fn infer(

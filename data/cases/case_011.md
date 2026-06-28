@@ -1,11 +1,13 @@
 ---
-id: "case_011"
-title: "5岁绝育雌性家短毛猫 — 尿频与血尿"
-species: "猫"
-breed: "家短毛猫"
 age: 5
+breed: 家短毛猫
+difficulty: basic
+diseases:
+- dis_008
+id: case_011
+species: 猫
+title: 5岁绝育雌性家短毛猫 — 尿频与血尿
 weight: 4.2
-difficulty: "basic"
 ---
 
 ## 主诉

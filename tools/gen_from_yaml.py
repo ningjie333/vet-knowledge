@@ -538,25 +538,13 @@ L.append('')
 
 # ===== 病例-疾病关联 =====
 L.append('-- ===== 病例-疾病关联 =====')
-case_disease_map = {
-    'case_001': ['dis_009'],
-    'case_002': ['dis_019'],
-    'case_003': ['dis_014'],
-    'case_004': ['dis_025'],
-    'case_005': ['dis_004'],
-    'case_006': ['dis_015'],
-    'case_007': ['dis_029'],
-    'case_008': ['dis_018'],
-    'case_009': ['dis_028'],
-    'case_010': ['dis_031'],
-    'case_011': ['dis_008'],
-    'case_012': ['dis_018'],
-    'case_013': ['dis_029'],
-    'case_014': ['dis_028'],
-    'case_015': ['dis_032'],
-}
+# 从 cases/*.md 的 frontmatter `diseases` 字段读取关联（数据驱动，不再硬编码）
 cd_count = 0
-for case_id, disease_ids in case_disease_map.items():
+for c in cases_list:
+    case_id = c['id']
+    disease_ids = c.get('diseases', [])
+    if not isinstance(disease_ids, list):
+        disease_ids = [disease_ids]
     for did in disease_ids:
         L.append(
             f"INSERT INTO case_disease (case_id, disease_id) "

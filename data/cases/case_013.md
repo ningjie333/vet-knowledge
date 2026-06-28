@@ -1,11 +1,13 @@
 ---
-id: "case_013"
-title: "6岁未绝育雄性德国牧羊犬 - 突发腹胀与干呕"
-species: "犬"
-breed: "德国牧羊犬"
 age: 6
+breed: 德国牧羊犬
+difficulty: advanced
+diseases:
+- dis_029
+id: case_013
+species: 犬
+title: 6岁未绝育雄性德国牧羊犬 - 突发腹胀与干呕
 weight: 38
-difficulty: "advanced"
 ---
 
 ## 主诉

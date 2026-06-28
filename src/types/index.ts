@@ -10,12 +10,6 @@ export interface Tag {
   color: string | null
 }
 
-export interface EntityTag {
-  entity_type: string
-  entity_id: string
-  tag_id: string
-}
-
 export interface Disease {
   id: string
   name_zh: string
@@ -71,14 +65,6 @@ export interface Treatment {
   physiological_basis: string | null
   prognosis_assessment: string | null
   tags: string[]
-}
-
-export interface DiseaseTreatmentMap {
-  disease_id: string
-  treatment_id: string
-  line: string
-  species: string | null
-  notes: string | null
 }
 
 export interface DiagnosticTest {

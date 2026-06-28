@@ -1,11 +1,13 @@
 ---
-id: "case_007"
-title: "4岁绝育雄性德国牧羊犬 — 腹胀与干呕"
-species: "犬"
-breed: "德国牧羊犬"
 age: 4
+breed: 德国牧羊犬
+difficulty: advanced
+diseases:
+- dis_029
+id: case_007
+species: 犬
+title: 4岁绝育雄性德国牧羊犬 — 腹胀与干呕
 weight: 38
-difficulty: "advanced"
 ---
 
 ## 主诉
