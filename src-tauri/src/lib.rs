@@ -1,4 +1,4 @@
-mod commands; mod db; mod engine;
+mod commands; mod db; mod engine; mod sidecar;
 use tauri::Manager;
 use tauri_plugin_dialog::DialogExt;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -31,6 +31,8 @@ pub fn run() {
                     }
                 }
             });
+            // 注入 sidecar 管理器（懒启动，首次 game_new_session 时才 spawn Python）
+            app.manage(sidecar::SidecarManager::new());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -70,6 +72,15 @@ pub fn run() {
             commands::flashcards::delete_flashcard,
             commands::flashcards::review_flashcard,
             commands::flashcards::get_review_stats,
+            // 诊断游戏（7 个转发 sidecar + 1 个本地推理）
+            commands::game::game_list_cases,
+            commands::game::game_new_session,
+            commands::game::game_advance,
+            commands::game::game_administer_drug,
+            commands::game::game_examine,
+            commands::game::game_diagnose,
+            commands::game::game_end_session,
+            commands::game::game_diagnosis_hint,
         ])
         .run(tauri::generate_context!())
         .expect("Tauri failed");

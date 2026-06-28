@@ -120,3 +120,87 @@ export interface TestSuggestion {
   test_name: string
   purpose: string
 }
+
+// ===== 诊断游戏接口 =====
+
+export interface GameCaseSummary {
+  id: string
+  title: string
+  difficulty: number
+  difficulty_label: string
+  species: string
+  breed: string
+  age: string
+  weight_kg: number
+  chief_complaint: string
+}
+
+export interface GameSnapshot {
+  phase: string
+  medical_phase: string
+  time_elapsed_min: number
+  time_budget_min: number
+  time_remaining_min: number
+  death_timer: number | null
+  vitals: GameVitals
+  active_signs: GameActiveSign[]
+  new_reports: any[]
+  pending_reports: number
+  case?: GameCaseInfo
+  error?: string
+  action_started_at_s?: number
+  state_time_s?: number
+  time_cost_min?: number
+  success?: boolean
+}
+
+export interface GameVitals {
+  hr_bpm: number
+  map_mmhg: number
+  spo2_pct: number
+  rr_bpm: number
+  temp_c: number
+  gfr_ml_min: number
+  ph: number
+  co_ml_min: number
+  blood_volume_ml: number
+  lactate_mmol_l: number
+  bun_mg_dl: number
+  game_time: string
+  is_night: boolean
+}
+
+export interface GameActiveSign {
+  sign_id: string
+  display_name: string
+  severity: number
+  organ_system: string
+  clue_id?: string
+  localizing_value?: number
+}
+
+export interface GameCaseInfo {
+  id: string
+  title: string
+  difficulty: number
+  difficulty_label: string
+  animal: GameAnimal
+  chief_complaint: string
+  history: string
+  time_budget_min: number
+  starting_hints: string[]
+}
+
+export interface GameAnimal {
+  species: string
+  breed: string
+  name: string
+  age: string
+  weight_kg: number
+  sex: string
+}
+
+export interface NewSessionResponse {
+  session_id: string
+  initial_snapshot: GameSnapshot
+}
