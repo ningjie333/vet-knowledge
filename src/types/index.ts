@@ -115,6 +115,13 @@ export interface DiagnosisCandidate {
   distinguishing_features: string[]
 }
 
+export interface DrugInfo {
+  drug_name: string
+  name: string
+  half_life_h: number
+  description: string
+}
+
 export interface TestSuggestion {
   test_id: string
   test_name: string

@@ -209,6 +209,21 @@ pub async fn game_examine(
     serde_json::from_value(result).map_err(|e| format!("deserialize snapshot: {}", e))
 }
 
+/// 读映射表翻译 disease_id（dis_XXX → virtual-vet snake_case key）。
+/// 查不到时返回 None（调用方原样提交，向后兼容自由文本输入）。
+fn translate_disease_id(disease_id: &str) -> Option<String> {
+    let vet_root = env::var("VET_VET_ROOT").ok()?;
+    let map_path = PathBuf::from(vet_root)
+        .join("data")
+        .join("vk_to_virtual_vet_disease_map.json");
+    let content = std::fs::read_to_string(&map_path).ok()?;
+    let map: Value = serde_json::from_str(&content).ok()?;
+    map.get("mappings")?
+        .get(disease_id)?
+        .as_str()
+        .map(|s| s.to_string())
+}
+
 /// 提交诊断（终结会话，判定 win/lost）
 #[tauri::command]
 pub async fn game_diagnose(
@@ -216,10 +231,12 @@ pub async fn game_diagnose(
     session_id: String,
     diagnosis: String,
 ) -> Result<GameSnapshot, String> {
+    // 翻译 disease_id（dis_XXX → virtual-vet key），查不到则原样提交
+    let translated = translate_disease_id(&diagnosis).unwrap_or_else(|| diagnosis.clone());
     let result = sidecar
         .call(
             "game.diagnose",
-            serde_json::json!({"session_id": session_id, "diagnosis": diagnosis}),
+            serde_json::json!({"session_id": session_id, "diagnosis": translated}),
         )
         .await
         .map_err(rpc_to_string)?;
@@ -240,6 +257,30 @@ pub async fn game_end_session(
         .await
         .map_err(rpc_to_string)?;
     Ok(())
+}
+
+/// 药物元数据（前端给药弹窗下拉选项）
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DrugInfo {
+    pub drug_name: String,
+    pub name: String,
+    pub half_life_h: f64,
+    pub description: String,
+}
+
+/// 获取可用药物列表（转发 sidecar game.list_drugs）
+#[tauri::command]
+pub async fn game_list_drugs(
+    sidecar: tauri::State<'_, SidecarManager>,
+) -> Result<Vec<DrugInfo>, String> {
+    let result = sidecar
+        .call("game.list_drugs", serde_json::json!({}))
+        .await
+        .map_err(rpc_to_string)?;
+    let drugs_val = result
+        .get("drugs")
+        .ok_or("missing drugs field in response")?;
+    serde_json::from_value(drugs_val.clone()).map_err(|e| format!("deserialize drugs: {}", e))
 }
 
 /// 本地诊断提示：将 virtual-vet display_name 翻译后调 infer_diagnosis。

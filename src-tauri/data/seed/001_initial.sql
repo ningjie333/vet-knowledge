@@ -1760,3 +1760,76 @@ INSERT INTO case_disease (case_id, disease_id) VALUES ('case_013', 'dis_029');
 INSERT INTO case_disease (case_id, disease_id) VALUES ('case_014', 'dis_028');
 INSERT INTO case_disease (case_id, disease_id) VALUES ('case_015', 'dis_032');
 
+-- ===== 补全疾病 (dis_085~dis_091) — 对齐 virtual-vet 病历 =====
+
+-- 疾病
+INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_085', '磷中毒', 'Phosphorus Poisoning', 'Intoxicatio Phosphoro', '["中毒与急救"]', '["犬", "猫"]', '中毒', '中毒性', '磷中毒多见于犬猫误食含磷杀鼠剂（如磷化锌）或农药。犬因好奇嗅探和异食癖风险较高，猫因梳理毛发接触污染粉尘也可中毒。无明确品种和性别倾向，全年可发，农村和仓储环境周边动物风险较高。', '磷化合物中毒导致多系统损伤，以急性胃肠炎、心血管毒性、血管内溶血和肝肾损伤为特征。磷化锌在胃酸下释放磷化氢气体造成细胞窒息。', '["磷化锌杀鼠剂", "含磷农药", "黄磷/白磷接触"]', '磷化物在胃酸作用下释放磷化氢，抑制细胞色素氧化酶导致细胞缺氧，并直接损伤心、肝、肾实质细胞。溶血机制与红细胞膜脂质过氧化相关。', '磷化锌进入胃后与盐酸反应释放剧毒的磷化氢（PH3）气体，经胃肠道吸收后迅速分布至全身。磷化氢抑制线粒体细胞色素氧化酶c（复合物IV），阻断电子传递链，导致细胞缺氧和ATP耗竭，机制类似氰化物中毒。心肌细胞对缺氧高度敏感，表现为心律失常、心肌抑制和心输出量下降。红细胞膜脂质过氧化导致血管内溶血，游离血红蛋白堵塞肾小管并形成血红蛋白尿。肝细胞和肾小管上皮细胞因能量衰竭发生坏死，导致转氨酶升高和少尿。严重者因多器官功能衰竭和循环休克死亡。', '早期积极治疗可能存活，延误治疗死亡率高。', 'advanced', 4);
+INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_086', '弥散性血管内凝血', 'Disseminated Intravascular Coagulation', 'Coagulatio intravascularis disseminata', '["血液系统"]', '["犬", "猫"]', '血液系统', '血液性', 'DIC是多种严重疾病的并发症，非独立疾病。犬猫DIC最常继发于败血症、严重创伤、胰腺炎、免疫介导性溶血性贫血和肿瘤。无品种、性别和年龄倾向，取决于原发病。住院危重动物DIC发生率显著升高。', '弥散性血管内凝血是凝血系统异常激活导致的获得性凝血障碍综合征，以微血管血栓形成和消耗性凝血病为特征，表现为广泛出血与微循环衰竭并存。', '["败血症/严重感染", "严重创伤/休克", "胰腺炎", "免疫介导性溶血性贫血", "肿瘤"]', '组织因子大量释放激活外源性凝血途径，微血管内广泛血栓形成消耗血小板和凝血因子，继发纤溶亢进导致出血。', 'DIC的核心是凝血与抗凝系统失衡。原发病释放大量组织因子（TF）或内毒素激活外源性凝血途径（VIIa-TF复合物），同时内皮细胞损伤暴露皮下胶原激活内源性途径。广泛凝血酶生成导致微血管内纤维蛋白沉积和微血栓形成，消耗血小板（<5万）和凝血因子（V、VIII、纤维蛋白原），形成消耗性凝血病。同时纤溶酶原激活物释放激活纤溶系统，降解纤维蛋白产生D-二聚体和FDP，FDP干扰纤维蛋白聚合加重出血。微血栓堵塞微循环导致多器官缺血（肾、肺、肝），表现为少尿、呼吸困难和意识障碍。最终同时存在血栓性缺血和出血两种矛盾表现。', '取决于原发病，重症死亡率高。', 'advanced', 4);
+INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_087', '肾上腺皮质功能减退症', 'Hypoadrenocorticism', 'Insufficientia corticis suprarenalis', '["内分泌系统"]', '["犬"]', '内分泌系统', '内分泌性', '肾上腺皮质功能减退症多发于3-7岁中青年犬，母犬略多于公犬。标准贵宾犬、纽芬兰犬、大丹犬、葡萄牙水犬等品种有遗传易感性。猫罕见。约85-90%为免疫介导性肾上腺皮质破坏。应激（手术、旅行、寄养）可诱发Addison危象。', '肾上腺皮质激素（糖皮质激素和盐皮质激素）分泌不足导致的内分泌急症，以低钠高钾血症、低血压和胃肠症状为特征。慢性型可在应激下突发危象。', '["免疫介导性肾上腺皮质破坏(85-90%)", "肿瘤浸润", "长期糖皮质激素撤药", "垂体功能低下"]', '皮质醇缺乏导致应激反应下降和糖异生障碍，醛固酮缺乏导致钠流失、钾潴留和低血容量。', '肾上腺皮质球状带（醛固酮）和束状带（皮质醇）同时破坏导致盐皮质激素和糖皮质激素双重缺乏。醛固酮缺乏使肾远端小管钠重吸收减少、钾和氢离子排泄障碍，导致低钠血症、高钾血症和代谢性酸中毒。低钠血症引起细胞外液容量减少、低血压和肾前性氮质血症；高钾血症改变心肌静息膜电位，导致心动过缓和心律失常。皮质醇缺乏导致糖异生减少（低血糖）、应激耐受下降、胃肠黏膜屏障功能减弱（呕吐、腹泻）。ACTH代偿性升高刺激黑色素细胞，部分病例可见皮肤色素沉着。应激时皮质醇无法相应增加，诱发Addison危象，表现为低血容量性休克和致命性心律失常。', '终身激素替代治疗预后良好，危象需紧急抢救。', 'advanced', 3);
+INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_088', '脓毒症', 'Sepsis', 'Sepsis', '["急诊", "传染病"]', '["犬", "猫"]', '全身性', '感染性', '脓毒症是宿主对感染的失调反应导致的危及生命的器官功能障碍。犬猫脓毒症常见原因为细菌感染（肺部、腹腔、泌尿道、皮肤），猫咬伤脓肿是猫常见病因。无品种和性别倾向，免疫抑制动物和老年动物风险更高。', '感染引起的全身炎症反应综合征伴器官功能障碍，以发热或低体温、心动过速、低血压和多器官衰竭为特征。脓毒性休克是晚期表现。', '["细菌感染(革兰阴性菌内毒素)", "严重感染(肺炎、腹膜炎、子宫蓄脓)", "真菌感染", "免疫抑制"]', '病原体相关分子模式激活TLR受体，大量促炎因子释放导致血管扩张、毛细血管渗漏和多器官损伤。', '脓毒症的核心是宿主免疫反应失调。病原体相关分子模式（PAMPs，如LPS）和损伤相关分子模式（DAMPs）激活免疫细胞表面Toll样受体，触发NF-κB通路，大量释放TNF-α、IL-1β、IL-6等促炎因子（SIRS）。一氧化氮（NO）过度生成导致血管扩张、低血压和外周血管阻力下降，对儿茶酚胺反应性降低。毛细血管通透性增加导致血浆外渗、有效循环血量减少和组织水肿。微循环功能障碍和线粒体能量代谢障碍导致细胞缺氧和器官功能障碍，表现为少尿（肾）、呼吸窘迫（肺）、意识改变（脑）和肝功能异常。凝血系统激活可进展为DIC。后期抗炎介质（IL-10）过度释放导致免疫麻痹，增加继发感染风险。休克晚期出现心肌抑制，心输出量下降形成恶性循环。', '早期干预预后较好，脓毒性休克死亡率高。', 'advanced', 4);
+INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_089', '脑膜炎', 'Meningitis', 'Meningitis', '["神经系统"]', '["犬", "猫"]', '神经系统', '感染性', '脑膜炎可发生于任何年龄和品种的犬猫。细菌性脑膜炎多见于幼龄动物，病毒性和免疫介导性多见于中青年犬。猫脑膜炎常与猫冠状病毒（FCoV）突变相关。无明确季节性。', '脑膜的炎症反应，以颈部强直、角弓反张、发热和神经症状为特征。可由感染或免疫介导引起，是神经系统急症。', '["细菌感染(链球菌、大肠杆菌)", "病毒感染(犬瘟热、FCoV)", "免疫介导(肉芽肿性脑膜脑炎)", "真菌感染"]', '炎症导致脑膜血管通透性增加、脑脊液细胞数增多和颅内压升高，脑膜刺激征表现为颈强直和角弓反张。', '脑膜炎的炎症累及软脑膜和蛛网膜，病原体或免疫复合物激活脑膜巨噬细胞和星形胶质细胞，释放IL-1β、IL-6、TNF-α等促炎因子和前列腺素，导致脑膜血管充血、血管通透性增加和脑脊液蛋白含量升高、细胞数增多（化脓性以中性粒细胞为主，淋巴细胞性以淋巴细胞为主）。炎症刺激脑膜感觉神经末梢产生疼痛和脑膜刺激征：颈部肌群反射性收缩导致颈强直，伸肌群广泛收缩形成角弓反张，是严重脑膜刺激征的表现。脑脊液吸收障碍导致颅内压升高，出现头痛、呕吐和意识障碍。炎症扩散至脑实质（脑膜脑炎）时出现癫痫发作、共济失调和颅神经麻痹。下丘脑体温调节中枢受炎症介质影响出现发热。', '感染性及时治疗预后尚可，免疫介导性需长期免疫抑制。', 'advanced', 4);
+INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_090', '脾破裂', 'Splenic Rupture', 'Ruptura lienis', '["外科", "急诊"]', '["犬", "猫"]', '外科', '外伤性', '脾破裂多见于中老年大型犬，金毛寻回犬、德国牧羊犬因脾血管肉瘤高发而风险显著增加。猫较少见，多与创伤相关。无明确性别倾向，但脾血管肉瘤在公犬略多。全年可发。', '脾脏破裂导致腹腔内出血，是危及生命的外科急症。可继发于脾肿瘤自发性破裂或腹部钝性创伤，表现为急性失血性休克。', '["脾血管肉瘤自发性破裂(犬最常见)", "脾血肿破裂", "腹部钝性创伤", "脾扭转"]', '脾脏破裂出血导致急性血容量丢失，循环血量下降引发失血性休克，腹腔积血刺激腹膜产生腹痛。', '脾脏血供丰富（脾动脉血流约占心输出量5%），破裂后快速出血导致腹腔内大量积血。急性失血使有效循环血量急剧下降，静脉回流减少，前负荷和心输出量降低，血压下降。代偿性交感神经激活使外周血管收缩（四肢末端发凉）和心动过速以维持核心灌注，但失血量超过20%时代偿失败，出现休克。黏膜苍白反映贫血和外周灌注不足。腹腔积血刺激壁层腹膜产生腹痛和腹部压痛，膈肌受压可引起呼吸困难。脾血管肉瘤破裂是犬最常见原因，肿瘤组织脆弱易自发破裂，且常已发生微转移。延误手术可因失血性休克死亡。', '良性病因手术预后良好，血管肉瘤预后极差。', 'advanced', 4);
+INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_091', '肝性贫血', 'Hepatic Anemia', 'Anaemia hepatica', '["消化系统", "血液系统"]', '["犬", "猫"]', '消化系统', '代谢性', '肝性贫血是慢性肝病继发的贫血综合征，多见于中老年犬猫。犬慢性肝炎、铜蓄积性肝病（贝灵顿梗、大丹犬）、门体分流是好发因素；猫多见于胆管肝炎和脂肪肝。无明确性别倾向。', '慢性肝功能障碍导致的继发性贫血，以黏膜苍白、黄疸和肝功能异常为特征。贫血多为正细胞正色素性，机制涉及红细胞生成减少、破坏增加和出血倾向。', '["慢性肝炎/肝硬化", "铜蓄积性肝病", "门体分流", "肝肿瘤", "胆管肝炎(猫)"]', '肝功能下降导致促红细胞生成素合成减少、红细胞膜脂质代谢异常和凝血因子合成不足，综合导致贫血。', '肝性贫血的机制是多因素的。首先，肝脏是促红细胞生成素（EPO）的重要肝外合成部位，慢性肝病时EPO合成减少导致红细胞生成下降。其次，肝细胞功能下降导致脂质代谢障碍，红细胞膜脂质成分改变使红细胞变形能力下降，被脾脏巨噬细胞加速清除（血管外溶血），表现为黄疸。第三，肝脏合成凝血因子（II、VII、IX、X）和血小板生成素减少，导致出血倾向（消化道出血、瘀点），加重贫血。第四，门脉高压导致食管静脉曲张和胃肠黏膜淤血，慢性隐性失血。第五，肝功能下降导致毒素蓄积（高氨血症），抑制骨髓造血功能。肝肿大和腹水反映原发性肝病的严重程度。瘙痒与胆汁酸沉积于皮肤有关。', '取决于原发肝病，早期干预可改善，终末期预后差。', 'advanced', 3);
+
+-- 疾病-症状关联
+-- dis_085 磷中毒 (7条)
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_005', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_006', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_019', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_007', 'uncommon', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_022', 'uncommon', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_012', 'uncommon', '进展');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_026', 'uncommon', '进展');
+-- dis_086 弥散性血管内凝血 (9条)
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_086', 'sym_005', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_086', 'sym_042', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_086', 'sym_014', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_086', 'sym_018', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_086', 'sym_019', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_086', 'sym_002', 'uncommon', '进展');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_086', 'sym_004', 'uncommon', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_086', 'sym_006', 'uncommon', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_086', 'sym_012', 'uncommon', '进展');
+-- dis_087 肾上腺皮质功能减退症 (7条)
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_087', 'sym_005', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_087', 'sym_008', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_087', 'sym_019', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_087', 'sym_006', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_087', 'sym_022', 'uncommon', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_087', 'sym_011', 'uncommon', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_087', 'sym_012', 'uncommon', '进展');
+-- dis_088 脓毒症 (8条)
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_088', 'sym_018', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_088', 'sym_019', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_088', 'sym_002', 'common', '进展');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_088', 'sym_003', 'common', '进展');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_088', 'sym_005', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_088', 'sym_008', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_088', 'sym_006', 'uncommon', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_088', 'sym_012', 'uncommon', '进展');
+-- dis_089 脑膜炎 (7条)
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomonic) VALUES ('dis_089', 'sym_045', 'common', '发作', 1);
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_089', 'sym_026', 'common', '发作');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_089', 'sym_018', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_089', 'sym_029', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_089', 'sym_019', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_089', 'sym_028', 'uncommon', '发作');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_089', 'sym_031', 'uncommon', '全程');
+-- dis_090 脾破裂 (5条)
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_090', 'sym_023', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_090', 'sym_007', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_090', 'sym_019', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_090', 'sym_005', 'uncommon', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_090', 'sym_014', 'uncommon', '进展');
+-- dis_091 肝性贫血 (10条)
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_091', 'sym_010', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_091', 'sym_005', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_091', 'sym_023', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_091', 'sym_019', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_091', 'sym_017', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_091', 'sym_008', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_091', 'sym_006', 'uncommon', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_091', 'sym_015', 'uncommon', '进展');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_091', 'sym_025', 'uncommon', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_091', 'sym_009', 'uncommon', '进展');
+

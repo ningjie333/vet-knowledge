@@ -80,6 +80,7 @@ pub fn run() {
             commands::game::game_examine,
             commands::game::game_diagnose,
             commands::game::game_end_session,
+            commands::game::game_list_drugs,
             commands::game::game_diagnosis_hint,
         ])
         .run(tauri::generate_context!())

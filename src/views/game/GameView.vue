@@ -7,6 +7,7 @@ import type {
   NewSessionResponse,
   DiagnosisCandidate,
   Disease,
+  DrugInfo,
 } from '@/types'
 
 // ── 状态 ──
@@ -26,9 +27,7 @@ const hintStates = reactive(new Map<string, HintState>())
 
 // 给药弹窗状态
 const drugInput = ref({ drugName: '', doseMgKg: 0, visible: false })
-
-// 诊断弹窗状态
-const diagInput = ref({ diagnosis: '', visible: false })
+const drugList = ref<DrugInfo[]>([])
 
 interface SessionTab {
   sessionId: string
@@ -52,6 +51,7 @@ const activeHint = computed((): HintState | null => {
 // ── 生命周期 ──
 onMounted(async () => {
   await loadCases()
+  await loadDrugs()
 })
 
 onUnmounted(() => {
@@ -70,6 +70,15 @@ async function loadCases() {
     console.error('loadCases failed:', e)
   } finally {
     loadingCases.value = false
+  }
+}
+
+// ── 药物列表（给药弹窗下拉选项）──
+async function loadDrugs() {
+  try {
+    drugList.value = await invoke('game_list_drugs') as DrugInfo[]
+  } catch (e) {
+    console.error('loadDrugs failed:', e)
   }
 }
 
@@ -169,18 +178,16 @@ async function doAdministerDrug() {
   }
 }
 
-async function doDiagnose() {
+async function doDiagnose(diseaseId: string) {
   if (!activeTab.value) return
-  if (!diagInput.value.diagnosis.trim()) return
+  if (!diseaseId.trim()) return
   activeTab.value.loading = true
-  diagInput.value.visible = false
   try {
     const snap = await invoke('game_diagnose', {
       sessionId: activeTab.value.sessionId,
-      diagnosis: diagInput.value.diagnosis,
+      diagnosis: diseaseId,
     }) as GameSnapshot
     activeTab.value.snapshot = snap
-    diagInput.value.diagnosis = ''
     if (snap.phase === 'won') {
       alert('🎉 诊断正确！')
     } else if (snap.phase === 'lost') {
@@ -412,13 +419,6 @@ function phaseColor(phase: string): string {
               <button @click="drugInput.visible = true" :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'">
                 💉 给药
               </button>
-              <button
-                class="diagnose-btn"
-                @click="diagInput.visible = true"
-                :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'"
-              >
-                📋 提交诊断
-              </button>
             </div>
 
             <!-- 游戏结束提示 -->
@@ -447,7 +447,9 @@ function phaseColor(phase: string): string {
                 <div
                   v-for="(c, i) in (activeHint?.candidates.slice(0, 3) ?? [])"
                   :key="c.disease_id"
-                  class="candidate-item"
+                  class="candidate-item clickable"
+                  @click="doDiagnose(c.disease_id)"
+                  :title="`点击提交诊断: ${c.disease_name}`"
                 >
                   <div class="candidate-header">
                     <span class="candidate-rank">{{ i + 1 }}</span>
@@ -486,7 +488,12 @@ function phaseColor(phase: string): string {
         <h3>给药</h3>
         <div class="form-row">
           <label>药物名称:</label>
-          <input v-model="drugInput.drugName" placeholder="如: furosemide" @keyup.enter="doAdministerDrug" />
+          <select v-model="drugInput.drugName">
+            <option value="" disabled>选择药物</option>
+            <option v-for="d in drugList" :key="d.drug_name" :value="d.drug_name">
+              {{ d.name }} ({{ d.drug_name }}) — {{ d.description }}
+            </option>
+          </select>
         </div>
         <div class="form-row">
           <label>剂量 (mg/kg):</label>
@@ -499,20 +506,6 @@ function phaseColor(phase: string): string {
       </div>
     </div>
 
-    <!-- 诊断弹窗 -->
-    <div v-if="diagInput.visible" class="modal-overlay" @click.self="diagInput.visible = false">
-      <div class="modal">
-        <h3>提交诊断</h3>
-        <div class="form-row">
-          <label>诊断（疾病名称）:</label>
-          <input v-model="diagInput.diagnosis" placeholder="如: pneumonia" @keyup.enter="doDiagnose" />
-        </div>
-        <div class="modal-actions">
-          <button @click="diagInput.visible = false">取消</button>
-          <button @click="doDiagnose">确认</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -578,20 +571,21 @@ function phaseColor(phase: string): string {
 .empty-hint { color: var(--color-text-secondary); font-size: 14px; padding: 8px; }
 
 .actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid var(--color-border); }
-.actions button { padding: 6px 12px; border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius); cursor: pointer; }
+.actions button { padding: 6px 12px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text, #1f2937); border-radius: var(--radius); cursor: pointer; }
 .actions button:hover:not(:disabled) { background: var(--color-primary); color: white; }
 .actions button:disabled { opacity: 0.5; cursor: not-allowed; }
-.diagnose-btn { background: var(--color-primary); color: white; }
 
 .game-end { margin-top: 16px; padding: 12px; text-align: center; font-size: 18px; font-weight: 700; }
 
 /* 诊断提示面板 */
-.hint-panel.collapsed { width: fit-content; }
 .hint-content { display: flex; flex-direction: column; gap: 12px; }
 .hint-content button { padding: 8px; background: var(--color-primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; }
 .hint-content button:disabled { opacity: 0.5; }
 .candidates-list { display: flex; flex-direction: column; gap: 8px; }
 .candidate-item { padding: 8px; background: var(--color-bg); border-radius: var(--radius); }
+.candidate-item.clickable { cursor: pointer; transition: background 0.15s, color 0.15s; }
+.candidate-item.clickable:hover { background: var(--color-primary); color: white; }
+.candidate-item.clickable:hover .candidate-name { color: white; }
 .candidate-header { display: flex; align-items: center; gap: 8px; }
 .candidate-rank { background: var(--color-primary); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 .candidate-name { flex: 1; font-weight: 600; color: var(--color-text, #1f2937); }
