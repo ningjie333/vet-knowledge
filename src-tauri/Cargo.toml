@@ -29,3 +29,25 @@ uuid = { version = "1", features = ["v4"] }
 [features]
 default = []
 
+# Patch multiple crates to work around a Rust std library bug:
+# `std::sys::process::output()` panics on Windows when the user path contains
+# non-ASCII characters (e.g., Chinese username). The panic occurs at
+# `library/std/src/sys/process/mod.rs:65` — `res.unwrap()` on an
+# `Err(io::Error { code: 0, kind: Uncategorized })` returned by read_to_end.
+# Each patched build.rs replaces `Command::output()` with `spawn + read_to_end
+# + wait`, deliberately ignoring read_to_end errors (which still leave valid
+# data in the buffer).
+[patch.crates-io]
+rustc_version = { path = "../vendor/rustc_version-0.4.1" }
+proc-macro2 = { path = "../vendor/proc-macro2-1.0.106" }
+quote = { path = "../vendor/quote-1.0.45" }
+serde = { path = "../vendor/serde-1.0.228" }
+serde_core = { path = "../vendor/serde_core-1.0.228" }
+thiserror = { path = "../vendor/thiserror-2.0.18" }
+zmij = { path = "../vendor/zmij-1.0.21" }
+anyhow = { path = "../vendor/anyhow-1.0.102" }
+erased-serde = { path = "../vendor/erased-serde-0.4.10" }
+typeid = { path = "../vendor/typeid-1.0.3" }
+camino = { path = "../vendor/camino-1.2.2" }
+autocfg = { path = "../vendor/autocfg-1.5.0" }
+

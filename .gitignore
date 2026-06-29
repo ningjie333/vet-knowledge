@@ -22,6 +22,13 @@ Thumbs.db
 .tmp/
 *.tmp
 
+# Bug 修复临时调试产物（仅保留 vendor/ patch 与 Cargo.toml 改动）
+build_log.txt
+build_repro.bat
+build_with_short_path.bat
+repro_test/
+src-tauri/build_log.txt
+
 # IDE
 .vscode/
 .idea/

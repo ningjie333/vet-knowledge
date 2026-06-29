@@ -1,0 +1,11 @@
+[package]
+name = "rustc_version"
+version = "0.4.1"
+edition = "2018"
+authors = ["Kimundi <kimundorf@gmail.com>"]
+description = "A library for querying the version of a installed rustc compiler (forked with std::sys::process::output panic workaround)"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/Kimundi/rustc-version-rs"
+
+[dependencies]
+semver = "1.0"
