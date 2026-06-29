@@ -26,8 +26,13 @@ Thumbs.db
 build_log.txt
 build_repro.bat
 build_with_short_path.bat
+cargo_check.bat
+cargo_check_log.txt
+tauri_build.bat
+tauri_build_log.txt
 repro_test/
 src-tauri/build_log.txt
+src-tauri/cargo_check_log.txt
 
 # IDE
 .vscode/
