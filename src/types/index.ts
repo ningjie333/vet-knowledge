@@ -173,10 +173,10 @@ export interface GameVitals {
 export interface GameActiveSign {
   sign_id: string
   display_name: string
-  severity: number
+  severity: string
   organ_system: string
   clue_id?: string
-  localizing_value?: number
+  localizing_value?: string
 }
 
 export interface GameCaseInfo {

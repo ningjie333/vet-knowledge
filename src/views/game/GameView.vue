@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import type {
   GameCaseSummary,
@@ -11,10 +11,9 @@ import type {
 
 // ── 状态 ──
 const cases = ref<GameCaseSummary[]>([])
-const sessions = ref<Map<string, SessionTab>>(new Map())
+const sessions = reactive(new Map<string, SessionTab>())
 const activeSessionId = ref<string | null>(null)
 const loadingCases = ref(false)
-const showHintPanel = ref(false)
 
 // 诊断提示状态（按 session 隔离）
 interface HintState {
@@ -23,7 +22,7 @@ interface HintState {
   loading: boolean
   searched: boolean
 }
-const hintStates = ref<Map<string, HintState>>(new Map())
+const hintStates = reactive(new Map<string, HintState>())
 
 // 给药弹窗状态
 const drugInput = ref({ drugName: '', doseMgKg: 0, visible: false })
@@ -42,12 +41,12 @@ interface SessionTab {
 // ── 计算属性 ──
 const activeTab = computed((): SessionTab | null => {
   if (!activeSessionId.value) return null
-  return sessions.value.get(activeSessionId.value) ?? null
+  return sessions.get(activeSessionId.value) ?? null
 })
 
 const activeHint = computed((): HintState | null => {
   if (!activeSessionId.value) return null
-  return hintStates.value.get(activeSessionId.value) ?? null
+  return hintStates.get(activeSessionId.value) ?? null
 })
 
 // ── 生命周期 ──
@@ -57,7 +56,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   // 退出时关闭所有 session（best effort）
-  sessions.value.forEach((tab) => {
+  sessions.forEach((tab) => {
     invoke('game_end_session', { sessionId: tab.sessionId }).catch(() => {})
   })
 })
@@ -85,10 +84,10 @@ async function openCase(caseSummary: GameCaseSummary) {
       snapshot: resp.initial_snapshot,
       loading: false,
     }
-    sessions.value.set(resp.session_id, tab)
+    sessions.set(resp.session_id, tab)
     activeSessionId.value = resp.session_id
     // 初始化诊断提示状态
-    hintStates.value.set(resp.session_id, {
+    hintStates.set(resp.session_id, {
       candidates: [],
       diseaseDetails: new Map(),
       loading: false,
@@ -110,10 +109,10 @@ async function closeTab(sessionId: string) {
   } catch {
     // 忽略关闭错误
   }
-  sessions.value.delete(sessionId)
-  hintStates.value.delete(sessionId)
+  sessions.delete(sessionId)
+  hintStates.delete(sessionId)
   if (activeSessionId.value === sessionId) {
-    const remaining = Array.from(sessions.value.keys())
+    const remaining = Array.from(sessions.keys())
     activeSessionId.value = remaining[0] ?? null
   }
 }
@@ -367,20 +366,32 @@ function phaseColor(phase: string): string {
                   class="sign-item"
                 >
                   <span class="sign-name">{{ sign.display_name }}</span>
-                  <span class="sign-severity">{{ sign.severity.toFixed(1) }}</span>
+                  <span class="sign-severity">{{ sign.severity }}</span>
                 </div>
               </div>
             </div>
 
             <!-- 报告区 -->
             <div v-if="activeTab.snapshot.new_reports.length > 0" class="reports-section">
-              <h3>新报告</h3>
+              <h3>新报告 ({{ activeTab.snapshot.new_reports.length }})</h3>
               <div
                 v-for="(r, i) in activeTab.snapshot.new_reports"
                 :key="i"
                 class="report-item"
               >
-                {{ JSON.stringify(r) }}
+                <div class="report-header">
+                  <span class="report-type">{{ r.test_type || '未知检查' }}</span>
+                  <span v-if="r.summary" class="report-summary">{{ r.summary }}</span>
+                </div>
+                <div v-if="r.results && r.results.length > 0" class="report-results">
+                  <div v-for="(item, j) in r.results" :key="j" class="report-result-row">
+                    <span class="result-param">{{ item.param }}</span>
+                    <span class="result-value">{{ item.value }} {{ item.unit }}</span>
+                    <span class="result-range">正常: {{ item.normal_range }}</span>
+                    <span class="result-flag" :class="`flag-${item.flag}`">{{ item.flag }}</span>
+                  </div>
+                </div>
+                <pre v-else class="report-raw">{{ JSON.stringify(r, null, 2) }}</pre>
               </div>
             </div>
 
@@ -417,14 +428,13 @@ function phaseColor(phase: string): string {
             </div>
           </div>
 
-          <!-- 右侧：诊断提示面板（可折叠） -->
-          <div class="hint-panel" :class="{ collapsed: !showHintPanel }">
-            <div class="panel-header" @click="showHintPanel = !showHintPanel">
+          <!-- 右侧：诊断提示面板 -->
+          <div class="hint-panel">
+            <div class="panel-header">
               <h2>📖 诊断提示</h2>
-              <span>{{ showHintPanel ? '▼' : '▶' }}</span>
             </div>
 
-            <div v-if="showHintPanel" class="hint-content">
+            <div class="hint-content">
               <button @click="fetchDiagnosisHint" :disabled="!activeHint || activeHint.loading">
                 {{ activeHint?.loading ? '推理中...' : '基于当前症状推理' }}
               </button>
@@ -550,6 +560,21 @@ function phaseColor(phase: string): string {
 .signs-list { display: flex; flex-direction: column; gap: 4px; }
 .sign-item { display: flex; justify-content: space-between; padding: 6px 8px; background: var(--color-bg); border-radius: 4px; font-size: 14px; }
 .sign-severity { color: var(--color-text-secondary); }
+.report-item { padding: 10px; background: var(--color-bg); border-radius: var(--radius); margin-bottom: 8px; border-left: 3px solid var(--color-primary); }
+.report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.report-type { font-weight: 600; color: var(--color-text, #1f2937); text-transform: uppercase; font-size: 13px; }
+.report-summary { font-size: 12px; color: var(--color-text-secondary); text-align: right; flex: 1; margin-left: 12px; }
+.report-results { display: flex; flex-direction: column; gap: 4px; }
+.report-result-row { display: grid; grid-template-columns: 100px 100px 1fr 60px; gap: 8px; padding: 4px 6px; font-size: 13px; align-items: center; }
+.report-result-row:nth-child(odd) { background: rgba(0,0,0,0.02); border-radius: 3px; }
+.result-param { font-weight: 500; color: var(--color-text, #1f2937); }
+.result-value { font-weight: 700; color: var(--color-text, #1f2937); }
+.result-range { font-size: 11px; color: var(--color-text-secondary); }
+.result-flag { font-size: 11px; padding: 1px 6px; border-radius: 3px; text-align: center; font-weight: 600; }
+.flag-normal { background: #dcfce7; color: #16a34a; }
+.flag-high, .flag-critical { background: #fee2e2; color: #dc2626; }
+.flag-low { background: #fef3c7; color: #d97706; }
+.report-raw { font-size: 11px; color: var(--color-text-secondary); white-space: pre-wrap; word-break: break-all; margin: 0; padding: 8px; background: rgba(0,0,0,0.03); border-radius: 4px; max-height: 200px; overflow-y: auto; }
 .empty-hint { color: var(--color-text-secondary); font-size: 14px; padding: 8px; }
 
 .actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid var(--color-border); }
@@ -569,7 +594,7 @@ function phaseColor(phase: string): string {
 .candidate-item { padding: 8px; background: var(--color-bg); border-radius: var(--radius); }
 .candidate-header { display: flex; align-items: center; gap: 8px; }
 .candidate-rank { background: var(--color-primary); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-.candidate-name { flex: 1; font-weight: 600; }
+.candidate-name { flex: 1; font-weight: 600; color: var(--color-text, #1f2937); }
 .candidate-score { font-weight: 700; }
 .candidate-urgency { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
 .hint-note { font-size: 12px; color: var(--color-text-secondary); padding: 8px; background: var(--color-bg); border-radius: var(--radius); }

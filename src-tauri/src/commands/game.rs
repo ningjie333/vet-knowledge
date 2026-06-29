@@ -92,12 +92,12 @@ pub struct GameVitals {
 pub struct GameActiveSign {
     pub sign_id: String,
     pub display_name: String,
-    pub severity: f64,
+    pub severity: String,
     pub organ_system: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clue_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub localizing_value: Option<f64>,
+    pub localizing_value: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -389,4 +389,80 @@ fn translate_symptoms(virtual_vet_symptoms: &[String]) -> Result<Vec<String>, St
     }
 
     Ok(translated)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // 真实 sidecar 返回的 snapshot（从 virtual-vet examine physical 抓取）
+    // 用于对抗性验证 Rust 反序列化契约，避免再次发生 severity/localizing_value 类型不匹配
+    const REAL_SNAPSHOT_EXAMINE: &str = r#"{
+      "phase": "playing",
+      "medical_phase": "worsening",
+      "time_elapsed_min": 15,
+      "time_budget_min": 120,
+      "time_remaining_min": 105,
+      "death_timer": null,
+      "vitals": {
+        "hr_bpm": 94.3, "map_mmhg": 110.0, "spo2_pct": 91.6, "rr_bpm": 18.9,
+        "temp_c": 38.5, "gfr_ml_min": 81.0, "ph": 7.429, "co_ml_min": 1876.3,
+        "blood_volume_ml": 1716.0, "lactate_mmol_l": 0.5, "bun_mg_dl": 27.6,
+        "game_time": "08:15", "is_night": false
+      },
+      "active_signs": [
+        {
+          "sign_id": "dyspnea", "display_name": "呼吸困难",
+          "severity": "mild", "organ_system": "respiratory",
+          "clue_id": "dyspnea", "localizing_value": "organ_localizing"
+        }
+      ],
+      "new_reports": [
+        {
+          "name": "血常规", "test_type": "blood_routine",
+          "results": [
+            {"param":"HCT","value":45.1,"unit":"%","normal_range":"37-55","flag":"normal"}
+          ],
+          "tags": ["dyspnea"], "summary": "血常规各项指标均在正常范围内。",
+          "timestamp_s": 1020.0, "observed_at_s": 1020.0,
+          "report_basis": "pre_advance", "available_after_min": 10, "available_at_s": 1620.0
+        }
+      ],
+      "pending_reports": 0,
+      "action_started_at_s": 720.0, "state_time_s": 1020.0,
+      "time_cost_min": 5, "success": true
+    }"#;
+
+    // 真实 new_session 返回的 case summary
+    const REAL_CASE_SUMMARY: &str = r#"{
+      "id": "case_001", "title": "呕吐与嗜睡",
+      "difficulty": 1, "difficulty_label": "★☆☆",
+      "species": "犬", "breed": "金毛寻回犬",
+      "age": "3岁", "weight_kg": 20.0,
+      "chief_complaint": "咳嗽3天伴精神沉郁，昨夜呼吸急促、拒食"
+    }"#;
+
+    #[test]
+    fn deserialize_real_snapshot_examine() {
+        let v: Value = serde_json::from_str(REAL_SNAPSHOT_EXAMINE).unwrap();
+        let snap: GameSnapshot = serde_json::from_value(v).unwrap();
+        assert_eq!(snap.phase, "playing");
+        assert_eq!(snap.medical_phase, "worsening");
+        // severity 是字符串枚举（mild/moderate/severe/critical）
+        assert_eq!(snap.active_signs[0].severity, "mild");
+        // localizing_value 是字符串枚举（organ_localizing/highly_localizing/...）
+        assert_eq!(snap.active_signs[0].localizing_value.as_deref(), Some("organ_localizing"));
+        // new_reports 透传（Vec<Value>）
+        assert_eq!(snap.new_reports.len(), 1);
+        assert_eq!(snap.new_reports[0]["test_type"], "blood_routine");
+    }
+
+    #[test]
+    fn deserialize_real_case_summary() {
+        let v: Value = serde_json::from_str(REAL_CASE_SUMMARY).unwrap();
+        let c: GameCaseSummary = serde_json::from_value(v).unwrap();
+        assert_eq!(c.id, "case_001");
+        assert_eq!(c.species, "犬");
+        assert_eq!(c.weight_kg, 20.0);
+    }
 }
