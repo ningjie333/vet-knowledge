@@ -57,6 +57,12 @@ pub fn row_from_drug(r: &SqliteRow) -> Drug {
         side_effects: r.get("side_effects"),
         adverse_mechanism: r.get("adverse_mechanism"),
         species_dosing: r.get("species_dosing"),
+        pubchem_cid: r.get("pubchem_cid"),
+        molecular_formula: r.get("molecular_formula"),
+        molecular_weight: r.get("molecular_weight"),
+        smiles: r.get("smiles"),
+        inchikey: r.get("inchikey"),
+        iupac_name: r.get("iupac_name"),
     }
 }
 
@@ -149,6 +155,12 @@ pub struct Drug {
     pub side_effects: Option<String>,
     pub adverse_mechanism: Option<String>,
     pub species_dosing: Option<String>,
+    pub pubchem_cid: Option<i64>,
+    pub molecular_formula: Option<String>,
+    pub molecular_weight: Option<f64>,
+    pub smiles: Option<String>,
+    pub inchikey: Option<String>,
+    pub iupac_name: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]

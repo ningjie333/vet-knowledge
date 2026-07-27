@@ -53,6 +53,12 @@ export interface Drug {
   pk_pd: string | null
   adverse_mechanism: string | null
   tags: string[]
+  pubchem_cid: number | null
+  molecular_formula: string | null
+  molecular_weight: number | null
+  smiles: string | null
+  inchikey: string | null
+  iupac_name: string | null
 }
 
 export interface Treatment {

@@ -191,6 +191,31 @@ function severityLabel(severity: string): string {
           </div>
         </section>
 
+        <!-- 化学性质 (PubChem) -->
+        <section v-if="selectedDrug.pubchem_cid" class="detail-section chem-section">
+          <h3>化学性质</h3>
+          <div class="chem-grid">
+            <div v-if="selectedDrug.molecular_formula" class="chem-item">
+              <span class="chem-label">分子式</span>
+              <span class="chem-value">{{ selectedDrug.molecular_formula }}</span>
+            </div>
+            <div v-if="selectedDrug.molecular_weight" class="chem-item">
+              <span class="chem-label">分子量</span>
+              <span class="chem-value">{{ selectedDrug.molecular_weight }} g/mol</span>
+            </div>
+            <div v-if="selectedDrug.pubchem_cid" class="chem-item">
+              <span class="chem-label">PubChem CID</span>
+              <a :href="`https://pubchem.ncbi.nlm.nih.gov/compound/${selectedDrug.pubchem_cid}`" target="_blank" class="chem-link">
+                {{ selectedDrug.pubchem_cid }}
+              </a>
+            </div>
+          </div>
+          <div v-if="selectedDrug.smiles" class="chem-smiles">
+            <span class="chem-label">SMILES</span>
+            <code>{{ selectedDrug.smiles }}</code>
+          </div>
+        </section>
+
         <!-- PK/PD -->
         <section v-if="selectedDrug.pk_pd" class="detail-section">
           <h3>药代动力学/药效学</h3>
@@ -319,4 +344,13 @@ function severityLabel(severity: string): string {
   white-space: pre-wrap;
   font-family: inherit;
 }
+.chem-section { background: #f8fafc; }
+.chem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.chem-item { display: flex; flex-direction: column; gap: 2px; padding: 8px; background: white; border-radius: 4px; }
+.chem-label { font-size: 11px; color: var(--color-text-secondary); }
+.chem-value { font-size: 13px; font-weight: 600; color: var(--color-text); }
+.chem-link { font-size: 13px; color: var(--color-primary); text-decoration: none; }
+.chem-link:hover { text-decoration: underline; }
+.chem-smiles { margin-top: 8px; }
+.chem-smiles code { display: block; font-size: 11px; padding: 6px 8px; background: white; border-radius: 4px; word-break: break-all; color: var(--color-text); }
 </style>

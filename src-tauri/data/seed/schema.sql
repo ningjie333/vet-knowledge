@@ -45,7 +45,13 @@ CREATE TABLE IF NOT EXISTS drugs (
     contraindications TEXT,
     side_effects TEXT,
     adverse_mechanism TEXT,
-    species_dosing TEXT
+    species_dosing TEXT,
+    pubchem_cid INTEGER,
+    molecular_formula TEXT,
+    molecular_weight REAL,
+    smiles TEXT,
+    inchikey TEXT,
+    iupac_name TEXT
 );
 
 CREATE TABLE IF NOT EXISTS diagnostic_tests (

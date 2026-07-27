@@ -188,14 +188,17 @@ def generate_from_json(json_path):
     drugs_list = data.get('drugs', [])
     L.append(f'-- ===== 药物 ({len(drugs_list)}种) =====')
     drug_cols = ['id', 'name_zh', 'name_en', 'drug_class', 'mechanism_of_action', 'pk_pd',
-                 'indications', 'contraindications', 'side_effects', 'adverse_mechanism', 'species_dosing']
+                 'indications', 'contraindications', 'side_effects', 'adverse_mechanism', 'species_dosing',
+                 'pubchem_cid', 'molecular_formula', 'molecular_weight', 'smiles', 'inchikey', 'iupac_name']
     for d in drugs_list:
         vals = [
             d['id'], d['name_zh'], d.get('name_en'), d.get('drug_class'),
             d.get('mechanism_of_action'), d.get('pk_pd'),
             to_json(d.get('indications')), to_json(d.get('contraindications')),
             to_json(d.get('side_effects')), d.get('adverse_mechanism'),
-            to_json(d.get('species_dosing'))
+            to_json(d.get('species_dosing')),
+            d.get('pubchem_cid'), d.get('molecular_formula'), d.get('molecular_weight'),
+            d.get('smiles'), d.get('inchikey'), d.get('iupac_name')
         ]
         L.append(INSERT_ROW('drugs', drug_cols, vals))
     L.append('')

@@ -9069,7 +9069,13 @@
       "indications": "- 尿路感染\n- 皮肤感染\n- 呼吸道感染\n- 前列腺炎\n- 革兰阴性菌感染",
       "contraindications": "- 幼龄动物（软骨毒性）\n- 猫高剂量（视网膜毒性）\n- 癫痫病史",
       "side_effects": "- 胃肠道反应\n- 中枢神经系统兴奋\n- 幼畜软骨损伤\n- 猫视网膜病变（高剂量）",
-      "species_dosing": "**犬**: dose=5-20 mg/kg, route=PO/IV/SC, frequency=q24h\n**猫**: dose=2.5-5 mg/kg, route=PO, frequency=q24h（不超过5mg/kg）"
+      "species_dosing": "**犬**: dose=5-20 mg/kg, route=PO/IV/SC, frequency=q24h\n**猫**: dose=2.5-5 mg/kg, route=PO, frequency=q24h（不超过5mg/kg）",
+      "pubchem_cid": 71188,
+      "molecular_formula": "C19H22FN3O3",
+      "molecular_weight": "359.4",
+      "smiles": null,
+      "inchikey": "SPFYMRJSYKOXGV-UHFFFAOYSA-N",
+      "iupac_name": "1-cyclopropyl-7-(4-ethylpiperazin-1-yl)-6-fluoro-4-oxoquinoline-3-carboxylic acid"
     },
     {
       "adverse_mechanism": "电解质紊乱（低钾、低钠、低氯性碱中毒）因髓袢Na⁺/K⁺/2Cl⁻转运抑制后，远端肾单位Na⁺-K⁺交换代偿性增加，同时Cl⁻丢失导致碳酸氢根重吸收增多。脱水与低血容量因过度利尿致有效循环血量减少。耳毒性在大剂量静脉推注时出现，因内淋巴液电解质成分改变损伤耳蜗毛细胞。",
@@ -9085,7 +9091,13 @@
       "indications": "- 充血性心力衰竭\n- 肺水肿\n- 胸腔积液\n- 急性肾损伤（促进利尿）\n- 高钙血症",
       "contraindications": "- 脱水\n- 无尿\n- 低钾血症\n- 磺胺类过敏",
       "side_effects": "- 脱水\n- 低钾血症\n- 低钠血症\n- 耳毒性（高剂量IV）\n- 肾前性氮质血症",
-      "species_dosing": "**犬**: dose=2-4 mg/kg, route=IV/IM/PO, frequency=q8-12h（急性）；1-2 mg/kg q12-24h（维持）\n**猫**: dose=1-2 mg/kg, route=IV/IM/PO, frequency=q12-24h"
+      "species_dosing": "**犬**: dose=2-4 mg/kg, route=IV/IM/PO, frequency=q8-12h（急性）；1-2 mg/kg q12-24h（维持）\n**猫**: dose=1-2 mg/kg, route=IV/IM/PO, frequency=q12-24h",
+      "pubchem_cid": 3440,
+      "molecular_formula": "C12H11ClN2O5S",
+      "molecular_weight": "330.74",
+      "smiles": null,
+      "inchikey": "ZZUFCTLCJUWOSV-UHFFFAOYSA-N",
+      "iupac_name": "4-chloro-2-(furan-2-ylmethylamino)-5-sulfamoylbenzoic acid"
     },
     {
       "adverse_mechanism": "医源性库欣综合征因长期超生理剂量使用导致蛋白质分解代谢增加、脂肪重新分布和糖异生增强。免疫抑制增加感染风险因细胞免疫和体液免疫均受抑制。胃肠道溃疡因前列腺素合成减少导致胃黏膜屏障功能下降。HPA轴抑制因负反馈抑制ACTH分泌，导致肾上腺皮质萎缩。",
@@ -9102,7 +9114,13 @@
       "indications": "- 炎症性肠病\n- 过敏/特应性皮炎\n- 免疫介导性疾病\n- 猫哮喘\n- 肿瘤化疗辅助\n- 肾上腺皮质功能减退",
       "contraindications": "- 真菌感染\n- 消化性溃疡\n- 未控制的糖尿病\n- 库欣综合征\n- 妊娠",
       "side_effects": "- 多饮多尿多食\n- 胃肠道溃疡\n- 肌肉萎缩\n- 皮肤变薄\n- 免疫抑制\n- 医源性库欣",
-      "species_dosing": "**犬**: dose=0.5-1 mg/kg, route=PO, frequency=q12h（抗炎）；0.1-0.25 mg/kg q48h（替代）\n**猫**: dose=1-2 mg/kg, route=PO, frequency=q12h（抗炎，猫需更高剂量）"
+      "species_dosing": "**犬**: dose=0.5-1 mg/kg, route=PO, frequency=q12h（抗炎）；0.1-0.25 mg/kg q48h（替代）\n**猫**: dose=1-2 mg/kg, route=PO, frequency=q12h（抗炎，猫需更高剂量）",
+      "pubchem_cid": 5755,
+      "molecular_formula": "C21H28O5",
+      "molecular_weight": "360.4",
+      "smiles": null,
+      "inchikey": "OIGNJSKKLXVSLS-VWUMJDOOSA-N",
+      "iupac_name": "(8S,9S,10R,11S,13S,14S,17R)-11,17-dihydroxy-17-(2-hydroxyacetyl)-10,13-dimethyl-7,8,9,11,12,14,15,16-octahydro-6H-cyclopenta[a]phenanthren-3-one"
     },
     {
       "adverse_mechanism": "低血糖为最常见不良反应，因外源性胰岛素过量导致葡萄糖摄取过度而肝糖输出不足。注射部位反应因局部微沉淀刺激皮下组织产生轻度炎症。胰岛素抗体形成可导致药效波动。Somogyi效应为反跳性高血糖，因低血糖触发反向调节激素大量释放。",
@@ -9118,7 +9136,13 @@
       "indications": "- 犬糖尿病（I型）\n- 猫糖尿病（II型，部分可缓解）\n- 糖尿病酮症酸中毒（急性期后）",
       "contraindications": "- 低血糖\n- 胰岛素瘤",
       "side_effects": "- 低血糖（最严重）\n- 注射部位反应\n- 体重增加\n- Somogyi效应（反跳性高血糖）",
-      "species_dosing": "**犬**: dose=0.25-0.5 U/kg, route=SC, frequency=q12h\n**猫**: dose=0.25-0.5 U/kg, route=SC, frequency=q12h（猫对胰岛素敏感，需谨慎调整）"
+      "species_dosing": "**犬**: dose=0.25-0.5 U/kg, route=SC, frequency=q12h\n**猫**: dose=0.25-0.5 U/kg, route=SC, frequency=q12h（猫对胰岛素敏感，需谨慎调整）",
+      "pubchem_cid": 118984454,
+      "molecular_formula": "C267H404N72O78S6",
+      "molecular_weight": "6063",
+      "smiles": null,
+      "inchikey": "COCFEDIXXNGUNL-RFKWWTKHSA-N",
+      "iupac_name": "(4S)-4-[[2-[[(1R,6R,12S,15S,18S,21S,24S,27S,30S,33S,36S,39S,42R,47R,50S,53S,56S,59S,62S,65S,68S,71S,74R,77S,80S,83S,88R)-88-[[(2S)-5-amino-2-[[(2S)-2-[[(2S)-2-[[(2S,3S)-2-[(2-aminoacetyl)amino]-3-methylpentanoyl]amino]-3-methylbutanoyl]amino]-4-carboxybutanoyl]amino]-5-oxopentanoyl]amino]-6-[[(2S)-2-[[(2S)-2-[[(2S)-5-amino-2-[[(2S)-4-amino-2-[[(2S)-2-[[(2S)-2-amino-3-phenylpropanoyl]amino]-3-methylbutanoyl]amino]-4-oxobutanoyl]amino]-5-oxopentanoyl]amino]-3-(1H-imidazol-4-yl)propanoyl]amino]-4-methylpentanoyl]amino]-53-(2-amino-2-oxoethyl)-62-(3-amino-3-oxopropyl)-77-[(2S)-butan-2-yl]-24,56-bis(2-carboxyethyl)-47-(carboxymethylcarbamoyl)-83-[(1R)-1-hydroxyethyl]-12,71,80-tris(hydroxymethyl)-33,50,65-tris[(4-hydroxyphenyl)methyl]-15-(1H-imidazol-4-ylmethyl)-27-methyl-18,30,36,59,68-pentakis(2-methylpropyl)-7,10,13,16,19,22,25,28,31,34,37,40,49,52,55,58,61,64,67,70,73,76,79,82,85,87-hexacosaoxo-21,39-di(propan-2-yl)-3,4,44,45,90,91-hexathia-8,11,14,17,20,23,26,29,32,35,38,41,48,51,54,57,60,63,66,69,72,75,78,81,84,86-hexacosazabicyclo[72.11.7]dononacontane-42-carbonyl]amino]acetyl]amino]-5-[[(2S)-1-[[2-[[(2S)-1-[[(2S)-1-[[(2S)-1-[[(2S,3R)-1-[(2S)-2-[[(2S)-6-amino-1-[[(2S,3R)-1-[[(2S)-5-carbamimidamido-1-[[(1S)-4-carbamimidamido-1-carboxybutyl]amino]-1-oxopentan-2-yl]amino]-3-hydroxy-1-oxobutan-2-yl]amino]-1-oxohexan-2-yl]carbamoyl]pyrrolidin-1-yl]-3-hydroxy-1-oxobutan-2-yl]amino]-3-(4-hydroxyphenyl)-1-oxopropan-2-yl]amino]-1-oxo-3-phenylpropan-2-yl]amino]-1-oxo-3-phenylpropan-2-yl]amino]-2-oxoethyl]amino]-5-carbamimidamido-1-oxopentan-2-yl]amino]-5-oxopentanoic acid"
     },
     {
       "adverse_mechanism": "心律失常因cAMP增加导致心肌自律性增高和触发活动，尤其在已有心律失常风险患畜中需谨慎。胃肠道反应因血管扩张和胃肠道平滑肌松弛。血小板减少罕见报道，机制可能与免疫介导的血小板破坏有关。高剂量可致低血压因外周血管过度扩张。",
@@ -9134,7 +9158,13 @@
       "indications": "- 充血性心力衰竭（MMVD/DCM）\n- 扩张型心肌病\n- 二尖瓣关闭不全",
       "contraindications": "- 肥厚型心肌病（HCM）\n- 主动脉瓣下狭窄\n- 心包填塞",
       "side_effects": "- 心律失常\n- 食欲下降\n- 腹泻\n- 多动（正性肌力作用）",
-      "species_dosing": "**犬**: dose=0.2-0.3 mg/kg, route=PO, frequency=q12h（餐前1h给药）\n**猫**: dose=0.1-0.25 mg/kg, route=PO, frequency=q12h（猫数据有限）"
+      "species_dosing": "**犬**: dose=0.2-0.3 mg/kg, route=PO, frequency=q12h（餐前1h给药）\n**猫**: dose=0.1-0.25 mg/kg, route=PO, frequency=q12h（猫数据有限）",
+      "pubchem_cid": 4823,
+      "molecular_formula": "C19H18N4O2",
+      "molecular_weight": "334.4",
+      "smiles": null,
+      "inchikey": "GLBJJMFZWDBELO-UHFFFAOYSA-N",
+      "iupac_name": "3-[2-(4-methoxyphenyl)-3H-benzimidazol-5-yl]-4-methyl-4,5-dihydro-1H-pyridazin-6-one"
     },
     {
       "adverse_mechanism": "猫面部瘙痒和自残为特异质反应，可能与免疫介导机制或药物直接毒性有关。粒细胞缺乏症因骨髓抑制导致中性粒细胞生成减少，属严重但罕见的不良反应。肝毒性因CYP450代谢产生的活性中间体损伤肝细胞。血小板减少和再生障碍性贫血为免疫介导的骨髓抑制。",
@@ -9150,7 +9180,13 @@
       "indications": "- 猫甲状腺功能亢进\n- 甲亢术前准备",
       "contraindications": "- 严重肝功能不全\n- 严重肾功能不全\n- 妊娠（猫）",
       "side_effects": "- 呕吐/厌食\n- 面部瘙痒（猫）\n- 血液学毒性（粒细胞减少）\n- 血小板减少\n- 肝毒性",
-      "species_dosing": "**猫**: dose=2.5 mg, route=PO/Transdermal, frequency=q12h（猫用透皮耳膏更安全）\n**犬**: dose=不适用（犬甲亢极罕见）, route=-, frequency=-"
+      "species_dosing": "**猫**: dose=2.5 mg, route=PO/Transdermal, frequency=q12h（猫用透皮耳膏更安全）\n**犬**: dose=不适用（犬甲亢极罕见）, route=-, frequency=-",
+      "pubchem_cid": 1349907,
+      "molecular_formula": "C4H6N2S",
+      "molecular_weight": "114.17",
+      "smiles": null,
+      "inchikey": "PMRYVIKBURPHAH-UHFFFAOYSA-N",
+      "iupac_name": "3-methyl-1H-imidazole-2-thione"
     },
     {
       "adverse_mechanism": "医源性甲状腺功能亢进因替代剂量过高，导致代谢率过度升高。心血管不良反应因T3增强心肌β-肾上腺素能受体敏感性，增加心肌耗氧量和心率，可诱发或加重心律失常。体重减轻和肌肉消耗因蛋白质分解代谢增加。多饮多尿因肾血流量增加致肾小球滤过率升高。",
@@ -9166,7 +9202,13 @@
       "indications": "- 犬甲状腺功能减退",
       "contraindications": "- 甲状腺功能亢进\n- 肾上腺皮质功能减退（需先补充糖皮质激素）\n- 未纠正的肾上腺功能不全",
       "side_effects": "- 多动/焦虑\n- 多饮多尿\n- 心动过速\n- 体重下降（过量时）",
-      "species_dosing": "**犬**: dose=0.02 mg/kg, route=PO, frequency=q12h\n**猫**: dose=不适用（猫甲减极罕见）, route=-, frequency=-"
+      "species_dosing": "**犬**: dose=0.02 mg/kg, route=PO, frequency=q12h\n**猫**: dose=不适用（猫甲减极罕见）, route=-, frequency=-",
+      "pubchem_cid": 5819,
+      "molecular_formula": "C15H11I4NO4",
+      "molecular_weight": "776.87",
+      "smiles": null,
+      "inchikey": "XUIIKFGFIJCVMT-LBPRGKRZSA-N",
+      "iupac_name": "(2S)-2-amino-3-[4-(4-hydroxy-3,5-diiodophenoxy)-3,5-diiodophenyl]propanoic acid"
     },
     {
       "adverse_mechanism": "胃酸屏障功能降低导致胃肠道感染风险增加，因胃酸杀菌作用减弱。高胃泌素血症因胃酸抑制后G细胞反馈性增生，长期可致肠嗜铬样细胞（ECL）增生。维生素B12和镁吸收减少因胃酸不足影响食物中营养素释放和吸收。罕见肝毒性因CYP450代谢产生的活性中间体。",
@@ -9182,7 +9224,13 @@
       "indications": "- 胃酸相关疾病\n- 消化性溃疡\n- NSAIDs胃保护\n- 胰腺炎辅助\n- 胃食管反流",
       "contraindications": "- 严重肝功能不全（需减量）",
       "side_effects": "- 胃肠道反应（少见）\n- 长期用可能影响钙吸收",
-      "species_dosing": "**犬**: dose=0.5-1 mg/kg, route=PO, frequency=q24h（空腹给药）\n**猫**: dose=0.7-1 mg/kg, route=PO, frequency=q24h（空腹给药）"
+      "species_dosing": "**犬**: dose=0.5-1 mg/kg, route=PO, frequency=q24h（空腹给药）\n**猫**: dose=0.7-1 mg/kg, route=PO, frequency=q24h（空腹给药）",
+      "pubchem_cid": 4594,
+      "molecular_formula": "C17H19N3O3S",
+      "molecular_weight": "345.4",
+      "smiles": null,
+      "inchikey": "SUBDBMMJDZJVOS-UHFFFAOYSA-N",
+      "iupac_name": "6-methoxy-2-[(4-methoxy-3,5-dimethyl-2-pyridinyl)methylsulfinyl]-1H-benzimidazole"
     },
     {
       "adverse_mechanism": "注射部位疼痛因注射液pH偏低（约2.5）刺激皮下组织。流涎为犬特有反应，可能与药物对中枢呕吐相关核团的短暂刺激有关。腹泻因NK-1受体阻断影响胃肠道正常运动和分泌功能。食欲下降与中枢食欲调节通路受影响有关。严重肝功能不全时药物清除减慢，不良反应风险增加。",
@@ -9198,7 +9246,13 @@
       "indications": "- 急性呕吐\n- 晕动症（犬）\n- 化疗相关呕吐\n- 胰腺炎辅助止吐",
       "contraindications": "- 16周龄以下犬\n- 胃肠道梗阻\n- 严重肝功能不全",
       "side_effects": "- 注射部位疼痛（SC）\n- 流涎（犬）\n- 腹泻\n- 食欲下降",
-      "species_dosing": "**犬**: dose=1 mg/kg SC 或 2 mg/kg PO, route=SC/PO, frequency=q24h（不超过5天连续SC）\n**猫**: dose=1 mg/kg, route=SC/PO, frequency=q24h（猫标签外使用）"
+      "species_dosing": "**犬**: dose=1 mg/kg SC 或 2 mg/kg PO, route=SC/PO, frequency=q24h（不超过5天连续SC）\n**猫**: dose=1 mg/kg, route=SC/PO, frequency=q24h（猫标签外使用）",
+      "pubchem_cid": 204108,
+      "molecular_formula": "C32H40N2O",
+      "molecular_weight": "468.7",
+      "smiles": null,
+      "inchikey": "OMPCVMLFFSQFIX-CONSDPRKSA-N",
+      "iupac_name": "(2S,3S)-2-benzhydryl-N-[(5-tert-butyl-2-methoxyphenyl)methyl]-1-azabicyclo[2.2.2]octan-3-amine"
     },
     {
       "adverse_mechanism": "恶心呕吐因μ受体激动和5-HT增加刺激化学感受器触发区。镇静和共济失调因中枢阿片受体和5-HT/NE系统调节改变。癫痫阈值降低因5-HT综合征风险和去甲肾上腺素能活性增强，与癫痫药物合用时需谨慎。便秘因肠道μ受体激动减少肠蠕动。猫可能出现瞳孔散大因中枢5-HT能活性增强。",
@@ -9214,7 +9268,13 @@
       "indications": "- 中度疼痛\n- 术后疼痛\n- 骨关节炎疼痛\n- 慢性疼痛管理",
       "contraindications": "- 癫痫病史\n- 与MAO抑制剂合用\n- 严重肝肾功能不全",
       "side_effects": "- 镇静\n- 恶心/呕吐\n- 便秘\n- 瞳孔缩小\n- 唾液分泌增加（猫）",
-      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q8-12h\n**猫**: dose=2-4 mg/kg, route=PO, frequency=q12h（猫代谢个体差异大）"
+      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q8-12h\n**猫**: dose=2-4 mg/kg, route=PO, frequency=q12h（猫代谢个体差异大）",
+      "pubchem_cid": 33741,
+      "molecular_formula": "C16H25NO2",
+      "molecular_weight": "263.37",
+      "smiles": null,
+      "inchikey": "TVYLLZQTGLZFBW-ZBFHGGJFSA-N",
+      "iupac_name": "cis-(1R,2R)-2-[(dimethylamino)methyl]-1-(3-methoxyphenyl)cyclohexan-1-ol"
     },
     {
       "adverse_mechanism": "胃肠道溃疡因COX-1在治疗剂量下仍有一定程度抑制，减少胃黏膜保护性PGE2合成。肾毒性因肾脏COX-2抑制导致肾血流量减少，尤其在低血容量或肾功能不全患畜中风险显著增加。肝毒性罕见但可能发生，与特异质免疫反应或代谢中间体蓄积有关。猫因半衰期延长和CYP代谢差异，毒性风险更高。",
@@ -9230,7 +9290,13 @@
       "indications": "- 骨关节炎疼痛\n- 术后镇痛\n- 软组织损伤\n- 慢性炎症",
       "contraindications": "- 脱水/低血容量\n- 消化道溃疡\n- 肾功能不全\n- 肝功能不全\n- 与其他NSAIDs或糖皮质激素合用",
       "side_effects": "- 胃肠道溃疡/呕吐/腹泻\n- 肾毒性\n- 肝毒性\n- 凝血障碍",
-      "species_dosing": "**犬**: dose=0.1 mg/kg, route=PO, frequency=q24h（首剂可0.2 mg/kg）\n**猫**: dose=0.05 mg/kg, route=PO/SC, frequency=q24h（猫单次SC注射后转为口服，不超过3天）"
+      "species_dosing": "**犬**: dose=0.1 mg/kg, route=PO, frequency=q24h（首剂可0.2 mg/kg）\n**猫**: dose=0.05 mg/kg, route=PO/SC, frequency=q24h（猫单次SC注射后转为口服，不超过3天）",
+      "pubchem_cid": 54677470,
+      "molecular_formula": "C14H13N3O4S2",
+      "molecular_weight": "351.4",
+      "smiles": null,
+      "inchikey": "ZRVUJXDFFKFLMG-UHFFFAOYSA-N",
+      "iupac_name": "4-hydroxy-2-methyl-N-(5-methyl-1,3-thiazol-2-yl)-1,1-dioxo-1lambda6,2-benzothiazine-3-carboxamide"
     },
     {
       "adverse_mechanism": "食管狭窄因片剂滞留食管释放高浓度药物腐蚀黏膜，需给药后喂水。胃肠道反应因药物扰乱肠道菌群和直接刺激胃肠道黏膜。光敏性因药物在皮肤蓄积后吸收紫外线产生自由基。幼畜牙齿和骨骼沉积因与钙离子螯合沉积于钙化组织。肝毒性在大剂量时可能出现。",
@@ -9246,7 +9312,13 @@
       "indications": "- 立克次体病（埃立克体、落基山斑疹热）\n- 支原体/衣原体感染\n- 莱姆病\n- 钩端螺旋体病\n- 心丝虫辅助",
       "contraindications": "- 妊娠\n- 8周龄以下幼畜（牙齿着色风险）\n- 严重肝功能不全",
       "side_effects": "- 食管狭窄（猫，给药后需冲水）\n- 呕吐/腹泻\n- 光敏反应\n- 肝毒性（罕见）",
-      "species_dosing": "**犬**: dose=5-10 mg/kg, route=PO, frequency=q12h（首剂加倍）\n**猫**: dose=5 mg/kg, route=PO, frequency=q12h（给药后冲水防食管狭窄）"
+      "species_dosing": "**犬**: dose=5-10 mg/kg, route=PO, frequency=q12h（首剂加倍）\n**猫**: dose=5 mg/kg, route=PO, frequency=q12h（给药后冲水防食管狭窄）",
+      "pubchem_cid": 54671203,
+      "molecular_formula": "C22H24N2O8",
+      "molecular_weight": "444.4",
+      "smiles": null,
+      "inchikey": "SGKRLCUYIXIAHR-AKNGSSGZSA-N",
+      "iupac_name": "(4S,4aR,5S,5aR,6R,12aR)-4-(dimethylamino)-1,5,10,11,12a-pentahydroxy-6-methyl-3,12-dioxo-4a,5,5a,6-tetrahydro-4H-tetracene-2-carboxamide"
     },
     {
       "adverse_mechanism": "神经毒性（共济失调、眼球震颤、癫痫）因活性代谢物损伤小脑和脑干神经元，与剂量累积相关，多见于长期大剂量使用时。胃肠道反应因药物直接刺激和肠道菌群失调。肝毒性因CYP450代谢产生的活性中间体。苦味反应为犬猫特有，因药物经唾液分泌。致畸性因DNA损伤作用，妊娠期禁用。",
@@ -9262,7 +9334,13 @@
       "indications": "- 厌氧菌感染\n- 贾第鞭毛虫\n- 炎症性肠病（免疫调节）\n- 肝性脑病\n- 坏死性肠炎",
       "contraindications": "- 妊娠（早期）\n- 严重肝病\n- 与华法林合用",
       "side_effects": "- 神经毒性（高剂量，共济失调/眼球震颤）\n- 食欲下降\n- 呕吐\n- 肝毒性（高剂量）",
-      "species_dosing": "**犬**: dose=10-15 mg/kg, route=PO, frequency=q12h\n**猫**: dose=10-15 mg/kg, route=PO, frequency=q12h（猫更易出现神经毒性）"
+      "species_dosing": "**犬**: dose=10-15 mg/kg, route=PO, frequency=q12h\n**猫**: dose=10-15 mg/kg, route=PO, frequency=q12h（猫更易出现神经毒性）",
+      "pubchem_cid": 4173,
+      "molecular_formula": "C6H9N3O3",
+      "molecular_weight": "171.15",
+      "smiles": null,
+      "inchikey": "VAOCPAMSLUNLGC-UHFFFAOYSA-N",
+      "iupac_name": "2-(2-methyl-5-nitroimidazol-1-yl)ethanol"
     },
     {
       "adverse_mechanism": "心脏毒性（心律失常）因Na⁺/K⁺-ATP酶过度抑制导致细胞内钙超载和延迟后除极，低钾血症时心肌对地高辛敏感性显著增加。胃肠道反应因延髓化学感受器触发区刺激和直接肠道作用。神经系统反应（视觉异常）因视网膜感光细胞Na⁺/K⁺-ATP酶抑制。治疗指数窄，中毒浓度与治疗浓度重叠。",
@@ -9278,7 +9356,13 @@
       "indications": "- 充血性心力衰竭\n- 心房颤动（心室率控制）\n- 室上性心动过速",
       "contraindications": "- 心室颤动\n- 肥厚型心肌病\n- 二度/三度房室传导阻滞\n- 低钾血症\n- 肾功能不全（需减量）",
       "side_effects": "- 心律失常（治疗窗窄）\n- 厌食/呕吐/腹泻\n- 嗜睡\n- 视觉障碍",
-      "species_dosing": "**犬**: dose=0.0025-0.005 mg/kg, route=PO, frequency=q12h（监测血药浓度）\n**猫**: dose=0.001-0.002 mg/kg, route=PO, frequency=q24-48h（猫极敏感）"
+      "species_dosing": "**犬**: dose=0.0025-0.005 mg/kg, route=PO, frequency=q12h（监测血药浓度）\n**猫**: dose=0.001-0.002 mg/kg, route=PO, frequency=q24-48h（猫极敏感）",
+      "pubchem_cid": 2724385,
+      "molecular_formula": "C41H64O14",
+      "molecular_weight": "780.9",
+      "smiles": null,
+      "inchikey": "LTMHDMANZUZIPE-PUGKRICDSA-N",
+      "iupac_name": "3-[(3S,5R,8R,9S,10S,12R,13S,14S,17R)-3-[(2R,4S,5S,6R)-5-[(2S,4S,5S,6R)-5-[(2S,4S,5S,6R)-4,5-dihydroxy-6-methyloxan-2-yl]oxy-4-hydroxy-6-methyloxan-2-yl]oxy-4-hydroxy-6-methyloxan-2-yl]oxy-12,14-dihydroxy-10,13-dimethyl-1,2,3,4,5,6,7,8,9,11,12,15,16,17-tetradecahydrocyclopenta[a]phenanthren-17-yl]-2H-furan-5-one"
     },
     {
       "adverse_mechanism": "镇静和共济失调因GABA能抑制增强导致中枢神经系统普遍抑制。肝毒性因CYP450酶诱导产生肝毒性代谢中间体，长期用药可致肝纤维化和肝硬化。多饮多食多尿因抗利尿激素敏感性降低和代谢率改变。再生障碍性贫血罕见但严重，与免疫介导的骨髓抑制有关。突然停药可诱发癫痫持续状态。",
@@ -9294,7 +9378,13 @@
       "indications": "- 癫痫（一线用药）\n- 特发性癫痫\n- 癫痫持续状态（IV地西泮控制后维持）",
       "contraindications": "- 严重肝病\n- 严重呼吸抑制",
       "side_effects": "- 镇静/共济失调（初期）\n- 多饮多尿多食\n- 肝毒性（长期）\n- 血液学毒性（罕见）",
-      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q12h（需监测血药浓度）\n**猫**: dose=2-3 mg/kg, route=PO, frequency=q12h"
+      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q12h（需监测血药浓度）\n**猫**: dose=2-3 mg/kg, route=PO, frequency=q12h",
+      "pubchem_cid": 4763,
+      "molecular_formula": "C12H12N2O3",
+      "molecular_weight": "232.23",
+      "smiles": null,
+      "inchikey": "DDBREPKUVSBGFI-UHFFFAOYSA-N",
+      "iupac_name": "5-ethyl-5-phenyl-1,3-diazinane-2,4,6-trione"
     },
     {
       "adverse_mechanism": "镇静和共济失调因中枢神经系统超极化抑制，多在治疗初期出现，通常数周后耐受。胃肠道刺激（恶心、呕吐）因溴离子直接刺激胃黏膜，与食物同服可减轻。溴中毒（精神错乱、肌阵挛、皮疹）因血清溴浓度超过250 mg/dL，肾脏排泄能力饱和。多饮多尿因溴离子干扰肾小管浓缩功能。",
@@ -9310,7 +9400,13 @@
       "indications": "- 癫痫（单药或联合苯巴比妥）\n- 苯巴比妥不耐受的癫痫病例",
       "contraindications": "- 肾功能不全\n- 对溴化物过敏",
       "side_effects": "- 镇静/共济失调\n- 多饮多尿\n- 胰腺炎（犬）\n- 皮肤疹",
-      "species_dosing": "**犬**: dose=30-40 mg/kg, route=PO, frequency=q24h（负荷剂量可加倍）\n**猫**: dose=不适用（猫溴化物可致致命性肺炎）, route=-, frequency=-"
+      "species_dosing": "**犬**: dose=30-40 mg/kg, route=PO, frequency=q24h（负荷剂量可加倍）\n**猫**: dose=不适用（猫溴化物可致致命性肺炎）, route=-, frequency=-",
+      "pubchem_cid": 253877,
+      "molecular_formula": "BrK",
+      "molecular_weight": "119.00",
+      "smiles": null,
+      "inchikey": "IOLCXVTUBQKXJR-UHFFFAOYSA-M",
+      "iupac_name": "potassium bromide"
     },
     {
       "adverse_mechanism": "胃肠道反应因药物扰乱肠道正常菌群，条件致病菌过度生长。过敏反应由β-内酰胺环降解产物作为半抗原与载体蛋白结合引发IgE介导的超敏反应，交叉过敏见于其他青霉素类。大剂量可致中枢神经兴奋（肌阵挛、癫痫），与GABA受体竞争性抑制有关。偶见结晶尿和间质性肾炎。",
@@ -9326,7 +9422,13 @@
       "indications": "- 尿路感染\n- 皮肤感染\n- 呼吸道感染\n- 牙科感染\n- 软组织感染",
       "contraindications": "- 青霉素过敏",
       "side_effects": "- 胃肠道反应\n- 过敏反应\n- 肠道菌群失调",
-      "species_dosing": "**犬**: dose=11-22 mg/kg, route=PO, frequency=q12h\n**猫**: dose=11-22 mg/kg, route=PO, frequency=q12h"
+      "species_dosing": "**犬**: dose=11-22 mg/kg, route=PO, frequency=q12h\n**猫**: dose=11-22 mg/kg, route=PO, frequency=q12h",
+      "pubchem_cid": 33613,
+      "molecular_formula": "C16H19N3O5S",
+      "molecular_weight": "365.4",
+      "smiles": null,
+      "inchikey": "LSQZJLSUYDQPKJ-NJBDSQKTSA-N",
+      "iupac_name": "(2S,5R,6R)-6-[[(2R)-2-amino-2-(4-hydroxyphenyl)acetyl]amino]-3,3-dimethyl-7-oxo-4-thia-1-azabicyclo[3.2.0]heptane-2-carboxylic acid"
     },
     {
       "adverse_mechanism": "胃肠道反应因肠道菌群失调，表现为呕吐和腹泻。过敏反应较青霉素类少见，但交叉过敏率约5-10%。偶见结晶尿和肾小管损伤，大剂量使用时需注意水化。罕见粒细胞减少和嗜酸性粒细胞增多，与免疫介导机制有关。",
@@ -9342,7 +9444,13 @@
       "indications": "- 皮肤感染\n- 尿路感染\n- 软组织感染\n- 骨关节感染",
       "contraindications": "- 青霉素/头孢菌素过敏\n- 严重肾功能不全（需调整剂量）",
       "side_effects": "- 胃肠道反应\n- 过敏反应\n- 注射部位疼痛（IM）",
-      "species_dosing": "**犬**: dose=22-30 mg/kg, route=PO, frequency=q12h\n**猫**: dose=22-30 mg/kg, route=PO, frequency=q12h"
+      "species_dosing": "**犬**: dose=22-30 mg/kg, route=PO, frequency=q12h\n**猫**: dose=22-30 mg/kg, route=PO, frequency=q12h",
+      "pubchem_cid": 27447,
+      "molecular_formula": "C16H17N3O4S",
+      "molecular_weight": "347.4",
+      "smiles": null,
+      "inchikey": "ZAIPMKNFIOOWCQ-UEKVPHQBSA-N",
+      "iupac_name": "(6R,7R)-7-[[(2R)-2-amino-2-phenylacetyl]amino]-3-methyl-8-oxo-5-thia-1-azabicyclo[4.2.0]oct-2-ene-2-carboxylic acid"
     },
     {
       "adverse_mechanism": "骨髓抑制为最严重不良反应，因抑制线粒体蛋白合成导致可逆性红细胞生成抑制，与剂量相关。胃肠道反应因肠道菌群失调。肝毒性罕见，与代谢中间体蓄积有关。免疫抑制作用因高剂量时抑制抗体生成。局部注射部位可出现组织刺激和炎症反应。",
@@ -9358,7 +9466,13 @@
       "indications": "- 呼吸道感染（尤其牛呼吸道病）\n- 皮肤感染\n- 多药耐药菌感染",
       "contraindications": "- 妊娠\n- 疫苗接种期间\n- 家禽（禁用）",
       "side_effects": "- 胃肠道反应\n- 骨髓抑制（罕见）\n- 注射部位反应",
-      "species_dosing": "**犬**: dose=20 mg/kg, route=PO/SC, frequency=q8-12h\n**猫**: dose=标签外使用，数据有限, route=PO, frequency=谨慎使用"
+      "species_dosing": "**犬**: dose=20 mg/kg, route=PO/SC, frequency=q8-12h\n**猫**: dose=标签外使用，数据有限, route=PO, frequency=谨慎使用",
+      "pubchem_cid": 114811,
+      "molecular_formula": "C12H14Cl2FNO4S",
+      "molecular_weight": "358.2",
+      "smiles": null,
+      "inchikey": "AYIRNRDRBQJXIF-NXEZZACHSA-N",
+      "iupac_name": "2,2-dichloro-N-[(1R,2S)-3-fluoro-1-hydroxy-1-(4-methylsulfonylphenyl)propan-2-yl]acetamide"
     },
     {
       "adverse_mechanism": "胃肠道反应（呕吐、腹泻、厌食）。肝酶升高（罕见肝毒性，需监测）。味觉障碍。皮疹。",
@@ -9374,7 +9488,13 @@
       "indications": "- 皮肤真菌病（癣菌）\n- 甲真菌病\n- 马拉色菌感染",
       "contraindications": "- 严重肝功能不全",
       "side_effects": "- 胃肠道反应\n- 肝酶升高\n- 味觉障碍（罕见）",
-      "species_dosing": "**犬**: dose=30 mg/kg, route=PO, frequency=q24h\n**猫**: dose=20-40 mg/kg, route=PO, frequency=q24h（猫对疗程要求更长）"
+      "species_dosing": "**犬**: dose=30 mg/kg, route=PO, frequency=q24h\n**猫**: dose=20-40 mg/kg, route=PO, frequency=q24h（猫对疗程要求更长）",
+      "pubchem_cid": 1549008,
+      "molecular_formula": "C21H25N",
+      "molecular_weight": "291.4",
+      "smiles": null,
+      "inchikey": "DOMXUEMWDBAQBQ-WEVVVXLNSA-N",
+      "iupac_name": "(E)-N,6,6-trimethyl-N-(naphthalen-1-ylmethyl)hept-2-en-4-yn-1-amine"
     },
     {
       "adverse_mechanism": "胃肠道反应（厌食、呕吐）。肝毒性（剂量依赖性，需监测肝酶）。与多种药物有相互作用（CYP450抑制）。负性肌力作用（慎用于心功能不全）。",
@@ -9390,7 +9510,13 @@
       "indications": "- 深部真菌病（组织胞浆菌、球孢子菌、隐球菌）\n- 皮肤真菌病\n- 曲霉菌病",
       "contraindications": "- 严重肝病\n- 妊娠\n- 与某些心脏药物合用",
       "side_effects": "- 肝毒性\n- 胃肠道反应\n- 皮肤溃疡（犬脉冲疗法时）\n- 食欲下降",
-      "species_dosing": "**犬**: dose=5-10 mg/kg, route=PO, frequency=q12-24h（与食物同服）\n**猫**: dose=5-10 mg/kg, route=PO, frequency=q24h（液体剂型优于胶囊）"
+      "species_dosing": "**犬**: dose=5-10 mg/kg, route=PO, frequency=q12-24h（与食物同服）\n**猫**: dose=5-10 mg/kg, route=PO, frequency=q24h（液体剂型优于胶囊）",
+      "pubchem_cid": 55283,
+      "molecular_formula": "C35H38Cl2N8O4",
+      "molecular_weight": "705.6",
+      "smiles": null,
+      "inchikey": "VHVPQPYKVGDNFY-ZPGVKDDISA-N",
+      "iupac_name": "2-butan-2-yl-4-[4-[4-[4-[[(2R,4S)-2-(2,4-dichlorophenyl)-2-(1,2,4-triazol-1-ylmethyl)-1,3-dioxolan-4-yl]methoxy]phenyl]piperazin-1-yl]phenyl]-1,2,4-triazol-3-one"
     },
     {
       "adverse_mechanism": "镇静、共济失调。矛盾性兴奋（罕见）。猫罕见但严重的特发性肝衰竭。长期使用产生耐受性和依赖性。",
@@ -9406,7 +9532,13 @@
       "indications": "- 癫痫持续状态（IV）\n- 焦虑/行为问题\n- 术前镇静\n- 骨骼肌痉挛\n- 猫特发性膀胱炎（急性期）",
       "contraindications": "- 严重肝功能不全（猫口服可致致命性肝坏死）\n- 重症肌无力\n- 严重呼吸抑制",
       "side_effects": "- 镇静/共济失调\n- 肝毒性（猫口服）\n- 兴奋性矛盾反应（猫）\n- 呼吸抑制（IV）",
-      "species_dosing": "**犬**: dose=0.5-2 mg/kg IV（癫痫持续状态）；0.2-0.5 mg/kg PO, route=IV/PO, frequency=按需\n**猫**: dose=0.5-1 mg/kg IV（癫痫持续状态）, route=IV, frequency=按需（避免口服，肝毒性风险）"
+      "species_dosing": "**犬**: dose=0.5-2 mg/kg IV（癫痫持续状态）；0.2-0.5 mg/kg PO, route=IV/PO, frequency=按需\n**猫**: dose=0.5-1 mg/kg IV（癫痫持续状态）, route=IV, frequency=按需（避免口服，肝毒性风险）",
+      "pubchem_cid": 3016,
+      "molecular_formula": "C16H13ClN2O",
+      "molecular_weight": "284.74",
+      "smiles": null,
+      "inchikey": "AAOVKJBEBIDNHE-UHFFFAOYSA-N",
+      "iupac_name": "7-chloro-1-methyl-5-phenyl-3H-1,4-benzodiazepin-2-one"
     },
     {
       "adverse_mechanism": "短暂性低血压或高血压。兴奋、震颤。快速逆转可能导致急性疼痛。流涎。",
@@ -9422,7 +9554,13 @@
       "indications": "- 右美托咪定/美托咪定麻醉后逆转\n- 镇静逆转",
       "contraindications": "- 妊娠\n- 心脏病（相对）",
       "side_effects": "- 短暂性低血压\n- 呕吐\n- 兴奋/躁动\n- 心动过速",
-      "species_dosing": "**犬**: dose=与右美托咪定等量（mg）, route=IM, frequency=单次\n**猫**: dose=与右美托咪定等量（mg）, route=IM, frequency=单次"
+      "species_dosing": "**犬**: dose=与右美托咪定等量（mg）, route=IM, frequency=单次\n**猫**: dose=与右美托咪定等量（mg）, route=IM, frequency=单次",
+      "pubchem_cid": 71310,
+      "molecular_formula": "C14H16N2",
+      "molecular_weight": "212.29",
+      "smiles": null,
+      "inchikey": "HSWPZIDYAHLZDD-UHFFFAOYSA-N",
+      "iupac_name": "5-(2-ethyl-1,3-dihydroinden-2-yl)-1H-imidazole"
     },
     {
       "adverse_mechanism": "急性戒断症状（阿片依赖动物）：烦躁、呕吐、腹泻。疼痛快速恢复。心血管反应（高血压、心律失常、肺水肿）。",
@@ -9438,7 +9576,13 @@
       "indications": "- 阿片类药物过量逆转\n- 术后阿片类药物残余效应",
       "contraindications": "- 阿片类药物依赖动物（可诱发戒断）",
       "side_effects": "- 疼痛反弹\n- 心动过速\n- 兴奋/躁动\n- 肺水肿（罕见，快速IV）",
-      "species_dosing": "**犬**: dose=0.01-0.04 mg/kg, route=IV/IM/SC, frequency=可重复（作用时间短于阿片类）\n**猫**: dose=0.01-0.04 mg/kg, route=IV/IM/SC, frequency=可重复"
+      "species_dosing": "**犬**: dose=0.01-0.04 mg/kg, route=IV/IM/SC, frequency=可重复（作用时间短于阿片类）\n**猫**: dose=0.01-0.04 mg/kg, route=IV/IM/SC, frequency=可重复",
+      "pubchem_cid": 5284596,
+      "molecular_formula": "C19H21NO4",
+      "molecular_weight": "327.4",
+      "smiles": null,
+      "inchikey": "UZHSEJADLWPNLE-GRGSLBFTSA-N",
+      "iupac_name": "(4R,4aS,7aR,12bS)-4a,9-dihydroxy-3-prop-2-enyl-2,4,5,6,7a,13-hexahydro-1H-4,12-methanobenzofuro[3,2-e]isoquinolin-7-one"
     },
     {
       "adverse_mechanism": "注射部位反应（疼痛、肿胀）。罕见过敏反应（静脉注射时风险较高，建议皮下或口服给药）。过量可致血栓风险。",
@@ -9451,7 +9595,13 @@
       "indications": "- 香豆素类灭鼠药中毒\n- 华法林过量\n- 严重肝病凝血障碍\n- 新生畜维生素K缺乏",
       "contraindications": "- 无特殊绝对禁忌",
       "side_effects": "- 过敏反应（IV）\n- 注射部位反应\n- 高铁血红蛋白血症（极高剂量）",
-      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO/SC, frequency=q12-24h（随脂餐口服）；疗程2-4周（灭鼠药中毒）\n**猫**: dose=2-5 mg/kg, route=PO/SC, frequency=q12-24h（猫对灭鼠药更敏感）"
+      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO/SC, frequency=q12-24h（随脂餐口服）；疗程2-4周（灭鼠药中毒）\n**猫**: dose=2-5 mg/kg, route=PO/SC, frequency=q12-24h（猫对灭鼠药更敏感）",
+      "pubchem_cid": 5284607,
+      "molecular_formula": "C31H46O2",
+      "molecular_weight": "450.7",
+      "smiles": null,
+      "inchikey": "MBWXNTAXLNYFJB-NKFFZRIASA-N",
+      "iupac_name": "2-methyl-3-[(E,7R,11R)-3,7,11,15-tetramethylhexadec-2-enyl]naphthalene-1,4-dione"
     },
     {
       "adverse_mechanism": "便秘最常见（约2-5%）。罕见铝蓄积（长期使用于肾功能不全动物）。可能影响其他药物吸收（需间隔2小时给药）。",
@@ -9483,7 +9633,13 @@
       "indications": "- 便秘\n- 巨结肠（猫）\n- 粪便嵌塞\n- 灌肠（DSS灌肠液）",
       "contraindications": "- 肠梗阻\n- 消化道穿孔",
       "side_effects": "- 腹泻\n- 电解质紊乱（长期口服）\n- 灌肠时黏膜刺激",
-      "species_dosing": "**犬**: dose=50-200 mg, route=PO, frequency=q12-24h\n**猫**: dose=50 mg, route=PO, frequency=q24h"
+      "species_dosing": "**犬**: dose=50-200 mg, route=PO, frequency=q12-24h\n**猫**: dose=50 mg, route=PO, frequency=q24h",
+      "pubchem_cid": 23673837,
+      "molecular_formula": "C20H37NaO7S",
+      "molecular_weight": "444.6",
+      "smiles": null,
+      "inchikey": "APSBXTVYXVQYAB-UHFFFAOYSA-M",
+      "iupac_name": "sodium 1,4-bis(2-ethylhexoxy)-1,4-dioxobutane-2-sulfonate"
     },
     {
       "adverse_mechanism": "液体过负荷（尤其心功能不全或肾功能不全时可致肺水肿）。电解质稀释。乳酸根代谢障碍时（肝功能不全）可致代谢性碱中毒。",
@@ -9515,7 +9671,13 @@
       "indications": "- 中毒急救（吸附胃肠道毒物）\n- 某些药物过量\n- 乙二醇中毒辅助",
       "contraindications": "- 肠梗阻/穿孔\n- 腐蚀性物质中毒\n- 无保护气道（误吸风险）",
       "side_effects": "- 呕吐/误吸\n- 便秘/肠梗阻\n- 高钠血症（含山梨醇制剂）\n- 黑便",
-      "species_dosing": "**犬**: dose=1-4 g/kg（首剂）, route=PO, frequency=q4-8h（含山梨醇制剂不超过2次）\n**猫**: dose=1-4 g/kg（首剂）, route=PO, frequency=q4-8h（猫需更小体积，注意误吸风险）"
+      "species_dosing": "**犬**: dose=1-4 g/kg（首剂）, route=PO, frequency=q4-8h（含山梨醇制剂不超过2次）\n**猫**: dose=1-4 g/kg（首剂）, route=PO, frequency=q4-8h（猫需更小体积，注意误吸风险）",
+      "pubchem_cid": 5462310,
+      "molecular_formula": "C",
+      "molecular_weight": "12.011",
+      "smiles": null,
+      "inchikey": "OKTJSMMVPCPJKN-UHFFFAOYSA-N",
+      "iupac_name": "methane"
     },
     {
       "adverse_mechanism": "胃肠道反应（呕吐、腹泻、溃疡）。肾毒性（尤其脱水时）。肝毒性。",
@@ -9531,7 +9693,13 @@
       "indications": "- 术后镇痛\n- 骨关节炎\n- 软组织炎症\n- 发热（猫）",
       "contraindications": "- 脱水/低血容量\n- 消化道溃疡\n- 肾功能不全\n- 肝功能不全\n- 妊娠",
       "side_effects": "- 胃肠道反应\n- 肾毒性\n- 肝毒性\n- 注射部位反应（SC）",
-      "species_dosing": "**犬**: dose=4 mg/kg, route=SC/PO, frequency=单次SC或q24h PO（不超过3天）\n**猫**: dose=4 mg/kg, route=SC, frequency=单次（猫仅批准单次SC注射）"
+      "species_dosing": "**犬**: dose=4 mg/kg, route=SC/PO, frequency=单次SC或q24h PO（不超过3天）\n**猫**: dose=4 mg/kg, route=SC, frequency=单次（猫仅批准单次SC注射）",
+      "pubchem_cid": 610479,
+      "molecular_formula": "C14H12ClNO2",
+      "molecular_weight": "261.70",
+      "smiles": null,
+      "inchikey": "YEZNLOUZAIOMLT-UHFFFAOYSA-N",
+      "iupac_name": "2-(3-chloro-2-methylanilino)benzoic acid"
     },
     {
       "adverse_mechanism": "镇静、共济失调（最常见，与剂量相关）。外周水肿。体重增加。",
@@ -9547,7 +9715,13 @@
       "indications": "- 神经性疼痛\n- 慢性疼痛（联合NSAIDs）\n- 术后镇痛辅助\n- 焦虑（猫术前）\n- 难治性癫痫辅助",
       "contraindications": "- 严重肾功能不全（需减量）",
       "side_effects": "- 镇静/共济失调\n- 外周水肿\n- 含Xylitol的口服液（犬禁用）",
-      "species_dosing": "**犬**: dose=5-10 mg/kg, route=PO, frequency=q8-12h（镇痛）；3-5 mg/kg q8h（起始）\n**猫**: dose=5-10 mg/kg, route=PO, frequency=q8-12h（镇痛/术前镇静）"
+      "species_dosing": "**犬**: dose=5-10 mg/kg, route=PO, frequency=q8-12h（镇痛）；3-5 mg/kg q8h（起始）\n**猫**: dose=5-10 mg/kg, route=PO, frequency=q8-12h（镇痛/术前镇静）",
+      "pubchem_cid": 3446,
+      "molecular_formula": "C9H17NO2",
+      "molecular_weight": "171.24",
+      "smiles": null,
+      "inchikey": "UGJMXCAKCUNAIE-UHFFFAOYSA-N",
+      "iupac_name": "2-[1-(aminomethyl)cyclohexyl]acetic acid"
     },
     {
       "adverse_mechanism": "唾液分泌增多（需合用阿托品减少分泌）。肌肉紧张、惊厥（恢复期）。颅内压和眼压升高。单独使用镇痛效果有限，常需与镇静剂联合。",
@@ -9563,7 +9737,13 @@
       "indications": "- 诱导麻醉\n- 镇痛（亚麻醉剂量）\n- 癫痫持续状态\n- 安乐死（辅助）",
       "contraindications": "- 严重高血压\n- 颅内压升高\n- 严重肝病\n- 单独使用（需联合镇静剂）",
       "side_effects": "- 唾液分泌增加\n- 肌肉僵直\n- 精神性反应（猫）\n- 呼吸抑制（高剂量）\n- 惊厥阈值降低",
-      "species_dosing": "**犬**: dose=5-10 mg/kg IV（诱导，联合镇静剂）, route=IV/IM, frequency=按需\n**猫**: dose=5-10 mg/kg IV（诱导）, route=IV/IM, frequency=按需（猫可单独用于制动）"
+      "species_dosing": "**犬**: dose=5-10 mg/kg IV（诱导，联合镇静剂）, route=IV/IM, frequency=按需\n**猫**: dose=5-10 mg/kg IV（诱导）, route=IV/IM, frequency=按需（猫可单独用于制动）",
+      "pubchem_cid": 3821,
+      "molecular_formula": "C13H16ClNO",
+      "molecular_weight": "237.72",
+      "smiles": null,
+      "inchikey": "YQEZLKZALYSWHR-UHFFFAOYSA-N",
+      "iupac_name": "2-(2-chlorophenyl)-2-(methylamino)cyclohexan-1-one"
     },
     {
       "adverse_mechanism": "镇静。胃肠道反应（恶心、呕吐）。大剂量时可能出现烦躁不安。",
@@ -9579,7 +9759,13 @@
       "indications": "- 中度至重度疼痛\n- 术前镇痛\n- 术后镇痛\n- 内脏痛",
       "contraindications": "- 严重肝肾功能不全\n- 与纯阿片激动剂合用（可拮抗其作用）",
       "side_effects": "- 镇静\n- 流涎\n- 共济失调\n- 食欲下降\n- 呼吸抑制（高剂量）",
-      "species_dosing": "**犬**: dose=0.2-0.4 mg/kg, route=IV/IM/SC, frequency=q2-4h（镇痛）；0.25-0.5 mg/kg PO q6-8h\n**猫**: dose=0.2-0.4 mg/kg, route=IV/IM/SC, frequency=q2-4h（猫对布托啡诺敏感，镇痛效果好）"
+      "species_dosing": "**犬**: dose=0.2-0.4 mg/kg, route=IV/IM/SC, frequency=q2-4h（镇痛）；0.25-0.5 mg/kg PO q6-8h\n**猫**: dose=0.2-0.4 mg/kg, route=IV/IM/SC, frequency=q2-4h（猫对布托啡诺敏感，镇痛效果好）",
+      "pubchem_cid": 5361092,
+      "molecular_formula": "C21H29NO2",
+      "molecular_weight": "327.5",
+      "smiles": null,
+      "inchikey": "IFKLAQQSCNILHL-QHAWAJNXSA-N",
+      "iupac_name": "(1S,9R,10S)-17-(cyclobutylmethyl)-17-azatetracyclo[7.5.3.01,10.02,7]heptadeca-2(7),3,5-triene-4,10-diol"
     },
     {
       "adverse_mechanism": "口腔念珠菌感染（局部免疫抑制）。声音嘶哑。长期高剂量全身吸收后可出现库欣样症状。",
@@ -9596,7 +9782,13 @@
       "indications": "- 炎症性肠病（IBD）\n- 慢性肠病\n- 结肠炎",
       "contraindications": "- 真菌感染\n- 妊娠\n- 对布地奈德过敏",
       "side_effects": "- 医源性库欣（长期高剂量）\n- 肾上腺抑制\n- 胃肠道反应（少见）",
-      "species_dosing": "**犬**: dose=1-3 mg/只（小型犬1mg，大型犬3mg）, route=PO, frequency=q24h（逐渐减量）\n**猫**: dose=1 mg/只, route=PO, frequency=q24h（猫IBD治疗）"
+      "species_dosing": "**犬**: dose=1-3 mg/只（小型犬1mg，大型犬3mg）, route=PO, frequency=q24h（逐渐减量）\n**猫**: dose=1 mg/只, route=PO, frequency=q24h（猫IBD治疗）",
+      "pubchem_cid": 5281004,
+      "molecular_formula": "C25H34O6",
+      "molecular_weight": "430.5",
+      "smiles": null,
+      "inchikey": "VOVIALXJUBGFJZ-KWVAZRHASA-N",
+      "iupac_name": "(1S,2S,4R,8S,9S,11S,12S,13R)-11-hydroxy-8-(2-hydroxyacetyl)-9,13-dimethyl-6-propyl-5,7-dioxapentacyclo[10.8.0.02,9.04,8.013,18]icosa-14,17-dien-16-one"
     },
     {
       "adverse_mechanism": "胃肠道反应。失眠（建议早晨给药）。与哌替啶合用可致严重不良反应（5-羟色胺综合征）。",
@@ -9612,7 +9804,13 @@
       "indications": "- 犬库欣综合征（垂体依赖型）\n- 犬认知功能障碍综合征（CDS）",
       "contraindications": "- 与SSRI类抗抑郁药合用\n- 与哌替啶合用\n- 妊娠",
       "side_effects": "- 呕吐/厌食\n- 焦虑/兴奋\n- 心动过速\n- 嗜睡\n- 耳部瘙痒",
-      "species_dosing": "**犬**: dose=1 mg/kg, route=PO, frequency=q24h（库欣）；0.5-1 mg/kg q24h（CDS）\n**猫**: dose=不适用（猫司来吉兰疗效未证实）, route=-, frequency=-"
+      "species_dosing": "**犬**: dose=1 mg/kg, route=PO, frequency=q24h（库欣）；0.5-1 mg/kg q24h（CDS）\n**猫**: dose=不适用（猫司来吉兰疗效未证实）, route=-, frequency=-",
+      "pubchem_cid": 26757,
+      "molecular_formula": "C13H17N",
+      "molecular_weight": "187.28",
+      "smiles": null,
+      "inchikey": "MEZLKOACVSPNER-GFCCVEGCSA-N",
+      "iupac_name": "(2R)-N-methyl-1-phenyl-N-prop-2-ynylpropan-2-amine"
     },
     {
       "adverse_mechanism": "镇静、共济失调。胃肠道反应。罕见阴茎异常勃起（犬）。与SSRI合用时需谨慎。",
@@ -9629,7 +9827,13 @@
       "indications": "- 焦虑/行为问题\n- 术前镇静\n- 术后笼养镇静\n- 噪音恐惧症\n- 分离焦虑",
       "contraindications": "- 与MAO抑制剂合用\n- 严重肝功能不全\n- 已知QT延长",
       "side_effects": "- 镇静（最常见）\n- 共济失调\n- 胃肠道反应\n- 激越（少见）\n- 阴茎异常勃起（犬，未去势）",
-      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q8-12h（镇静/焦虑）；术前2-3h给予5-10 mg/kg\n**猫**: dose=50-100 mg/只, route=PO, frequency=q24h（猫标签外使用，数据有限）"
+      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q8-12h（镇静/焦虑）；术前2-3h给予5-10 mg/kg\n**猫**: dose=50-100 mg/只, route=PO, frequency=q24h（猫标签外使用，数据有限）",
+      "pubchem_cid": 5533,
+      "molecular_formula": "C19H22ClN5O",
+      "molecular_weight": "371.9",
+      "smiles": null,
+      "inchikey": "PHLBKPHSAVXXEF-UHFFFAOYSA-N",
+      "iupac_name": "2-[3-[4-(3-chlorophenyl)piperazin-1-yl]propyl]-[1,2,4]triazolo[4,3-a]pyridin-3-one"
     },
     {
       "adverse_mechanism": "低血压（尤其脱水或合用利尿剂时）。高钾血症。肾功能恶化。胃肠道反应。咳嗽（人医常见，兽医少见）。",
@@ -9645,7 +9849,13 @@
       "indications": "- 慢性肾病（减少蛋白尿）\n- 心力衰竭辅助\n- 高血压",
       "contraindications": "- 双侧肾动脉狭窄\n- 妊娠\n- 严重肾功能不全（需谨慎）\n- 低血压",
       "side_effects": "- 低血压\n- 高钾血症\n- 食欲下降\n- 呕吐/腹泻\n- 肾功能恶化（罕见）",
-      "species_dosing": "**犬**: dose=0.25-0.5 mg/kg, route=PO, frequency=q24h\n**猫**: dose=0.25-0.5 mg/kg, route=PO, frequency=q24h（猫CKD蛋白尿管理）"
+      "species_dosing": "**犬**: dose=0.25-0.5 mg/kg, route=PO, frequency=q24h\n**猫**: dose=0.25-0.5 mg/kg, route=PO, frequency=q24h（猫CKD蛋白尿管理）",
+      "pubchem_cid": 5362124,
+      "molecular_formula": "C24H28N2O5",
+      "molecular_weight": "424.5",
+      "smiles": null,
+      "inchikey": "XPCFTKFZXHTYIP-PMACEKPBSA-N",
+      "iupac_name": "2-[(3S)-3-[[(2S)-1-ethoxy-1-oxo-4-phenylbutan-2-yl]amino]-2-oxo-4,5-dihydro-3H-1-benzazepin-1-yl]acetic acid"
     },
     {
       "adverse_mechanism": "胃肠道反应（恶心、呕吐、便秘）。罕见铝样脑病（理论风险）。",
@@ -9661,7 +9871,13 @@
       "indications": "- 高磷血症（CKD相关）\n- 慢性肾病矿物质代谢紊乱",
       "contraindications": "- 低磷血症\n- 肠梗阻",
       "side_effects": "- 胃肠道反应（恶心/呕吐）\n- 便秘\n- 电解质紊乱",
-      "species_dosing": "**犬**: dose=30-90 mg/kg, route=PO, frequency=q24h（与食物同服）\n**猫**: dose=30-60 mg/kg, route=PO, frequency=q24h（与食物同服）"
+      "species_dosing": "**犬**: dose=30-90 mg/kg, route=PO, frequency=q24h（与食物同服）\n**猫**: dose=30-60 mg/kg, route=PO, frequency=q24h（与食物同服）",
+      "pubchem_cid": 168924,
+      "molecular_formula": "C3La2O9",
+      "molecular_weight": "457.84",
+      "smiles": null,
+      "inchikey": "NZPIUJUFIFZSPW-UHFFFAOYSA-H",
+      "iupac_name": "bis(lanthanum(3+));tricarbonate"
     },
     {
       "adverse_mechanism": "镇静、低血压（α-1受体阻断）。体温调节障碍（环境温度敏感）。斗牛犬品系可致晕厥。降低癫痫阈值。",
@@ -9677,7 +9893,13 @@
       "indications": "- 术前镇静\n- 镇静/制动\n- 镇吐辅助\n- 化学保定",
       "contraindications": "- 癫痫（降低惊厥阈值）\n- 严重心血管疾病\n- 妊娠\n- 拳师犬（易晕厥）\n- 老年/体弱动物",
       "side_effects": "- 镇静\n- 低血压\n- 心动过缓\n- 低体温\n- 阴茎异常勃起/脱垂（未去势公犬，罕见但严重）",
-      "species_dosing": "**犬**: dose=0.02-0.05 mg/kg, route=IV/IM/SC, frequency=按需（镇静）；0.5-2.2 mg/kg PO q6-8h\n**猫**: dose=0.02-0.05 mg/kg, route=IV/IM/SC, frequency=按需（镇静）；1-2 mg/kg PO q8-12h"
+      "species_dosing": "**犬**: dose=0.02-0.05 mg/kg, route=IV/IM/SC, frequency=按需（镇静）；0.5-2.2 mg/kg PO q6-8h\n**猫**: dose=0.02-0.05 mg/kg, route=IV/IM/SC, frequency=按需（镇静）；1-2 mg/kg PO q8-12h",
+      "pubchem_cid": 6077,
+      "molecular_formula": "C19H22N2OS",
+      "molecular_weight": "326.5",
+      "smiles": null,
+      "inchikey": "NOSIYYJFMPDDSA-UHFFFAOYSA-N",
+      "iupac_name": "1-[10-[3-(dimethylamino)propyl]phenothiazin-2-yl]ethanone"
     },
     {
       "adverse_mechanism": "轻微镇静（偶见）。胃肠道反应。罕见心动过速。",
@@ -9694,7 +9916,13 @@
       "indications": "- 过敏/特应性皮炎\n- 荨麻疹\n- 过敏性鼻炎\n- 跳蚤过敏性皮炎辅助",
       "contraindications": "- 严重肝功能不全（需减量）",
       "side_effects": "- 镇静（少见，第二代抗组胺药镇静作用轻）\n- 胃肠道反应\n- 口干",
-      "species_dosing": "**犬**: dose=0.5-1 mg/kg, route=PO, frequency=q24h\n**猫**: dose=5 mg/只, route=PO, frequency=q24h（猫标签外使用）"
+      "species_dosing": "**犬**: dose=0.5-1 mg/kg, route=PO, frequency=q24h\n**猫**: dose=5 mg/只, route=PO, frequency=q24h（猫标签外使用）",
+      "pubchem_cid": 3957,
+      "molecular_formula": "C22H23ClN2O2",
+      "molecular_weight": "382.9",
+      "smiles": null,
+      "inchikey": "JCCNYMKQOSZNPW-UHFFFAOYSA-N",
+      "iupac_name": "ethyl 4-(13-chloro-4-azatricyclo[9.4.0.03,8]pentadeca-1(11),3(8),4,6,12,14-hexaen-2-ylidene)piperidine-1-carboxylate"
     },
     {
       "adverse_mechanism": "镇静、多饮多尿、多食、体重增加（初期最常见）。肝毒性（长期使用需定期监测肝酶和血药浓度）。血液学毒性（罕见）。突然停药可诱发癫痫持续状态。",
@@ -9710,7 +9938,13 @@
       "indications": "- 犬特发性癫痫\n- 癫痫持续状态（IV）\n- 猫癫痫（二线）",
       "contraindications": "- 严重肝病\n- 妊娠\n- 与氯丙嗪合用（降低惊厥阈值）",
       "side_effects": "- 镇静/共济失调（起始期常见）\n- 多饮多尿多食\n- 肝毒性（长期）\n- 再生障碍性贫血（罕见）",
-      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q12h（维持）；20 mg/kg IV（癫痫持续状态）\n**猫**: dose=2-3 mg/kg, route=PO, frequency=q12h（猫二线用药）"
+      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q12h（维持）；20 mg/kg IV（癫痫持续状态）\n**猫**: dose=2-3 mg/kg, route=PO, frequency=q12h（猫二线用药）",
+      "pubchem_cid": 4763,
+      "molecular_formula": "C12H12N2O3",
+      "molecular_weight": "232.23",
+      "smiles": null,
+      "inchikey": "DDBREPKUVSBGFI-UHFFFAOYSA-N",
+      "iupac_name": "5-ethyl-5-phenyl-1,3-diazinane-2,4,6-trione"
     },
     {
       "adverse_mechanism": "镇静、共济失调、虚弱（初期，通常1-2周后耐受）。胃肠道反应（恶心、呕吐）。多饮多尿。溴中毒（极高剂量）：意识模糊、精神病样行为、皮疹。",
@@ -9726,7 +9960,13 @@
       "indications": "- 犬难治性癫痫（联合苯巴比妥）\n- 苯巴比妥不耐受时的替代",
       "contraindications": "- 肾功能不全\n- 妊娠\n- 与含溴药物合用",
       "side_effects": "- 镇静/共济失调（起始期）\n- 多饮多尿多食\n- 胃肠道反应\n- 皮肤反应（罕见）",
-      "species_dosing": "**犬**: dose=30-40 mg/kg, route=PO, frequency=q24h（维持）；负荷剂量200-300 mg/kg 分5天给予\n**猫**: dose=不适用（猫溴化物耐受差，可致支气管痉挛）, route=-, frequency=-"
+      "species_dosing": "**犬**: dose=30-40 mg/kg, route=PO, frequency=q24h（维持）；负荷剂量200-300 mg/kg 分5天给予\n**猫**: dose=不适用（猫溴化物耐受差，可致支气管痉挛）, route=-, frequency=-",
+      "pubchem_cid": 253877,
+      "molecular_formula": "BrK",
+      "molecular_weight": "119.00",
+      "smiles": null,
+      "inchikey": "IOLCXVTUBQKXJR-UHFFFAOYSA-M",
+      "iupac_name": "potassium bromide"
     },
     {
       "adverse_mechanism": "骨髓抑制（白细胞减少、血小板减少）是最严重不良反应。胃肠道反应（恶心、呕吐、腹泻）。肝毒性。胰腺炎（犬）。感染风险增加。",
@@ -9743,7 +9983,13 @@
       "indications": "- 免疫介导性疾病（IMHA/IMPA）\n- 炎症性肠病（激素节约剂）\n- 自身免疫性皮肤病",
       "contraindications": "- 妊娠\n- 严重肝病\n- 与别嘌醇合用（毒性增加）",
       "side_effects": "- 骨髓抑制（WBC↓）\n- 胃肠道反应\n- 肝毒性\n- 胰腺炎（犬）",
-      "species_dosing": "**犬**: dose=2 mg/kg, route=PO, frequency=q24h（诱导）；q48h（维持）\n**猫**: dose=0.3 mg/kg, route=PO, frequency=q48-72h（猫对硫唑嘌呤敏感，代谢慢）"
+      "species_dosing": "**犬**: dose=2 mg/kg, route=PO, frequency=q24h（诱导）；q48h（维持）\n**猫**: dose=0.3 mg/kg, route=PO, frequency=q48-72h（猫对硫唑嘌呤敏感，代谢慢）",
+      "pubchem_cid": 2265,
+      "molecular_formula": "C9H7N7O2S",
+      "molecular_weight": "277.27",
+      "smiles": null,
+      "inchikey": "LMEKQMALGUDUQG-UHFFFAOYSA-N",
+      "iupac_name": "6-(3-methyl-5-nitroimidazol-4-yl)sulfanyl-7H-purine"
     },
     {
       "adverse_mechanism": "骨髓抑制（剂量限制性毒性）。胃肠道反应（恶心、呕吐）。出血性膀胱炎（代谢物丙烯醛刺激膀胱黏膜，需配合美司钠和充足饮水）。脱发。免疫抑制。",
@@ -9759,7 +10005,13 @@
       "indications": "- 淋巴瘤（CHOP方案）\n- 免疫介导性疾病（严重）\n- 肿瘤化疗",
       "contraindications": "- 妊娠\n- 严重骨髓抑制\n- 活动性感染\n- 严重肝病",
       "side_effects": "- 骨髓抑制\n- 胃肠道反应\n- 出血性膀胱炎（犬）\n- 脱发（有毛品种）",
-      "species_dosing": "**犬**: dose=50 mg/m², route=PO, frequency=q48h（CHOP方案中）；200 mg/m² IV 每周一次\n**猫**: dose=10 mg/kg, route=IV, frequency=每2-3周（猫CHOP方案剂量较低）"
+      "species_dosing": "**犬**: dose=50 mg/m², route=PO, frequency=q48h（CHOP方案中）；200 mg/m² IV 每周一次\n**猫**: dose=10 mg/kg, route=IV, frequency=每2-3周（猫CHOP方案剂量较低）",
+      "pubchem_cid": 2907,
+      "molecular_formula": "C7H15Cl2N2O2P",
+      "molecular_weight": "261.08",
+      "smiles": null,
+      "inchikey": "CMSMOCZEIVJLDB-UHFFFAOYSA-N",
+      "iupac_name": "N,N-bis(2-chloroethyl)-2-oxo-1,3,2lambda5-oxazaphosphinan-2-amine"
     },
     {
       "adverse_mechanism": "骨髓抑制（较其他长春花生物碱轻）。外周神经毒性（感觉异常、便秘、肠梗阻）。局部组织坏死（外渗时）。胃肠道反应。脱发。",
@@ -9775,7 +10027,13 @@
       "indications": "- 淋巴瘤（CHOP方案）\n- 犬血小板减少症（ITP）",
       "contraindications": "- 妊娠\n- 严重骨髓抑制\n- 肝静脉闭塞病",
       "side_effects": "- 外周神经毒性\n- 胃肠道反应\n- 局部组织坏死（渗漏）\n- 骨髓抑制（较轻）",
-      "species_dosing": "**犬**: dose=0.5-0.75 mg/m², route=IV, frequency=每周一次（CHOP方案）\n**猫**: dose=0.5-0.7 mg/m², route=IV, frequency=每周一次（猫CHOP方案）"
+      "species_dosing": "**犬**: dose=0.5-0.75 mg/m², route=IV, frequency=每周一次（CHOP方案）\n**猫**: dose=0.5-0.7 mg/m², route=IV, frequency=每周一次（猫CHOP方案）",
+      "pubchem_cid": 5978,
+      "molecular_formula": "C46H56N4O10",
+      "molecular_weight": "825.0",
+      "smiles": null,
+      "inchikey": "OGWKCGZFUXNPDA-XQKSVPLYSA-N",
+      "iupac_name": "methyl (1R,9R,10S,11R,12R,19R)-11-acetyloxy-12-ethyl-4-[(13S,15S,17S)-17-ethyl-17-hydroxy-13-methoxycarbonyl-1,11-diazatetracyclo[13.3.1.04,12.05,10]nonadeca-4(12),5,7,9-tetraen-13-yl]-8-formyl-10-hydroxy-5-methoxy-8,16-diazapentacyclo[10.6.1.01,9.02,7.016,19]nonadeca-2,4,6,13-tetraene-10-carboxylate"
     },
     {
       "adverse_mechanism": "心脏毒性（剂量累积性心肌损伤，犬最严重）。骨髓抑制。胃肠道反应（恶心、呕吐、腹泻）。脱发。局部组织坏死（外渗时）。尿液可呈红色。",
@@ -9791,7 +10049,13 @@
       "indications": "- 淋巴瘤（CHOP方案）\n- 血管肉瘤\n- 骨肉瘤\n- 多种实体瘤",
       "contraindications": "- 心脏病（累积心脏毒性）\n- 严重肝病\n- 妊娠\n- 累积剂量限制",
       "side_effects": "- 骨髓抑制\n- 心脏毒性（累积剂量相关）\n- 胃肠道反应\n- 局部组织坏死（渗漏）\n- 脱毛",
-      "species_dosing": "**犬**: dose=30 mg/m²（≥10kg）或1 mg/kg（<10kg）, route=IV, frequency=每3周（累积上限180-240 mg/m²）\n**猫**: dose=20-25 mg/m², route=IV, frequency=每3周（猫剂量较低）"
+      "species_dosing": "**犬**: dose=30 mg/m²（≥10kg）或1 mg/kg（<10kg）, route=IV, frequency=每3周（累积上限180-240 mg/m²）\n**猫**: dose=20-25 mg/m², route=IV, frequency=每3周（猫剂量较低）",
+      "pubchem_cid": 31703,
+      "molecular_formula": "C27H29NO11",
+      "molecular_weight": "543.5",
+      "smiles": null,
+      "inchikey": "AOJJSUZBOXZQNB-TZSSRYMLSA-N",
+      "iupac_name": "(7S,9S)-7-[(2R,4S,5S,6S)-4-amino-5-hydroxy-6-methyloxan-2-yl]oxy-6,9,11-trihydroxy-9-(2-hydroxyacetyl)-4-methoxy-8,10-dihydro-7H-tetracene-5,12-dione"
     },
     {
       "adverse_mechanism": "注射部位疼痛和肿胀。肺血栓栓塞（虫体死亡后栓塞肺动脉，需严格限制活动）。肝毒性。肾毒性。胃肠道反应。",
@@ -9807,7 +10071,13 @@
       "indications": "- 犬心丝虫病（杀成虫）",
       "contraindications": "- 严重心丝虫病（IV期，手术取虫更安全）\n- 妊娠\n- 肝肾功能严重不全",
       "side_effects": "- 注射部位疼痛/肿胀\n- 肺血栓栓塞（死亡虫体）\n- 肝毒性\n- 发热/厌食",
-      "species_dosing": "**犬**: dose=2.5 mg/kg, route=IM（深部腰肌注射）, frequency=第1天1次→第2天2次（间隔24h）= 3次注射方案\n**猫**: dose=不推荐（猫对美拉索明毒性大，无安全有效剂量）, route=-, frequency=-"
+      "species_dosing": "**犬**: dose=2.5 mg/kg, route=IM（深部腰肌注射）, frequency=第1天1次→第2天2次（间隔24h）= 3次注射方案\n**猫**: dose=不推荐（猫对美拉索明毒性大，无安全有效剂量）, route=-, frequency=-",
+      "pubchem_cid": 65962,
+      "molecular_formula": "C13H21AsN8S2",
+      "molecular_weight": "428.4",
+      "smiles": null,
+      "inchikey": "MGEOLZFMLHYCFZ-UHFFFAOYSA-N",
+      "iupac_name": "2-N-[4-[bis(2-aminoethylsulfanyl)arsanyl]phenyl]-1,3,5-triazine-2,4,6-triamine"
     },
     {
       "adverse_mechanism": "MDR1基因缺陷犬（柯利犬等）可出现严重神经毒性：震颤、共济失调、昏迷、死亡。呕吐、腹泻。瞳孔散大。",
@@ -9838,7 +10108,13 @@
       ],
       "indications": "- 便秘\n- 肝性脑病(乳果糖)",
       "contraindications": "- 肠梗阻",
-      "side_effects": "- 腹泻\n- 电解质紊乱(长期使用)"
+      "side_effects": "- 腹泻\n- 电解质紊乱(长期使用)",
+      "pubchem_cid": 11339,
+      "molecular_formula": "C20H38O7S",
+      "molecular_weight": "422.6",
+      "smiles": null,
+      "inchikey": "HNSDLXPSAYFUHK-UHFFFAOYSA-N",
+      "iupac_name": "1,4-bis(2-ethylhexoxy)-1,4-dioxobutane-2-sulfonic acid"
     },
     {
       "adverse_mechanism": "注射部位疼痛。流涎、腹泻。罕见过敏反应。",
@@ -9854,7 +10130,13 @@
       "indications": "- 各种原因呕吐\n- 预防晕动症",
       "contraindications": "- 16周龄以下犬",
       "side_effects": "- 注射部位疼痛\n- 一过性心动过缓",
-      "species_dosing": "犬：口服2mg/kg q24h；皮下注射1mg/kg q24h（连用最多5天）；猫：口服1mg/kg q24h"
+      "species_dosing": "犬：口服2mg/kg q24h；皮下注射1mg/kg q24h（连用最多5天）；猫：口服1mg/kg q24h",
+      "pubchem_cid": 204108,
+      "molecular_formula": "C32H40N2O",
+      "molecular_weight": "468.7",
+      "smiles": null,
+      "inchikey": "OMPCVMLFFSQFIX-CONSDPRKSA-N",
+      "iupac_name": "(2S,3S)-2-benzhydryl-N-[(5-tert-butyl-2-methoxyphenyl)methyl]-1-azabicyclo[2.2.2]octan-3-amine"
     },
     {
       "adverse_mechanism": "镇静、共济失调。外周水肿。",
@@ -9870,7 +10152,13 @@
       "indications": "- 神经性疼痛\n- 癫痫辅助\n- 焦虑/应激",
       "contraindications": "- 严重肾功能不全",
       "side_effects": "- 镇静\n- 共济失调\n- 外周水肿",
-      "species_dosing": "犬：5-10mg/kg q8-12h；猫：5-10mg/kg q12h"
+      "species_dosing": "犬：5-10mg/kg q8-12h；猫：5-10mg/kg q12h",
+      "pubchem_cid": 3446,
+      "molecular_formula": "C9H17NO2",
+      "molecular_weight": "171.24",
+      "smiles": null,
+      "inchikey": "UGJMXCAKCUNAIE-UHFFFAOYSA-N",
+      "iupac_name": "2-[1-(aminomethyl)cyclohexyl]acetic acid"
     },
     {
       "adverse_mechanism": "镇静、恶心、便秘。高剂量可降低癫痫阈值。",
@@ -9883,7 +10171,13 @@
       "indications": "- 轻至中度疼痛\n- 慢性疼痛",
       "contraindications": "- MAO抑制剂合用\n- 癫痫患犬慎用",
       "side_effects": "- 镇静\n- 恶心\n- 便秘\n- 猫可能产生兴奋而非镇静",
-      "species_dosing": "犬：2-5mg/kg q8-12h；猫：效果不确切，2-4mg/kg q12h"
+      "species_dosing": "犬：2-5mg/kg q8-12h；猫：效果不确切，2-4mg/kg q12h",
+      "pubchem_cid": 33741,
+      "molecular_formula": "C16H25NO2",
+      "molecular_weight": "263.37",
+      "smiles": null,
+      "inchikey": "TVYLLZQTGLZFBW-ZBFHGGJFSA-N",
+      "iupac_name": "cis-(1R,2R)-2-[(dimethylamino)methyl]-1-(3-methoxyphenyl)cyclohexan-1-ol"
     },
     {
       "adverse_mechanism": "电解质紊乱（低钾、低钠、低氯性碱中毒）。脱水。耳毒性（罕见）。",
@@ -9899,7 +10193,13 @@
       "indications": "- 心力衰竭\n- 其他需强利尿的情况",
       "contraindications": "- 低血容量\n- 低钾血症\n- 肝昏迷",
       "side_effects": "- 脱水\n- 电解质紊乱\n- 肾前性氮质血症",
-      "species_dosing": "犬：0.1-0.3mg/kg q24h（口服）；猫：0.1-0.2mg/kg q24h"
+      "species_dosing": "犬：0.1-0.3mg/kg q24h（口服）；猫：0.1-0.2mg/kg q24h",
+      "pubchem_cid": 41781,
+      "molecular_formula": "C16H20N4O3S",
+      "molecular_weight": "348.4",
+      "smiles": null,
+      "inchikey": "NGBFQHCMQULJNZ-UHFFFAOYSA-N",
+      "iupac_name": "1-[[4-(3-methylanilino)-3-pyridinyl]sulfonyl]-3-propan-2-ylurea"
     },
     {
       "adverse_mechanism": "低血压。高钾血症。肾功能恶化。胃肠道反应。",
@@ -9915,7 +10215,13 @@
       "indications": "- CKD蛋白尿\n- 心力衰竭\n- 高血压",
       "contraindications": "- 双侧肾动脉狭窄\n- 妊娠",
       "side_effects": "- 低血压\n- 高钾血症\n- 肾功能恶化",
-      "species_dosing": "犬猫：0.25-0.5mg/kg q24h"
+      "species_dosing": "犬猫：0.25-0.5mg/kg q24h",
+      "pubchem_cid": 5362124,
+      "molecular_formula": "C24H28N2O5",
+      "molecular_weight": "424.5",
+      "smiles": null,
+      "inchikey": "XPCFTKFZXHTYIP-PMACEKPBSA-N",
+      "iupac_name": "2-[(3S)-3-[[(2S)-1-ethoxy-1-oxo-4-phenylbutan-2-yl]amino]-2-oxo-4,5-dihydro-3H-1-benzazepin-1-yl]acetic acid"
     },
     {
       "adverse_mechanism": "出血风险增加。胃肠道反应。罕见血栓性血小板减少性紫癜。",
@@ -9931,7 +10237,13 @@
       "indications": "- 血栓预防(猫HCM)\n- 动脉血栓栓塞",
       "contraindications": "- 活动性出血\n- 严重肝病",
       "side_effects": "- 出血倾向\n- 胃肠道不适",
-      "species_dosing": "猫：18.75mg/cat q24h；犬：1-2mg/kg q24h"
+      "species_dosing": "猫：18.75mg/cat q24h；犬：1-2mg/kg q24h",
+      "pubchem_cid": 60606,
+      "molecular_formula": "C16H16ClNO2S",
+      "molecular_weight": "321.8",
+      "smiles": null,
+      "inchikey": "GKTWGGQPFAXNFI-HNNXBMFYSA-N",
+      "iupac_name": "methyl (2S)-2-(2-chlorophenyl)-2-(6,7-dihydro-4H-thieno[3,2-c]pyridin-5-yl)acetate"
     },
     {
       "adverse_mechanism": "短暂性低血压或高血压。兴奋、震颤。",
@@ -9946,7 +10258,13 @@
       ],
       "indications": "- 逆转α2激动剂镇静",
       "side_effects": "- 一过性低血压\n- 呕吐\n- 兴奋",
-      "species_dosing": "犬猫：给予美托咪定等量（mg:mg）IM"
+      "species_dosing": "犬猫：给予美托咪定等量（mg:mg）IM",
+      "pubchem_cid": 71310,
+      "molecular_formula": "C14H16N2",
+      "molecular_weight": "212.29",
+      "smiles": null,
+      "inchikey": "HSWPZIDYAHLZDD-UHFFFAOYSA-N",
+      "iupac_name": "5-(2-ethyl-1,3-dihydroinden-2-yl)-1H-imidazole"
     },
     {
       "adverse_mechanism": "胃肠道反应（厌食、呕吐）。镇静或兴奋（初期）。与MAOI合用可致5-羟色胺综合征。",
@@ -9962,7 +10280,13 @@
       "indications": "- 分离焦虑\n- 强迫行为\n- 猫喷尿标记",
       "contraindications": "- MAO抑制剂合用\n- 癫痫病史",
       "side_effects": "- 食欲下降\n- 镇静\n- 胃肠道不适",
-      "species_dosing": "犬：1-2mg/kg q24h；猫：0.5-1mg/kg q24h"
+      "species_dosing": "犬：1-2mg/kg q24h；猫：0.5-1mg/kg q24h",
+      "pubchem_cid": 3386,
+      "molecular_formula": "C17H18F3NO",
+      "molecular_weight": "309.33",
+      "smiles": null,
+      "inchikey": "RTHCYVBBDHJXIQ-UHFFFAOYSA-N",
+      "iupac_name": "N-methyl-3-phenyl-3-[4-(trifluoromethyl)phenoxy]propan-1-amine"
     },
     {
       "adverse_mechanism": "肾毒性（最常见且严重，可致急性肾损伤）。输液反应（寒战、发热）。低钾血症。贫血。",
@@ -9978,7 +10302,13 @@
       "indications": "- 全身性真菌感染",
       "contraindications": "- 严重肾功能不全(普通剂型)",
       "side_effects": "- 肾毒性(普通剂型)\n- 输液反应\n- 低钾血症",
-      "species_dosing": "犬：普通剂型0.25-0.5mg/kg IV 隔日；脂质体剂型1-3mg/kg IV 每周2-3次"
+      "species_dosing": "犬：普通剂型0.25-0.5mg/kg IV 隔日；脂质体剂型1-3mg/kg IV 每周2-3次",
+      "pubchem_cid": 5280965,
+      "molecular_formula": "C47H73NO17",
+      "molecular_weight": "924.1",
+      "smiles": null,
+      "inchikey": "APKFDSVGJQXUKY-INPOYWNPSA-N",
+      "iupac_name": "(1R,3S,5R,6R,9R,11R,15S,16R,17R,18S,19E,21E,23E,25E,27E,29E,31E,33R,35S,36R,37S)-33-[(2R,3S,4S,5S,6R)-4-amino-3,5-dihydroxy-6-methyloxan-2-yl]oxy-1,3,5,6,9,11,17,37-octahydroxy-15,16,18-trimethyl-13-oxo-14,39-dioxabicyclo[33.3.1]nonatriaconta-19,21,23,25,27,29,31-heptaene-36-carboxylic acid"
     },
     {
       "adverse_mechanism": "胃肠道反应。肝毒性。药物相互作用（CYP450抑制）。",
@@ -9994,7 +10324,13 @@
       "indications": "- 皮肤真菌病\n- 全身性真菌感染",
       "contraindications": "- 严重肝病\n- 妊娠",
       "side_effects": "- 肝毒性\n- 食欲下降\n- 呕吐",
-      "species_dosing": "犬：5-10mg/kg q24h；猫：5-10mg/kg q24h（口服液）"
+      "species_dosing": "犬：5-10mg/kg q24h；猫：5-10mg/kg q24h（口服液）",
+      "pubchem_cid": 55283,
+      "molecular_formula": "C35H38Cl2N8O4",
+      "molecular_weight": "705.6",
+      "smiles": null,
+      "inchikey": "VHVPQPYKVGDNFY-ZPGVKDDISA-N",
+      "iupac_name": "2-butan-2-yl-4-[4-[4-[4-[[(2R,4S)-2-(2,4-dichlorophenyl)-2-(1,2,4-triazol-1-ylmethyl)-1,3-dioxolan-4-yl]methoxy]phenyl]piperazin-1-yl]phenyl]-1,2,4-triazol-3-one"
     },
     {
       "adverse_mechanism": "长期使用可导致多饮多尿、胃肠道刺激、免疫抑制和医源性库欣样改变。突然停药可诱发肾上腺危象。",
@@ -10010,7 +10346,13 @@
       "indications": "- 肾上腺皮质功能减退的糖皮质激素替代治疗\n- 急性应激期激素补充",
       "contraindications": "- 未控制的系统性感染\n- 活动性消化道溃疡（需谨慎）",
       "side_effects": "- 多饮多尿\n- 胃肠道刺激\n- 长期应用导致医源性库欣样改变",
-      "species_dosing": "**犬**: 依据替代治疗方案个体化调整，急性危象需应激剂量"
+      "species_dosing": "**犬**: 依据替代治疗方案个体化调整，急性危象需应激剂量",
+      "pubchem_cid": 5744,
+      "molecular_formula": "C23H32O6",
+      "molecular_weight": "404.5",
+      "smiles": null,
+      "inchikey": "ALEXXDVDDISNDU-JZYPGELDSA-N",
+      "iupac_name": "[2-[(8S,9S,10R,11S,13S,14S,17R)-11,17-dihydroxy-10,13-dimethyl-3-oxo-2,6,7,8,9,11,12,14,15,16-decahydro-1H-cyclopenta[a]phenanthren-17-yl]-2-oxoethyl] acetate"
     },
     {
       "adverse_mechanism": "过量可导致高血压、低钾血症和水钠潴留。长期使用可能诱发多饮多尿和体重增加。",
@@ -10026,7 +10368,13 @@
       "indications": "- 原发性肾上腺皮质功能减退的盐皮质激素替代治疗",
       "contraindications": "- 未控制的高血压\n- 严重充血性心力衰竭",
       "side_effects": "- 水钠潴留\n- 低钾血症\n- 多饮多尿",
-      "species_dosing": "**犬**: 按体重和电解质监测结果个体化调整，通常每日口服"
+      "species_dosing": "**犬**: 按体重和电解质监测结果个体化调整，通常每日口服",
+      "pubchem_cid": 31378,
+      "molecular_formula": "C21H29FO5",
+      "molecular_weight": "380.4",
+      "smiles": null,
+      "inchikey": "AAXVEMMRQDVLJB-BULBTXNYSA-N",
+      "iupac_name": "(8S,9R,10S,11S,13S,14S,17R)-9-fluoro-11,17-dihydroxy-17-(2-hydroxyacetyl)-10,13-dimethyl-1,2,6,7,8,11,12,14,15,16-decahydrocyclopenta[a]phenanthren-3-one"
     },
     {
       "adverse_mechanism": "胃肠道反应较轻，偶见腹泻或拒食。贝类来源制剂在过敏体质动物需谨慎。",
@@ -10058,7 +10406,13 @@
       "indications": "- 皮肤癣菌病",
       "contraindications": "- 妊娠动物\n- 严重肝病\n- 骨髓抑制",
       "side_effects": "- 骨髓抑制\n- 肝酶升高\n- 胃肠道不适",
-      "species_dosing": "**犬**: 依据制剂和病情口服给药，疗程通常 4-8 周\n**猫**: 慎用并严密监测血常规"
+      "species_dosing": "**犬**: 依据制剂和病情口服给药，疗程通常 4-8 周\n**猫**: 慎用并严密监测血常规",
+      "pubchem_cid": 441140,
+      "molecular_formula": "C17H17ClO6",
+      "molecular_weight": "352.8",
+      "smiles": null,
+      "inchikey": "DDUHZTYCFQRHIY-RBHXEPJQSA-N",
+      "iupac_name": "(2S,5'R)-7-chloro-3',4,6-trimethoxy-5'-methylspiro[1-benzofuran-2,4'-cyclohex-2-ene]-1',3-dione"
     },
     {
       "adverse_mechanism": "局部刺激、红斑和轻度瘙痒较常见，过敏性接触性皮炎少见。",
@@ -10074,7 +10428,13 @@
       "indications": "- 局灶性癣菌病\n- 浅表酵母菌感染",
       "contraindications": "- 对咪唑类抗真菌药过敏",
       "side_effects": "- 局部刺激\n- 轻度红斑",
-      "species_dosing": "局部外用，每日 1-2 次，持续至病灶完全恢复后再延长 1-2 周"
+      "species_dosing": "局部外用，每日 1-2 次，持续至病灶完全恢复后再延长 1-2 周",
+      "pubchem_cid": 2812,
+      "molecular_formula": "C22H17ClN2",
+      "molecular_weight": "344.8",
+      "smiles": null,
+      "inchikey": "VNFPBHJOKIVQEB-UHFFFAOYSA-N",
+      "iupac_name": "1-[(2-chlorophenyl)-diphenylmethyl]imidazole"
     },
     {
       "adverse_mechanism": "可引起低血压、面部潮红、胃肠不适和少数动物激动。与其他血管扩张药联用需谨慎。",
@@ -10090,7 +10450,13 @@
       "indications": "- 肺动脉高压",
       "contraindications": "- 严重低血压\n- 与强效血管扩张药联用时需谨慎",
       "side_effects": "- 低血压\n- 胃肠道不适\n- 精神兴奋",
-      "species_dosing": "**犬**: 依据肺动脉高压严重程度分次口服给药"
+      "species_dosing": "**犬**: 依据肺动脉高压严重程度分次口服给药",
+      "pubchem_cid": 135398744,
+      "molecular_formula": "C22H30N6O4S",
+      "molecular_weight": "474.6",
+      "smiles": null,
+      "inchikey": "BNRNXUUZRGQAQC-UHFFFAOYSA-N",
+      "iupac_name": "5-[2-ethoxy-5-(4-methylpiperazin-1-yl)sulfonylphenyl]-1-methyl-3-propyl-6H-pyrazolo[4,5-d]pyrimidin-7-one"
     },
     {
       "adverse_mechanism": "可能导致肝酶升高、低血压和胃肠道不适，长期使用需监测肝功能。",
@@ -10106,7 +10472,13 @@
       "indications": "- 肺动脉高压",
       "contraindications": "- 中重度肝功能不全\n- 明显低血压",
       "side_effects": "- 肝酶升高\n- 低血压\n- 胃肠道不适",
-      "species_dosing": "依据临床反应和耐受性个体化给药，需定期监测肝功能"
+      "species_dosing": "依据临床反应和耐受性个体化给药，需定期监测肝功能",
+      "pubchem_cid": 104865,
+      "molecular_formula": "C27H29N5O6S",
+      "molecular_weight": "551.6",
+      "smiles": null,
+      "inchikey": "GJPICJJJRGTNOD-UHFFFAOYSA-N",
+      "iupac_name": "4-tert-butyl-N-[6-(2-hydroxyethoxy)-5-(2-methoxyphenoxy)-2-pyrimidin-2-ylpyrimidin-4-yl]benzenesulfonamide"
     },
     {
       "adverse_mechanism": "主要风险为出血，包括穿刺部位渗血、胃肠道出血和血尿。过量时可导致严重凝血功能障碍。",
@@ -10138,7 +10510,13 @@
       "indications": "- 需要长期口服抗凝管理的血栓性疾病",
       "contraindications": "- 活动性出血\n- 无法监测凝血指标的场景",
       "side_effects": "- 出血\n- 食欲下降\n- 药物相互作用多",
-      "species_dosing": "依据 INR 或其他凝血监测指标个体化调整"
+      "species_dosing": "依据 INR 或其他凝血监测指标个体化调整",
+      "pubchem_cid": 54678486,
+      "molecular_formula": "C19H16O4",
+      "molecular_weight": "308.3",
+      "smiles": null,
+      "inchikey": "PJVWKTKQMONHTI-UHFFFAOYSA-N",
+      "iupac_name": "4-hydroxy-3-(3-oxo-1-phenylbutyl)chromen-2-one"
     },
     {
       "id": "drug_077",
@@ -10161,7 +10539,285 @@
         "镇静过度",
         "体温过低（过量）"
       ],
-      "species_dosing": "犬：0.5-2 mg/kg IM/IV，用于中暑降温时与物理降温联用"
+      "species_dosing": "犬：0.5-2 mg/kg IM/IV，用于中暑降温时与物理降温联用",
+      "pubchem_cid": 2726,
+      "molecular_formula": "C17H19ClN2S",
+      "molecular_weight": "318.9",
+      "smiles": null,
+      "inchikey": "ZPEIMTDSQAKGNT-UHFFFAOYSA-N",
+      "iupac_name": "3-(2-chlorophenothiazin-10-yl)-N,N-dimethylpropan-1-amine"
+    },
+    {
+      "id": "drug_078",
+      "name_zh": "阿莫西林-克拉维酸",
+      "name_en": "Amoxicillin-Clavulanate",
+      "drug_class": "β-内酰胺类抗生素/β-内酰胺酶抑制剂",
+      "mechanism_of_action": "阿莫西林抑制细菌细胞壁合成，克拉维酸抑制β-内酰胺酶保护阿莫西林不被降解。",
+      "indications": [
+        "呼吸道感染",
+        "皮肤软组织感染",
+        "泌尿道感染",
+        "口腔感染"
+      ],
+      "contraindications": [
+        "青霉素过敏",
+        "严重肝功能不全"
+      ],
+      "side_effects": [
+        "胃肠道反应（呕吐、腹泻）",
+        "过敏反应"
+      ],
+      "species_dosing": "犬猫：12.5-25 mg/kg PO q12h，连用5-7天"
+    },
+    {
+      "id": "drug_079",
+      "name_zh": "头孢维星",
+      "name_en": "Cefovecin",
+      "drug_class": "第三代头孢菌素",
+      "mechanism_of_action": "抑制细菌细胞壁肽聚糖合成，对革兰氏阳性和阴性菌均有效。",
+      "indications": [
+        "皮肤软组织感染",
+        "泌尿道感染"
+      ],
+      "contraindications": [
+        "头孢菌素过敏",
+        "幼龄动物"
+      ],
+      "side_effects": [
+        "注射部位反应",
+        "胃肠道反应",
+        "白细胞减少"
+      ],
+      "species_dosing": "犬猫：8 mg/kg SC，单次注射，药效维持14天",
+      "pubchem_cid": 6336480,
+      "molecular_formula": "C17H19N5O6S2",
+      "molecular_weight": "453.5",
+      "smiles": null,
+      "inchikey": "ZJGQFXVQDVCVOK-QFKLAVHZSA-N",
+      "iupac_name": "(6R,7R)-7-[[(2Z)-2-(2-amino-1,3-thiazol-4-yl)-2-methoxyiminoacetyl]amino]-8-oxo-3-[(2S)-oxolan-2-yl]-5-thia-1-azabicyclo[4.2.0]oct-2-ene-2-carboxylic acid"
+    },
+    {
+      "id": "drug_080",
+      "name_zh": "美贝霉素",
+      "name_en": "Milbemycin Oxime",
+      "drug_class": "大环内酯类驱虫药",
+      "mechanism_of_action": "激活谷氨酸门控氯离子通道，导致寄生虫神经肌肉麻痹死亡。",
+      "indications": [
+        "心丝虫预防",
+        "肠道线虫",
+        "疥螨"
+      ],
+      "contraindications": [
+        "心丝虫阳性犬（需先清除成虫）",
+        "柯利犬MDR1突变（高剂量）"
+      ],
+      "side_effects": [
+        "呕吐",
+        "腹泻",
+        "精神沉郁"
+      ],
+      "species_dosing": "犬：0.5-1 mg/kg PO 每月一次（心丝虫预防）",
+      "pubchem_cid": 20056431,
+      "molecular_formula": "C63H88N2O14",
+      "molecular_weight": "1097.4",
+      "smiles": null,
+      "inchikey": "CKVMAPHTVCTEMM-ALPQRHTBSA-N",
+      "iupac_name": "(1R,4S,5'S,6R,6'R,8R,10E,13R,14E,16E,20R,21Z,24S)-6'-ethyl-24-hydroxy-21-hydroxyimino-5',11,13,22-tetramethylspiro[3,7,19-trioxatetracyclo[15.6.1.14,8.020,24]pentacosa-10,14,16,22-tetraene-6,2'-oxane]-2-one;(1R,4S,5'S,6R,6'R,8R,10E,13R,14E,16E,20R,21Z,24S)-24-hydroxy-21-hydroxyimino-5',6',11,13,22-pentamethylspiro[3,7,19-trioxatetracyclo[15.6.1.14,8.020,24]pentacosa-10,14,16,22-tetraene-6,2'-oxane]-2-one"
+    },
+    {
+      "id": "drug_081",
+      "name_zh": "非班太尔",
+      "name_en": "Febantel",
+      "drug_class": "苯并咪唑类驱虫药（前体药物）",
+      "mechanism_of_action": "在体内代谢为芬苯达唑和氧芬苯达唑，抑制寄生虫微管蛋白聚合，阻断葡萄糖摄取。",
+      "indications": [
+        "蛔虫",
+        "钩虫",
+        "鞭虫",
+        "绦虫"
+      ],
+      "contraindications": [
+        "妊娠早期"
+      ],
+      "side_effects": [
+        "呕吐",
+        "腹泻",
+        "食欲下降"
+      ],
+      "species_dosing": "犬：15 mg/kg PO 单次",
+      "pubchem_cid": 135449328,
+      "molecular_formula": "C20H22N4O6S",
+      "molecular_weight": "446.5",
+      "smiles": null,
+      "inchikey": "HMCCXLBXIJMERM-UHFFFAOYSA-N",
+      "iupac_name": "methyl N-[N'-[2-[(2-methoxyacetyl)amino]-4-phenylsulfanylphenyl]-N-methoxycarbonylcarbamimidoyl]carbamate"
+    },
+    {
+      "id": "drug_082",
+      "name_zh": "吡喹酮",
+      "name_en": "Praziquantel",
+      "drug_class": "异喹啉类驱虫药",
+      "mechanism_of_action": "增加虫体细胞膜对钙离子的通透性，导致虫体痉挛性麻痹和表皮损伤。",
+      "indications": [
+        "绦虫",
+        "吸虫"
+      ],
+      "contraindications": [
+        "4周龄以下幼犬"
+      ],
+      "side_effects": [
+        "呕吐",
+        "腹泻",
+        "流涎",
+        "共济失调（短暂）"
+      ],
+      "species_dosing": "犬猫：5-10 mg/kg PO 单次",
+      "pubchem_cid": 4891,
+      "molecular_formula": "C19H24N2O2",
+      "molecular_weight": "312.4",
+      "smiles": null,
+      "inchikey": "FSVJFNAIGNNGKK-UHFFFAOYSA-N",
+      "iupac_name": "2-(cyclohexanecarbonyl)-3,6,7,11b-tetrahydro-1H-pyrazino[2,1-a]isoquinolin-4-one"
+    },
+    {
+      "id": "drug_083",
+      "name_zh": "多拉菌素",
+      "name_en": "Doramectin",
+      "drug_class": "大环内酯类驱虫药/杀虫药",
+      "mechanism_of_action": "激活谷氨酸门控氯离子通道，对体内线虫和体外寄生虫均有效。",
+      "indications": [
+        "体内线虫",
+        "疥螨",
+        "虱",
+        "蝇蛆病"
+      ],
+      "contraindications": [
+        "柯利犬MDR1突变",
+        "6周龄以下幼畜"
+      ],
+      "side_effects": [
+        "注射部位肿胀",
+        "呕吐",
+        "神经毒性（MDR1突变犬）"
+      ],
+      "species_dosing": "犬：0.2 mg/kg SC/IM 单次；牛：0.2 mg/kg SC/IM",
+      "pubchem_cid": 9832750,
+      "molecular_formula": "C50H74O14",
+      "molecular_weight": "899.1",
+      "smiles": null,
+      "inchikey": "QLFZZSKTJWDQOS-YDBLARSUSA-N",
+      "iupac_name": "(1'R,2R,3S,4'S,6S,8'R,10'E,12'S,13'S,14'E,16'E,20'R,21'R,24'S)-2-cyclohexyl-21',24'-dihydroxy-12'-[(2R,4S,5S,6S)-5-[(2S,4S,5S,6S)-5-hydroxy-4-methoxy-6-methyloxan-2-yl]oxy-4-methoxy-6-methyloxan-2-yl]oxy-3,11',13',22'-tetramethylspiro[2,3-dihydropyran-6,6'-3,7,19-trioxatetracyclo[15.6.1.14,8.020,24]pentacosa-10,14,16,22-tetraene]-2'-one"
+    },
+    {
+      "id": "drug_084",
+      "name_zh": "酮康唑",
+      "name_en": "Ketoconazole",
+      "drug_class": "咪唑类抗真菌药",
+      "mechanism_of_action": "抑制真菌细胞膜麦角固醇合成，增加膜通透性。",
+      "indications": [
+        "皮肤癣菌病",
+        "马拉色菌感染",
+        "全身性真菌病"
+      ],
+      "contraindications": [
+        "肝功能不全",
+        "妊娠"
+      ],
+      "side_effects": [
+        "肝毒性",
+        "呕吐",
+        "腹泻",
+        "厌食",
+        "白细胞减少"
+      ],
+      "species_dosing": "犬猫：5-10 mg/kg PO q12-24h，疗程4-8周",
+      "pubchem_cid": 47576,
+      "molecular_formula": "C26H28Cl2N4O4",
+      "molecular_weight": "531.4",
+      "smiles": null,
+      "inchikey": "XMAYWYJOQHXEEK-ZEQKJWHPSA-N",
+      "iupac_name": "1-[4-[4-[[(2S,4R)-2-(2,4-dichlorophenyl)-2-(imidazol-1-ylmethyl)-1,3-dioxolan-4-yl]methoxy]phenyl]piperazin-1-yl]ethanone"
+    },
+    {
+      "id": "drug_085",
+      "name_zh": "特比萘芬",
+      "name_en": "Terbinafine",
+      "drug_class": "烯丙胺类抗真菌药",
+      "mechanism_of_action": "抑制角鲨烯环氧化酶，阻断麦角固醇合成，导致角鲨烯蓄积和细胞膜破坏。",
+      "indications": [
+        "皮肤癣菌病",
+        "甲真菌病",
+        "马拉色菌感染"
+      ],
+      "contraindications": [
+        "肝功能不全",
+        "妊娠"
+      ],
+      "side_effects": [
+        "胃肠道反应",
+        "肝酶升高",
+        "味觉障碍"
+      ],
+      "species_dosing": "犬猫：30-40 mg/kg PO q24h，疗程4-12周",
+      "pubchem_cid": 1549008,
+      "molecular_formula": "C21H25N",
+      "molecular_weight": "291.4",
+      "smiles": null,
+      "inchikey": "DOMXUEMWDBAQBQ-WEVVVXLNSA-N",
+      "iupac_name": "(E)-N,6,6-trimethyl-N-(naphthalen-1-ylmethyl)hept-2-en-4-yn-1-amine"
+    },
+    {
+      "id": "drug_086",
+      "name_zh": "赛瑞替胺",
+      "name_en": "Ceritinib",
+      "drug_class": "酪氨酸激酶抑制剂（抗肿瘤）",
+      "mechanism_of_action": "抑制间变性淋巴瘤激酶（ALK），阻断肿瘤细胞增殖信号通路。",
+      "indications": [
+        "犬肥大细胞瘤",
+        "犬肥大细胞肉瘤"
+      ],
+      "contraindications": [
+        "严重肝功能不全",
+        "妊娠"
+      ],
+      "side_effects": [
+        "胃肠道反应",
+        "肝毒性",
+        "骨髓抑制"
+      ],
+      "species_dosing": "犬：2.5-5 mg/kg PO q24h",
+      "pubchem_cid": 57379345,
+      "molecular_formula": "C28H36ClN5O3S",
+      "molecular_weight": "558.1",
+      "smiles": null,
+      "inchikey": "VERWOWGGCGHDQE-UHFFFAOYSA-N",
+      "iupac_name": "5-chloro-2-N-(5-methyl-4-piperidin-4-yl-2-propan-2-yloxyphenyl)-4-N-(2-propan-2-ylsulfonylphenyl)pyrimidine-2,4-diamine"
+    },
+    {
+      "id": "drug_087",
+      "name_zh": "维库溴铵",
+      "name_en": "Vecuronium Bromide",
+      "drug_class": "非去极化型神经肌肉阻滞剂",
+      "mechanism_of_action": "竞争性阻断神经肌肉接头处乙酰胆碱受体，导致骨骼肌松弛。",
+      "indications": [
+        "麻醉辅助（肌肉松弛）",
+        "内窥镜检查"
+      ],
+      "contraindications": [
+        "重症肌无力",
+        "肾功能不全（代谢减慢）"
+      ],
+      "side_effects": [
+        "呼吸肌麻痹（需人工通气）",
+        "心率变化"
+      ],
+      "species_dosing": "犬：0.1 mg/kg IV，效价持续20-30分钟",
+      "pubchem_cid": 39764,
+      "molecular_formula": "C34H57BrN2O4",
+      "molecular_weight": "637.7",
+      "smiles": null,
+      "inchikey": "VEPSYABRBFXYIB-PWXDFCLTSA-M",
+      "iupac_name": "[(2S,3S,5S,8R,9S,10S,13S,14S,16S,17R)-17-acetyloxy-10,13-dimethyl-16-(1-methylpiperidin-1-ium-1-yl)-2-piperidin-1-yl-2,3,4,5,6,7,8,9,11,12,14,15,16,17-tetradecahydro-1H-cyclopenta[a]phenanthren-3-yl] acetate bromide"
     }
   ],
   "tests": [
