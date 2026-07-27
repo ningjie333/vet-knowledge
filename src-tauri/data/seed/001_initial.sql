@@ -1,4 +1,4 @@
--- ===== 标签 (43个) =====
+-- ===== 标签 (45个) =====
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('body_cardiovascular', '心血管系统', 'body_system', '#E74C3C');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('body_digestive', '消化系统', 'body_system', '#E67E22');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('body_endocrine', '内分泌系统', 'body_system', '#1ABC9C');
@@ -25,6 +25,7 @@ INSERT INTO tags (id, name_zh, name_en, tag_group, emergency_level, clinical_act
 INSERT INTO tags (id, name_zh, name_en, tag_group, emergency_level, clinical_action, textbook_logic, typical_scenario, color) VALUES ('em_orange', '橙色', 'Orange - Emergent', 'emergency', 'orange', '15 分钟内介入，重点监测核心生理指标', '生命体征不稳定但尚未至濒死，快速干预可防止恶化至红色等级', '呼吸困难、重度创伤、严重呕吐/腹泻伴脱水、抽搐持续状态', '#F57C00');
 INSERT INTO tags (id, name_zh, name_en, tag_group, emergency_level, clinical_action, textbook_logic, typical_scenario, color) VALUES ('em_red', '红色', 'Red - Critical', 'emergency', 'red', '立即心肺复苏或生命支持 (Resuscitative)', '生命体征极不稳定，随时可能进展至心跳呼吸骤停，需争分夺秒干预', '心跳呼吸骤停、严重气道梗阻、失血性休克、濒死状态', '#D32F2F');
 INSERT INTO tags (id, name_zh, name_en, tag_group, emergency_level, clinical_action, textbook_logic, typical_scenario, color) VALUES ('em_yellow', '黄色', 'Yellow - Urgent', 'emergency', 'yellow', '60 分钟内介入，评估代偿状态', '机体尚能代偿，但病因持续存在将导致失代偿，需尽快明确诊断', '反复呕吐/腹泻、轻度脱水、间歇性跛行、不明原因发热', '#FBC02D');
+INSERT INTO tags (id, name_zh, tag_group) VALUES ('emergency_red', 'emergency_red', 'custom');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('mech_degenerative', '退行性', 'mechanism', '#607D8B');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('mech_genetic', '遗传/先天', 'mechanism', '#3F51B5');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('mech_immune_mediated', '免疫介导', 'mechanism', '#009688');
@@ -37,13 +38,14 @@ INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('mech_pain', '疼痛信
 INSERT INTO tags (id, name_zh, tag_group) VALUES ('mech_parasitic', 'mech_parasitic', 'custom');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('mech_toxic', '中毒', 'mechanism', '#9C27B0');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('mech_vascular', '血管循环', 'mechanism', '#F44336');
+INSERT INTO tags (id, name_zh, tag_group) VALUES ('mechanism_inflammation', 'mechanism_inflammation', 'custom');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('species_cat', '猫', 'species', '#607D8B');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('species_cattle', '牛', 'species', '#5D4037');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('species_dog', '犬', 'species', '#795548');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('species_exotic', '异宠', 'species', '#455A64');
 INSERT INTO tags (id, name_zh, tag_group, color) VALUES ('species_horse', '马', 'species', '#4E342E');
 
--- ===== 症状 (43种) =====
+-- ===== 症状 (44种) =====
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_001', '咳嗽', 'Cough', '呼吸道受到刺激时产生的保护性反射动作，特征为突然的呼气性爆发声', '{"犬": "区分干咳(气管/支气管)和湿咳(肺实质)", "猫": "需与吐毛球鉴别"}', '咳嗽是呼吸道保护性反射，由气道黏膜下的机械感受器和化学感受器（C纤维和快适应感受器）受到刺激后，经迷走神经传入延髓咳嗽中枢，触发协调的呼气肌强烈收缩。炎症介质（组胺、前列腺素、缓激肽）降低感受器阈值，导致咳嗽反射敏感性升高。慢性咳嗽还与气道重塑和咳嗽中枢可塑性改变有关。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_002', '呼吸困难', 'Dyspnea', '呼吸做功增加的表现，包括张口呼吸、腹式呼吸、头颈伸展', '{"犬": "静息张口呼吸为急症信号", "猫": "张口呼吸在猫几乎总是急症"}', '呼吸困难是呼吸做功增加的代偿表现，源于肺顺应性下降、气道阻力增加或肺泡换气功能障碍。当PaO2降低或PaCO2升高时，颈动脉体和主动脉体化学感受器激活呼吸中枢，增加呼吸驱动。同时肺间质水肿或塌陷使肺顺应性降低，需更大的胸腔负压才能维持潮气量，表现为辅助呼吸肌参与、腹式呼吸和张口呼吸。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_003', '呼吸急促', 'Tachypnea', '呼吸频率异常增快。犬>30次/分，猫>40次/分为异常', NULL, '呼吸急促是机体对低氧血症或代谢性酸中毒的代偿反应。外周化学感受器感知PaO2下降，中枢化学感受器感知pH降低和PaCO2升高，共同兴奋延髓呼吸中枢使呼吸频率增快。肺实质病变时肺牵张反射和J感受器激活也促进呼吸加快，以增加每分钟通气量、改善氧合和排出CO2。');
@@ -87,8 +89,9 @@ INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiolog
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_043', '病理性骨折', 'Pathologic Fracture', '在肿瘤或骨质破坏基础上发生的骨折，往往由轻微外力触发，提示骨结构已严重受损。', NULL, '病理性骨折发生于原有骨结构已经被肿瘤、感染或代谢性骨病破坏的骨骼。骨皮质变薄、骨小梁断裂和局部承重能力下降使轻微外力即可导致骨折。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_044', '抽搐', 'Seizures', '肌肉不自主强直或阵挛性收缩，可见于癫痫、中毒、代谢性脑病或颅内占位。', NULL, '抽搐是运动皮层或皮层下结构异常放电引起的肌肉不自主收缩。癫痫源于大脑神经元兴奋-抑制失衡，谷氨酸能兴奋传递增强或GABA能抑制传递减弱导致异常放电扩散。代谢性原因（低血糖、低钙血症、肝性脑病）改变神经元膜电位和神经递质平衡。毒素（有机磷、士的宁）直接干扰离子通道或神经递质代谢。颅内占位和炎症破坏局部神经元网络稳定性，降低发作阈值。');
 INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_045', '前肢伸展/角弓反张', 'Opisthotonos', '头颈后仰、四肢强直伸展，提示严重脑膜脑炎或破伤风。', NULL, '角弓反张是全身伸肌张力极度增高的表现，源于脑干网状结构抑制通路受损。破伤风毒素（破伤风梭菌产生）经轴突逆行转运至中枢，不可逆地阻断抑制性中间神经元（Renshaw细胞）的甘氨酸和GABA释放，使运动神经元持续兴奋。脑膜脑炎时炎症直接损伤脑干网状结构，破坏对肌张力的下行抑制控制。这种去抑制状态导致全身伸肌和屈肌同时强直收缩，以伸肌优势表现为角弓反张姿态。');
+INSERT INTO symptoms (id, name_zh, name_en, definition, species_notes, physiological_basis) VALUES ('sym_046', '昏迷', 'Coma', NULL, NULL, '严重中暑导致脑温升高，脑细胞代谢障碍，血脑屏障破坏，脑水肿形成，颅内压升高，脑干功能抑制。体温>41°C时蛋白质变性，神经元不可逆损伤。');
 
--- ===== 药物 (69种) =====
+-- ===== 药物 (70种) =====
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_001', '阿莫西林-克拉维酸', 'Amoxicillin-Clavulanate', '抗生素（β-内酰胺类）', '阿莫西林为β-内酰胺类抗生素，通过与细菌青霉素结合蛋白（PBP）结合，抑制肽聚糖交联，干扰细胞壁合成，导致细菌溶菌死亡。克拉维酸为β-内酰胺酶抑制剂，自身抗菌活性弱，但能不可逆地与β-内酰胺酶结合，保护阿莫西林不被水解，从而扩展抗菌谱至产酶金黄色葡萄球菌、大肠埃希菌等。两者联用呈杀菌作用，对需氧革兰阳性菌和部分革兰阴性菌有效。', '口服吸收迅速，生物利用度犬约75%、猫约60%，食物对吸收影响小。广泛分布于组织液和体液中，可穿透胎盘屏障但脑脊液浓度低。阿莫西林主要经肾脏排泄，半衰期约1-1.5小时；克拉维酸半衰期相近，约1小时。两者配比（2:1或4:1）确保同步消除，维持有效血药浓度。肾功能不全时需调整剂量。', '["尿路感染", "皮肤感染", "软组织感染", "牙周感染", "呼吸道感染"]', '["青霉素过敏", "严重肾功能不全（需调整剂量）"]', '["胃肠道反应（呕吐、腹泻）", "过敏反应", "肠道菌群失调"]', '胃肠道反应因药物扰乱肠道正常菌群平衡，导致条件致病菌过度生长。过敏反应由β-内酰胺环作为半抗原与载体蛋白结合引发IgE介导的超敏反应。大剂量静脉注射偶见神经系统兴奋，与GABA受体竞争性抑制有关。', '{"犬": "dose=12.5-25 mg/kg, route=PO, frequency=q12h", "猫": "dose=12.5-25 mg/kg, route=PO, frequency=q12h"}');
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_002', '恩诺沙星', 'Enrofloxacin', '抗生素（氟喹诺酮类）', '恩诺沙星为氟喹诺酮类杀菌剂，通过抑制细菌DNA旋转酶（拓扑异构酶II）和拓扑异构酶IV，阻断DNA超螺旋化与解旋过程，导致DNA复制和转录受阻。对革兰阴性菌主要靶向DNA旋转酶，对革兰阳性菌主要靶向拓扑异构酶IV。药物在低浓度下呈抑菌作用，高浓度呈杀菌作用，抗菌谱覆盖革兰阴性菌、部分革兰阳性菌及支原体。', '口服生物利用度犬约65-80%、猫约50-70%，组织分布广泛，能穿透前列腺、肺组织和骨组织。在肝内部分代谢为活性代谢物环丙沙星（约30-40%），主要经肾脏排泄（原型+代谢物），半衰期犬约4-7小时、猫约6-8小时。属浓度依赖性抗菌药，AUC/MIC为关键PK/PD参数，建议每日一次给药以优化杀菌效果。', '["尿路感染", "皮肤感染", "呼吸道感染", "前列腺炎", "革兰阴性菌感染"]', '["幼龄动物（软骨毒性）", "猫高剂量（视网膜毒性）", "癫痫病史"]', '["胃肠道反应", "中枢神经系统兴奋", "幼畜软骨损伤", "猫视网膜病变（高剂量）"]', '幼畜软骨毒性因药物与软骨基质中镁离子螯合，抑制软骨细胞蛋白聚糖合成，导致关节软骨侵蚀。猫视网膜毒性因药物在视网膜色素上皮蓄积，产生活性氧自由基损伤光感受器细胞。中枢神经兴奋与抑制性神经递质GABA受体阻断有关。偶见结晶尿，因药物在酸性尿中溶解度降低。', '{"犬": "dose=5-20 mg/kg, route=PO/IV/SC, frequency=q24h", "猫": "dose=2.5-5 mg/kg, route=PO, frequency=q24h（不超过5mg/kg）"}');
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_003', '呋塞米', 'Furosemide', '利尿剂（袢利尿剂）', '呋塞米为高效能袢利尿剂，特异性抑制肾单位髓袢升支粗段管腔膜侧的Na⁺/K⁺/2Cl⁻共转运体（NKCC2），减少钠、氯、钾的重吸收，破坏肾髓质渗透梯度，降低尿液浓缩能力，产生强效利尿排钠效应。同时促进肾脏前列腺素合成，扩张肾血管，增加肾血流量约40%，进一步促进利尿。静脉注射后5分钟起效，利尿同时显著降低心脏前负荷。', '口服生物利用度犬约45-60%、猫约50%，起效时间口服30-60分钟、静脉注射5分钟。血浆蛋白结合率高（>95%），主要分布于细胞外液。约50%经肝脏葡萄糖醛酸化代谢，其余以原型经肾脏排泄，半衰期犬约1-1.5小时、猫约1.5-2小时。利尿效应与尿中药物浓度直接相关，反复给药可产生利尿抵抗（braking phenomenon），需间歇给药或联合用药。', '["充血性心力衰竭", "肺水肿", "胸腔积液", "急性肾损伤（促进利尿）", "高钙血症"]', '["脱水", "无尿", "低钾血症", "磺胺类过敏"]', '["脱水", "低钾血症", "低钠血症", "耳毒性（高剂量IV）", "肾前性氮质血症"]', '电解质紊乱（低钾、低钠、低氯性碱中毒）因髓袢Na⁺/K⁺/2Cl⁻转运抑制后，远端肾单位Na⁺-K⁺交换代偿性增加，同时Cl⁻丢失导致碳酸氢根重吸收增多。脱水与低血容量因过度利尿致有效循环血量减少。耳毒性在大剂量静脉推注时出现，因内淋巴液电解质成分改变损伤耳蜗毛细胞。', '{"犬": "dose=2-4 mg/kg, route=IV/IM/PO, frequency=q8-12h（急性）；1-2 mg/kg q12-24h（维持）", "猫": "dose=1-2 mg/kg, route=IV/IM/PO, frequency=q12-24h"}');
@@ -158,6 +161,7 @@ INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd,
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_074', '波生坦', 'Bosentan', '内皮素受体拮抗剂', '波生坦阻断内皮素 ETA/ETB 受体，减轻肺血管平滑肌收缩和重塑，降低肺动脉压力。', '口服吸收中等，主要经肝脏代谢。需持续给药维持肺血管扩张效果。', '["肺动脉高压"]', '["中重度肝功能不全", "明显低血压"]', '["肝酶升高", "低血压", "胃肠道不适"]', '可能导致肝酶升高、低血压和胃肠道不适，长期使用需监测肝功能。', '依据临床反应和耐受性个体化给药，需定期监测肝功能');
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_075', '低分子肝素', 'Low Molecular Weight Heparin', '抗凝药', '低分子肝素通过增强抗凝血酶 III 对 Xa 因子的抑制作用，减少凝血酶生成，是静脉血栓急性期常用抗凝方案。', '皮下注射吸收稳定，起效快。主要经肾脏清除，肾功能不全时需谨慎调整。', '["静脉血栓栓塞症", "高凝状态的短期抗凝"]', '["活动性出血", "严重血小板减少"]', '["出血", "注射部位血肿"]', '主要风险为出血，包括穿刺部位渗血、胃肠道出血和血尿。过量时可导致严重凝血功能障碍。', '依据抗凝目标和监测指标个体化皮下注射给药');
 INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_076', '华法林', 'Warfarin', '口服抗凝药', '华法林抑制维生素 K 环氧化物还原酶，减少 II、VII、IX、X 因子的活化，是需要长期维持抗凝时的传统方案。', '口服吸收良好，起效较慢，需依赖凝血指标监测调整剂量。主要经肝脏代谢。', '["需要长期口服抗凝管理的血栓性疾病"]', '["活动性出血", "无法监测凝血指标的场景"]', '["出血", "食欲下降", "药物相互作用多"]', '出血风险高，受饮食和药物相互作用影响明显。过量可导致危及生命的内出血。', '依据 INR 或其他凝血监测指标个体化调整');
+INSERT INTO drugs (id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, indications, contraindications, side_effects, adverse_mechanism, species_dosing) VALUES ('drug_077', '氯丙嗪', 'Chlorpromazine', '吩噻嗪类抗精神病药', '阻断多巴胺D2受体，抑制下丘脑体温调节中枢，降低基础代谢率，扩张外周血管促进散热。', NULL, '["中暑降温", "镇静", "抗呕吐"]', '["癫痫", "肝功能不全", "低血压"]', '["低血压", "镇静过度", "体温过低（过量）"]', NULL, '犬：0.5-2 mg/kg IM/IV，用于中暑降温时与物理降温联用');
 
 -- ===== 诊断检查 (36项) =====
 INSERT INTO diagnostic_tests (id, name_zh, category, reference_ranges, interpretation, cost_estimate, turnaround_time) VALUES ('test_001', '全血细胞计数（CBC）', '血液学', '犬RBC: 5.5-8.5×10⁶/μL, WBC: 6-17×10³/μL, PLT: 200-500×10³/μL | 猫RBC: 5.0-10.0×10⁶/μL, WBC: 5.5-19.5×10³/μL, PLT: 300-700×10³/μL', '贫血（RBC↓）、感染/炎症（WBC↑↓）、免疫介导性疾病、血小板减少症（PLT↓）。白细胞分类计数可区分细菌感染（中性粒↑）与病毒感染（淋巴↑/↓）', 80, 15);
@@ -241,7 +245,7 @@ INSERT INTO treatments (id, name_zh, name_en, therapy_type, principle, procedure
 6. 术后监护：持续心电监护 24-48h（室性心律失常高发），纠正电解质
 7. 监测：乳酸、PT/aPTT（排除 DIC）、连续 ECG', 'GDV 时胃内气体/液体潴留→胃扩张压迫后腔静脉→静脉回流骤降→心输出量下降→休克。胃壁缺血致再灌注损伤，自由基大量产生→心肌细胞损伤→室性心律失常（术后 24-72h 最高发）。乳酸升高反映组织低灌注程度，>6 mmol/L 预后不良。', '及时手术存活率 80-90%。预后不良指标：乳酸 >6、DIC、胃壁坏死需切除、术前心跳骤停。胃固定术可降低复发率至 <5%。');
 
--- ===== 疾病 (84种) =====
+-- ===== 疾病 (85种) =====
 INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_001', '肺炎', 'Pneumonia', 'Pneumonia', '["呼吸系统"]', '["犬", "猫"]', '呼吸系统', '感染性', '犬细菌性肺炎多发于幼犬及老年犬，尤其是免疫抑制个体；任何品种均可发病，短头品种风险略高。吸入性肺炎常见于灌食不当或食管疾病患犬。无明显季节性，但冬季因呼吸道感染高发而间接增加发病率。免疫功能低下动物全年均可发病。', '肺部炎症反应，可由细菌、病毒、真菌或吸入性因素引起。犬最常见为细菌性肺炎，猫多为吸入性或病毒性。', '["细菌感染(博德特氏菌、链球菌)", "病毒感染", "真菌感染", "吸入性因素"]', '病原体入侵肺泡后炎症介质释放，中性粒细胞浸润，肺泡充满渗出液导致气体交换障碍和低氧血症。', '病原体（细菌、病毒、真菌或吸入物）突破呼吸道防御机制后侵入肺泡，激活固有免疫反应。中性粒细胞和巨噬细胞募集至感染部位，释放促炎因子（IL-1、IL-6、TNF-α），导致肺泡毛细血管通透性增加，富含蛋白质的渗出液和中性粒细胞充填肺泡腔。肺实变区域气体交换面积减少，通气/血流比例失调，引起低氧血症。严重者可并发脓胸或急性呼吸窘迫综合征（ARDS）。', '早期治疗预后良好。', 'intermediate', 3);
 INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_002', '心力衰竭(犬)', 'CHF', 'Insufficiencia cordis', '["心血管系统"]', '["犬"]', '心血管系统', '退行性', '最常见于中老年小型犬，黏液样二尖瓣退化（MMVD）在骑士查理王小猎犬、迷你贵宾犬、腊肠犬等品种中有显著遗传倾向。扩张型心肌病（DCM）多见于大型犬，如杜宾犬、大丹犬和拳师犬，公犬发病率高于母犬。一般发病年龄为5岁以上，随年龄增长发病率显著升高。无明显季节性。', '心脏泵血功能不足以满足机体代谢需求，导致肺循环和/或体循环淤血。最常见病因是黏液样二尖瓣退化(MMVD)。', '["MMVD", "DCM", "先天性心脏病"]', '瓣膜关闭不全导致血液反流，心房压力升高导致肺静脉压升高引发肺水肿。', 'MMVD导致二尖瓣叶增厚变形，收缩期无法完全闭合，血液从左心室反流至左心房。左心房容量负荷增加导致扩张，肺静脉回流受阻，肺毛细血管静水压升高。当肺毛细血管楔压超过血浆胶体渗透压（约25 mmHg）时，液体渗入肺泡腔形成肺水肿。同时，心输出量下降激活肾素-血管紧张素-醛固酮系统（RAAS），导致水钠潴留、前负荷进一步增加，形成恶性神经体液循环。长期代偿性心肌肥厚最终导致心肌纤维化和收缩功能下降。', '取决于病因和控制程度。', 'advanced', 4);
 INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_003', '猫哮喘', 'Feline Asthma', 'Asthma felinum', '["呼吸系统"]', '["猫"]', '呼吸系统', '免疫介导性', '猫哮喘多发于2-8岁中年猫，暹罗猫及其杂交品种有遗传易感性，母猫发病率略高于公猫。环境因素如粉尘、烟雾、花粉和猫砂粉尘是常见诱因。无明显季节性，但春季花粉季节和冬季室内通风不良时发作频率可能增加。全球发病率约为1-5%，实际发病率可能因漏诊而被低估。', '猫下呼吸道慢性炎症性疾病，特征为气道高反应性和可逆性气流受限。', '["过敏原(尘螨、花粉、烟雾)", "环境刺激物", "应激", "特发性"]', 'IgE介导的I型超敏反应，肥大细胞脱颗粒，嗜酸性粒细胞浸润导致气道平滑肌收缩和黏膜水肿。', '过敏原经呼吸道进入后，被树突状细胞呈递给Th2淋巴细胞，刺激B细胞产生特异性IgE。IgE与肥大细胞表面FcεRI受体结合，再次接触过敏原时发生交联，触发肥大细胞脱颗粒，释放组胺、白三烯、前列腺素D2等预存介质。这些介质导致急性支气管平滑肌痉挛、黏膜水肿和黏液分泌增加。同时，趋化因子招募嗜酸性粒细胞、淋巴细胞至气道壁，释放主要碱性蛋白（MBP）和嗜酸性粒细胞阳离子蛋白（ECP），损伤气道上皮。慢性炎症导致气道重塑：基底膜增厚、平滑肌增生和杯状细胞化生，造成不可逆性气流受限。', '需终身管理，多数猫经治疗可正常生活。', 'intermediate', 2);
@@ -326,6 +330,7 @@ INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_
 INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_082', '骨肉瘤', 'Osteosarcoma', 'Osteosarcoma', '["肿瘤科", "骨科"]', '["犬", "猫"]', '运动系统', '肿瘤性', '骨肉瘤（Osteosarcoma, OSA）是犬最常见的原发性骨肿瘤，约占所有骨肿瘤的80%，也见于猫。年老大型犬高发（平均8-10岁），大型和巨型品种（德国牧羊犬、杜宾犬、大丹犬、圣伯纳犬）风险显著增高。前肢桡骨和肱骨远端是最常见部位（约75%）。猫骨肉瘤侵袭性略低于犬，但转移率仍高。犬骨肉瘤确诊时约90%已发生微转移（肺转移为主）。', '犬最常见的原发性骨肿瘤，侵袭性高，就诊时多已转移至肺。表现为进行性跛行和骨痛。', '["品种易感性（大型犬：德国牧羊犬、杜宾犬、大丹犬）", "年龄（老年动物高发）", "遗传因素"]', '肿瘤细胞产生类骨质并破坏正常骨结构，病理性骨折和骨膜反应导致剧烈疼痛。早期肺转移。', '骨肉瘤起源于骨间质细胞（成骨细胞前体），肿瘤细胞产生类骨质（未成熟骨基质）和骨样组织。肿瘤破坏正常骨结构导致病理性骨折；骨膜反应（新骨形成）引起特征性"阳光放射"样骨膜新骨。犬 OSA 具有高度侵袭性，肿瘤细胞可通过血管和淋巴系统早期转移。常见转移部位为肺（血行转移）和局部淋巴结。骨溶解和疼痛导致患肢跛行和不愿负重。骨痛由肿瘤分泌的前列腺素和细胞因子激活疼痛受体引起。', '截肢或肢体保留手术 + 化疗（中位生存期约12个月）。未治疗者预后极差，3-4个月内死亡。', 'advanced', 4);
 INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_083', '黑色素瘤', 'Melanoma', 'Melanoma', '["肿瘤科"]', '["犬", "猫"]', '皮肤系统', '肿瘤性', '黑色素瘤（Melanoma）在犬猫均为常见肿瘤，犬皮肤黑色素瘤约30%为恶性，口腔黑色素瘤恶性率高达90%。犬平均发病年龄9-11岁，某些品种（松狮犬、戈登雪达犬、苏格兰梗、标准贵宾犬）易感性高。猫皮肤黑色素瘤相对少见，但黏膜（口腔、鼻、眼）黑色素瘤恶性度高。转移倾向与部位相关：皮肤型转移率低（约20-30%），口腔型转移率高（60-80%），常见转移至区域淋巴结和肺。', '黑色素细胞来源的恶性肿瘤，犬口腔型最常见且高度恶性。表现为黑色结节和侵蚀性生长。', '["品种遗传易感性（松狮犬、戈登雪达犬、苏格兰梗）", "日晒（皮肤型）", "黏膜慢性刺激"]', '肿瘤细胞产生黑色素并侵蚀周围组织，口腔型破坏牙龈和牙槽骨，高转移倾向。', '黑色素瘤起源于黑色素细胞或黑色素母细胞，具有高度侵袭性。肿瘤细胞产生黑色素（但部分为无色素性黑色素瘤），导致皮肤或黏膜出现黑色或灰色结节。犬口腔黑色素瘤常表现为侵蚀性生长，破坏牙龈和牙槽骨。肿瘤细胞通过淋巴和血行转移，常见转移至局部淋巴结、肺、肝和肾。黑色素瘤对免疫治疗（如肿瘤疫苗）响应相对较好，是研究热点。', '皮肤型手术切除后预后良好。口腔型即使手术加放疗，中位生存期也仅6-8个月。免疫治疗是研究热点。', 'advanced', 4);
 INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_084', '弓形虫病', 'Toxoplasmosis', 'Toxoplasmosis', '["寄生虫病", "人畜共患病"]', '["犬", "猫"]', '寄生虫性', '寄生虫性', '弓形虫病（Toxoplasmosis）是由刚地弓形虫（Toxoplasma gondii）引起的重要人畜共患寄生虫病。猫是唯一的终末宿主，人和犬猫均为中间宿主。全球约30%人口感染。我国弓形虫感染率犬约10-20%，猫约30-40%。感染途径：摄入含卵囊的食物或水（土壤污染）、摄入含组织包囊的生肉、垂直传播。免疫功能正常者多为亚临床感染，免疫抑制者可发生严重中枢神经系统疾病。', '刚地弓形虫引起的人畜共患寄生虫病，猫是终末宿主。犬猫多为亚临床感染，免疫抑制时可致严重疾病。', '["摄入被卵囊污染的食物或水", "摄入含组织包囊的生肉", "母体垂直传播"]', '虫体穿过肠壁后经血流播散至全身，形成组织包囊。免疫正常时包囊被纤维包裹，免疫抑制时包囊破裂导致炎症。', '弓形虫生活史：猫摄入卵囊或组织包囊后，子孢子或缓殖子在小肠上皮细胞内进行有性生殖，产生卵囊随粪便排出（粪便中的卵囊需1-5天才能感染新宿主）。犬猫摄入卵囊后，虫体穿过肠壁经血流播散至各组织（肌肉、心肌、神经系统、眼），形成组织包囊（慢性期）。犬猫感染后若免疫功能正常，虫体被控制形成组织包囊，但犬猫不向外界排卵囊（不同于猫）。临床症状取决于感染量和宿主免疫状态：高热、肺炎、肝炎、脑炎、眼炎为常见表现。', '免疫功能正常者多为自限性，预后良好。免疫抑制者需抗弓形虫治疗（磺胺甲氧苄啶+乙胺嘧啶），严重脑炎者预后差。', 'intermediate', 2);
+INSERT INTO diseases (id, name_zh, name_en, name_latin, category, species, body_system, pathogenic_type, epidemiology, overview, etiology, pathophysiology, physiological_basis, prognosis, difficulty, urgency_level) VALUES ('dis_085', '犬中暑（热射病）', 'Canine Heat Stroke', 'Hyperthermia/Heat Stroke', '["急诊/重症"]', '["犬"]', '体温调节系统', '物理性', '多发于夏季高温高湿环境，短头犬种（斗牛犬、巴哥）、肥胖犬、老年犬及被关在车内的犬只风险极高。体温>41°C为热射病，>42°C可致死。', '犬中暑是由于体温调节中枢功能障碍，体内热量蓄积导致核心体温急剧升高（>41°C）的危及生命的急症。可迅速引发多器官功能障碍综合征（MODS）、DIC、ARDS，死亡率高达50%。', '["高温高湿环境暴露", "剧烈运动后未及时散热", "被关在密闭车内（车内温度可在15分钟内升至50°C以上）", "短头犬种上呼吸道散热效率低", "肥胖、老年、心脏病患犬体温调节能力差"]', '体温过高→细胞代谢障碍→全身炎症反应→内毒素血症→DIC→多器官衰竭', NULL, NULL, 'advanced', 5);
 
 -- ===== 疾病-标签关联 =====
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_001', 'body_respiratory');
@@ -751,6 +756,9 @@ INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_084', 'mech_parasitic');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_084', 'species_cat');
 INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_084', 'species_dog');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_085', 'emergency_red');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_085', 'mechanism_inflammation');
+INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_085', 'species_dog');
 
 -- ===== 疾病-症状关联 =====
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_001', 'sym_001', 'common', '全程');
@@ -1085,6 +1093,14 @@ INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_084', 'sym_005', 'common', '神经症状');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_084', 'sym_001', 'uncommon', '肺炎');
 INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_084', 'sym_027', 'uncommon', '眼部');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_018', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_003', 'common', '全程');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_022', 'common', '早期');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_005', 'uncommon', '进展');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_044', 'uncommon', '重症');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage,is_pathognomonic) VALUES ('dis_085', 'sym_046', 'uncommon', '晚期', 1);
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_023', 'common', '晚期');
+INSERT INTO disease_symptom (disease_id,symptom_id,frequency,stage) VALUES ('dis_085', 'sym_019', 'common', '进展');
 
 -- ===== 疾病-治疗关联 =====
 INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_001', 'drug_001', 'first', '犬', '阿莫西林-克拉维酸是犬细菌性肺炎的一线抗生素');
@@ -1337,6 +1353,10 @@ INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('d
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_084', 'drug_045', 'first');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_084', 'drug_046', 'first');
 INSERT INTO disease_treatment (disease_id,drug_id,line) VALUES ('dis_084', 'drug_008', 'adjunctive');
+INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_085', 'drug_029', 'first', '犬', '积极静脉输液（乳酸林格液）纠正脱水和休克，维持器官灌注');
+INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_085', 'drug_077', 'first', '犬', '氯丙嗪0.5-2 mg/kg IM/IV，抑制体温调节中枢促进散热，与物理降温联用');
+INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_085', 'drug_042', 'second', '犬', '抽搐时用地西泮或苯巴比妥控制');
+INSERT INTO disease_treatment (disease_id,drug_id,line,species,notes) VALUES ('dis_085', 'drug_004', 'adjunctive', '犬', '短期使用糖皮质激素减轻脑水肿和全身炎症反应');
 
 -- ===== 疾病-诊断关联 =====
 INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level,species,expected_result) VALUES ('dis_001', 'test_006', 'confirming', 'supportive', '犬', '肺间质/肺泡浸润影，肺门周围为主');
@@ -1491,6 +1511,10 @@ INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level) VALUE
 INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level) VALUES ('dis_084', 'test_034', 'confirming', 'gold_standard');
 INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level) VALUES ('dis_084', 'test_031', 'confirming', 'supportive');
 INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level) VALUES ('dis_084', 'test_001', 'screening', 'supportive');
+INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level) VALUES ('dis_085', 'test_001', 'confirming', 'gold_standard');
+INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level) VALUES ('dis_085', 'test_014', 'confirming', 'supportive');
+INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level) VALUES ('dis_085', 'test_002', 'monitoring', 'supportive');
+INSERT INTO disease_diagnostic (disease_id,test_id,purpose,evidence_level) VALUES ('dis_085', 'test_010', 'monitoring', 'supportive');
 
 -- ===== 疾病-治疗方案关联 =====
 INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_001', 'trt_001', 'first', '犬', '细菌性肺炎标准抗生素方案');
@@ -1502,6 +1526,7 @@ INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) V
 INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_025', 'trt_005', 'first', '犬', '细小病毒重症监护');
 INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_027', 'trt_005', 'first', '猫', '猫泛白细胞减少症类似方案');
 INSERT INTO disease_treatment_map (disease_id,treatment_id,line,species,notes) VALUES ('dis_029', 'trt_006', 'first', '犬', 'GDV 急救手术方案');
+INSERT INTO disease_treatment_map (disease_id,treatment_id,line) VALUES ('dis_085', 'trt_001', 'first');
 
 -- ===== 鉴别诊断关联 =====
 INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_001', 'dis_002', '肺炎有发热+湿咳，心衰有心脏杂音+奔马律');
@@ -1554,6 +1579,9 @@ INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_
 INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_082', 'dis_035', '骨肉瘤有进行性跛行和骨痛，骨关节炎活动后加重，X光骨肉瘤有骨质溶解和新骨形成');
 INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_083', 'dis_043', '黑色素瘤有黑色结节，肥大细胞瘤有溃疡和组胺释放症状，病理可确诊');
 INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_084', 'dis_005', '弓形虫病有神经症状和眼部病变，AKI有肾功能异常和氮质血症，抗体检测可确诊');
+INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_085', 'dis_031', '癫痫也可有抽搐和意识障碍，但通常无高热，体温正常或仅轻度升高');
+INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_085', 'dis_059', '脑炎有神经症状和发热，但发热通常为渐进性而非急剧升高，且对退热药有一定反应');
+INSERT INTO disease_ddx (disease_id,ddx_id,distinguishing_feature) VALUES ('dis_085', 'dis_057', '有机磷中毒有流涎和抽搐，但瞳孔缩小（针尖样）而非散大，胆碱酯酶活性降低');
 
 -- ===== 病例 (15个) =====
 INSERT INTO cases (id, title, species, breed, age, weight, chief_complaint, history, physical_exam, lab_results, imaging, diagnosis, treatment, outcome, learning_points, difficulty) VALUES ('case_001', '3岁绝育雌性金毛猎犬 — 急性呕吐与祈祷姿势', '犬', '金毛猎犬', 3, 28, '呕吐24小时，弓背不愿活动，呈祈祷姿势', '昨晚偷吃了一整盘红烧肉。今早开始呕吐，呕吐物为未消化食物→黄色胆汁样。精神差，不愿走动，弓背，腹部触诊敏感。已绝育，定期免疫驱虫，既往体健。', 'T 39.5°C，HR 120bpm，RR 32次/分，脱水约7%。腹部触诊前腹敏感，呈祈祷姿势（前肢趴地后肢站立）。肠鸣音减弱。黏膜颜色正常，CRT 2秒。', 'cPLI: 850 μg/L（参考≤200）。CBC: WBC 18.5×10³/μL（参考6-17），中性粒85%。生化: ALT 180 U/L（轻度↑），ALP 250 U/L（轻度↑），BUN 35 mg/dL（轻度↑，脱水），GLU 160 mg/dL（轻度↑，应激）。', '腹部超声：胰腺弥漫性增大，周围脂肪回声增强（''毛玻璃样''改变），无游离液体，无异物征象。', '急性胰腺炎（高脂饮食诱发）', '1. 乳酸林格液 10 ml/kg/h IV 纠正脱水；2. 马罗匹坦 1 mg/kg SC q24h 止吐；3. 曲马多 3 mg/kg PO q8h 镇痛；4. 奥美拉唑 1 mg/kg PO q24h 胃保护；5. 禁食48-72h后逐步引入低脂饮食。', '治疗48h后呕吐停止，72h后开始进食低脂罐头，第5天出院。建议长期低脂饮食管理。', '① 祈祷姿势（prayer position）是犬胰腺炎的特征性表现；② cPLI>400 μg/L对犬胰腺炎敏感性82%、特异性95%；③ 高脂饮食是犬胰腺炎最常见诱因；④ 治疗核心是积极液体复苏+止吐+镇痛+禁食，不推荐常规使用抗生素。', 'basic');
@@ -1589,7 +1617,7 @@ INSERT INTO case_disease (case_id, disease_id) VALUES ('case_013', 'dis_029');
 INSERT INTO case_disease (case_id, disease_id) VALUES ('case_014', 'dis_028');
 INSERT INTO case_disease (case_id, disease_id) VALUES ('case_015', 'dis_032');
 
--- ===== 药物相互作用 (10条) =====
+-- ===== 药物相互作用 (11条) =====
 INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_003', 'drug_012', 'major', '呋塞米与美洛昔康(NSAID)联用可显著降低利尿效果，并增加肾毒性风险。NSAIDs抑制前列腺素合成，减少肾血流，与呋塞米的肾脏作用拮抗。');
 INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_015', 'drug_003', 'major', '地高辛与呋塞米联用时，呋塞米引起的低钾血症可增加地高辛中毒风险。需密切监测血钾和地高辛血药浓度。');
 INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_042', 'drug_033', 'major', '苯巴比妥与氯胺酮联用可增强中枢神经系统抑制，延长麻醉恢复时间。苯巴比妥是肝酶诱导剂，可能加速其他药物代谢。');
@@ -1600,4 +1628,5 @@ INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES 
 INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_009', 'drug_056', 'moderate', '奥美拉唑可抑制氯吡格雷的活化（CYP2C19途径），降低其抗血小板效果。联用时考虑换用泮托拉唑。');
 INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_001', 'drug_014', 'mild', '阿莫西林-克拉维酸与甲硝唑联用可扩大抗菌谱，覆盖需氧菌和厌氧菌，常用于严重混合感染。联用通常安全。');
 INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_008', 'drug_009', 'mild', '奥美拉唑可能降低左甲状腺素钠的吸收。建议两药间隔至少4小时服用。');
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_077', 'drug_042', 'moderate', '氯丙嗪与苯巴比妥联用可增强中枢抑制效应，加重镇静和呼吸抑制。联用时需减少苯巴比妥剂量并密切监测。');
 

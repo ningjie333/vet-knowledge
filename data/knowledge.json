@@ -8417,6 +8417,154 @@
           "feature": "弓形虫病有神经症状和眼部病变，AKI有肾功能异常和氮质血症，抗体检测可确诊"
         }
       ]
+    },
+    {
+      "id": "dis_085",
+      "name_zh": "犬中暑（热射病）",
+      "name_en": "Canine Heat Stroke",
+      "name_latin": "Hyperthermia/Heat Stroke",
+      "category": [
+        "急诊/重症"
+      ],
+      "species": [
+        "犬"
+      ],
+      "body_system": "体温调节系统",
+      "pathogenic_type": "物理性",
+      "epidemiology": "多发于夏季高温高湿环境，短头犬种（斗牛犬、巴哥）、肥胖犬、老年犬及被关在车内的犬只风险极高。体温>41°C为热射病，>42°C可致死。",
+      "urgency_level": 5,
+      "difficulty": "advanced",
+      "overview": "犬中暑是由于体温调节中枢功能障碍，体内热量蓄积导致核心体温急剧升高（>41°C）的危及生命的急症。可迅速引发多器官功能障碍综合征（MODS）、DIC、ARDS，死亡率高达50%。",
+      "etiology": [
+        "高温高湿环境暴露",
+        "剧烈运动后未及时散热",
+        "被关在密闭车内（车内温度可在15分钟内升至50°C以上）",
+        "短头犬种上呼吸道散热效率低",
+        "肥胖、老年、心脏病患犬体温调节能力差"
+      ],
+      "pathophysiological_basis": "核心体温>41°C时，细胞代谢酶系统受损，蛋白质变性，细胞膜通透性增加。热损伤触发全身炎症反应综合征（SIRS），肠道屏障破坏导致内毒素血症，进一步激活凝血 cascade 导致 DIC。脑温升高直接损伤神经元，脑水肿和颅内压升高导致昏迷。",
+      "pathophysiology": "体温过高→细胞代谢障碍→全身炎症反应→内毒素血症→DIC→多器官衰竭",
+      "progenosis": "取决于高温持续时间和降温速度。降温延迟>90分钟死亡率显著升高。存活者可能遗留神经系统后遗症（共济失调、癫痫、认知障碍）。",
+      "tags": [
+        "emergency_red",
+        "mechanism_inflammation",
+        "species_dog"
+      ],
+      "symptoms": [
+        {
+          "symptom": "sym_018",
+          "frequency": "common",
+          "stage": "全程"
+        },
+        {
+          "symptom": "sym_003",
+          "frequency": "common",
+          "stage": "全程"
+        },
+        {
+          "symptom": "sym_022",
+          "frequency": "common",
+          "stage": "早期"
+        },
+        {
+          "symptom": "sym_005",
+          "frequency": "uncommon",
+          "stage": "进展"
+        },
+        {
+          "symptom": "sym_044",
+          "frequency": "uncommon",
+          "stage": "重症"
+        },
+        {
+          "symptom": "sym_046",
+          "frequency": "uncommon",
+          "stage": "晚期",
+          "is_pathognomonic": true
+        },
+        {
+          "symptom": "sym_023",
+          "frequency": "common",
+          "stage": "晚期"
+        },
+        {
+          "symptom": "sym_019",
+          "frequency": "common",
+          "stage": "进展"
+        }
+      ],
+      "drugs": [
+        {
+          "drug": "drug_029",
+          "line": "first",
+          "species": "犬",
+          "notes": "积极静脉输液（乳酸林格液）纠正脱水和休克，维持器官灌注"
+        },
+        {
+          "drug": "drug_077",
+          "line": "first",
+          "species": "犬",
+          "notes": "氯丙嗪0.5-2 mg/kg IM/IV，抑制体温调节中枢促进散热，与物理降温联用"
+        },
+        {
+          "drug": "drug_042",
+          "line": "second",
+          "species": "犬",
+          "notes": "抽搐时用地西泮或苯巴比妥控制"
+        },
+        {
+          "drug": "drug_004",
+          "line": "adjunctive",
+          "species": "犬",
+          "notes": "短期使用糖皮质激素减轻脑水肿和全身炎症反应"
+        }
+      ],
+      "diagnostics": [
+        {
+          "test": "test_001",
+          "purpose": "confirming",
+          "evidence_level": "gold_standard",
+          "expected_result": "核心体温>41°C（直肠温度）"
+        },
+        {
+          "test": "test_014",
+          "purpose": "confirming",
+          "evidence_level": "supportive",
+          "expected_result": "凝血功能异常（PT/APTT延长，D-二聚体升高）提示DIC"
+        },
+        {
+          "test": "test_002",
+          "purpose": "monitoring",
+          "evidence_level": "supportive",
+          "expected_result": "BUN/CREA升高（肾损伤），ALT/AST升高（肝损伤）"
+        },
+        {
+          "test": "test_010",
+          "purpose": "monitoring",
+          "evidence_level": "supportive",
+          "expected_result": "代谢性酸中毒（pH<7.35），乳酸升高"
+        }
+      ],
+      "treatments": [
+        {
+          "treatment": "trt_001",
+          "line": "first"
+        }
+      ],
+      "ddx": [
+        {
+          "ddx": "dis_031",
+          "feature": "癫痫也可有抽搐和意识障碍，但通常无高热，体温正常或仅轻度升高"
+        },
+        {
+          "ddx": "dis_059",
+          "feature": "脑炎有神经症状和发热，但发热通常为渐进性而非急剧升高，且对退热药有一定反应"
+        },
+        {
+          "ddx": "dis_057",
+          "feature": "有机磷中毒有流涎和抽搐，但瞳孔缩小（针尖样）而非散大，胆碱酯酶活性降低"
+        }
+      ]
     }
   ],
   "symptoms": [
@@ -8881,6 +9029,13 @@
         "mech_pain"
       ],
       "definition": "头颈后仰、四肢强直伸展，提示严重脑膜脑炎或破伤风。"
+    },
+    {
+      "id": "sym_046",
+      "name_zh": "昏迷",
+      "name_en": "Coma",
+      "definition:": "意识完全丧失，对疼痛刺激无反应，反射消失或减弱。",
+      "physiological_basis": "严重中暑导致脑温升高，脑细胞代谢障碍，血脑屏障破坏，脑水肿形成，颅内压升高，脑干功能抑制。体温>41°C时蛋白质变性，神经元不可逆损伤。"
     }
   ],
   "drugs": [
@@ -9984,6 +10139,29 @@
       "contraindications": "- 活动性出血\n- 无法监测凝血指标的场景",
       "side_effects": "- 出血\n- 食欲下降\n- 药物相互作用多",
       "species_dosing": "依据 INR 或其他凝血监测指标个体化调整"
+    },
+    {
+      "id": "drug_077",
+      "name_zh": "氯丙嗪",
+      "name_en": "Chlorpromazine",
+      "drug_class": "吩噻嗪类抗精神病药",
+      "mechanism_of_action": "阻断多巴胺D2受体，抑制下丘脑体温调节中枢，降低基础代谢率，扩张外周血管促进散热。",
+      "indications": [
+        "中暑降温",
+        "镇静",
+        "抗呕吐"
+      ],
+      "contraindications": [
+        "癫痫",
+        "肝功能不全",
+        "低血压"
+      ],
+      "side_effects": [
+        "低血压",
+        "镇静过度",
+        "体温过低（过量）"
+      ],
+      "species_dosing": "犬：0.5-2 mg/kg IM/IV，用于中暑降温时与物理降温联用"
     }
   ],
   "tests": [
@@ -10782,6 +10960,12 @@
       "drug_b": "drug_009",
       "severity": "mild",
       "description": "奥美拉唑可能降低左甲状腺素钠的吸收。建议两药间隔至少4小时服用。"
+    },
+    {
+      "drug_a": "drug_077",
+      "drug_b": "drug_042",
+      "severity": "moderate",
+      "description": "氯丙嗪与苯巴比妥联用可增强中枢抑制效应，加重镇静和呼吸抑制。联用时需减少苯巴比妥剂量并密切监测。"
     }
   ]
 }
