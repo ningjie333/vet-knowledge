@@ -1,6 +1,9 @@
 pub mod models;
+pub mod sql_builder;
+pub mod entity_types;
 
 use sqlx::{sqlite::SqlitePoolOptions, Pool, Sqlite};
+use std::path::PathBuf;
 use tauri::{AppHandle, Manager};
 
 pub type DbPool = Pool<Sqlite>;
@@ -74,12 +77,21 @@ async fn execute_tolerant(pool: &DbPool, sql: &str, ctx: &str) {
 const SEED_DATA_VERSION: i64 = 18;
 
 pub async fn init(app: &AppHandle) -> anyhow::Result<DbPool> {
-    let app_dir = app.path().app_data_dir()
-        .unwrap_or_else(|_| {
+    // debug 构建用项目根目录下的 data/（src-tauri 的父目录），
+    // 避免 TRAE Sandbox 拦截 app_data_dir 访问，同时避开 Tauri file watcher 监控范围。
+    // release 构建用标准 app_data_dir（生产环境无沙箱限制）。
+    let app_dir = if cfg!(debug_assertions) {
+        // CARGO_MANIFEST_DIR = src-tauri/ 的绝对路径，parent() = 项目根
+        let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let project_root = manifest_dir.parent().unwrap_or(&manifest_dir);
+        project_root.join("data")
+    } else {
+        app.path().app_data_dir().unwrap_or_else(|_| {
             let mut p = std::env::current_dir().unwrap_or_default();
             p.push("data");
             p
-        });
+        })
+    };
     std::fs::create_dir_all(&app_dir)?;
 
     let db_path = app_dir.join("vet_knowledge.db");
@@ -91,8 +103,13 @@ pub async fn init(app: &AppHandle) -> anyhow::Result<DbPool> {
         .await?;
 
     // SQLite PRAGMA 优化（桌面端最佳实践）
-    sqlx::query("PRAGMA journal_mode = WAL").execute(&pool).await?;
-    sqlx::query("PRAGMA synchronous = NORMAL").execute(&pool).await?;
+    // 用 DELETE 而非 WAL：WAL 模式需要 .db-shm 共享内存文件，
+    // 在沙箱化环境（如 TRAE Sandbox）中该文件访问会被拦截导致 disk I/O error。
+    // DELETE 模式是 SQLite 默认回滚日志，无 SHM 依赖，单用户桌面应用足够。
+    sqlx::query("PRAGMA journal_mode = DELETE").execute(&pool).await?;
+    // DELETE 模式下 synchronous=NORMAL 在断电时有损坏全库风险，用 FULL 保崩溃安全。
+    // 单用户桌面应用写频率低，FULL 的性能损失可接受。
+    sqlx::query("PRAGMA synchronous = FULL").execute(&pool).await?;
     sqlx::query("PRAGMA cache_size = -64000").execute(&pool).await?;
     sqlx::query("PRAGMA foreign_keys = ON").execute(&pool).await?;
     sqlx::query("PRAGMA temp_store = MEMORY").execute(&pool).await?;
@@ -165,6 +182,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             (8, "Add cases_fts for full-text search on cases (deprecated in v10)"),
             (9, "Rebuild tags table without UNIQUE(name_zh)"),
             (10, "Drop unused FTS5 virtual tables (diseases_fts, symptoms_fts, drugs_fts, cases_fts)"),
+            (11, "Drop unused learning_progress table"),
         ] {
             sqlx::query(
                 "INSERT OR IGNORE INTO schema_migrations (version, description)
@@ -492,6 +510,19 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         .await?;
         tx.commit().await?;
         sqlx::query("PRAGMA foreign_keys = ON").execute(pool).await?;
+    }
+
+    // ── v11: 删除未使用的 learning_progress 表 ──
+    // schema.sql 中曾定义 learning_progress 表，但没有任何命令读写它，属于死表。
+    // DROP TABLE IF EXISTS 已幂等，错误应传播。
+    if current < 11 {
+        sqlx::query("DROP TABLE IF EXISTS learning_progress").execute(pool).await?;
+        sqlx::query(
+            "INSERT OR IGNORE INTO schema_migrations (version, description)
+             VALUES (11, 'Drop unused learning_progress table')"
+        )
+        .execute(pool)
+        .await?;
     }
 
     // ── v10: 删除未使用的 FTS5 虚表 ──

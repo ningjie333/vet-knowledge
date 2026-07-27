@@ -177,18 +177,6 @@ CREATE TABLE IF NOT EXISTS schema_migrations (
     description TEXT
 );
 
--- ── 学习进度 ──
-
-CREATE TABLE IF NOT EXISTS learning_progress (
-    entity_type TEXT,
-    entity_id TEXT,
-    mastery_level REAL DEFAULT 0,
-    review_count INTEGER DEFAULT 0,
-    last_reviewed TEXT,
-    next_review TEXT,
-    PRIMARY KEY (entity_type, entity_id)
-);
-
 -- ── 闪卡系统 ──
 
 CREATE TABLE IF NOT EXISTS flashcards (

@@ -1,7 +1,110 @@
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
+use sqlx::sqlite::SqliteRow;
+use sqlx::Row;
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+// ── Row 构造函数 ──
+// 从 SqliteRow 手动构造实体，用于 JOIN 查询（query() 而非 query_as）。
+// 统一放在 models.rs，避免各 commands 模块重复定义。
+
+#[inline]
+pub fn row_from_disease(r: &SqliteRow) -> Disease {
+    Disease {
+        id: r.get("id"),
+        name_zh: r.get("name_zh"),
+        name_en: r.get("name_en"),
+        name_latin: r.get("name_latin"),
+        category: r.get("category"),
+        species: r.get("species"),
+        body_system: r.get("body_system"),
+        pathogenic_type: r.get("pathogenic_type"),
+        epidemiology: r.get("epidemiology"),
+        overview: r.get("overview"),
+        etiology: r.get("etiology"),
+        pathophysiology: r.get("pathophysiology"),
+        physiological_basis: r.get("physiological_basis"),
+        prognosis: r.get("prognosis"),
+        difficulty: r.get("difficulty"),
+        urgency_level: r.get("urgency_level"),
+        created_at: r.get("created_at"),
+        updated_at: r.get("updated_at"),
+    }
+}
+
+#[inline]
+pub fn row_from_symptom(r: &SqliteRow) -> Symptom {
+    Symptom {
+        id: r.get("id"),
+        name_zh: r.get("name_zh"),
+        name_en: r.get("name_en"),
+        definition: r.get("definition"),
+        species_notes: r.get("species_notes"),
+        physiological_basis: r.get("physiological_basis"),
+    }
+}
+
+#[inline]
+pub fn row_from_drug(r: &SqliteRow) -> Drug {
+    Drug {
+        id: r.get("id"),
+        name_zh: r.get("name_zh"),
+        name_en: r.get("name_en"),
+        drug_class: r.get("drug_class"),
+        mechanism_of_action: r.get("mechanism_of_action"),
+        pk_pd: r.get("pk_pd"),
+        indications: r.get("indications"),
+        contraindications: r.get("contraindications"),
+        side_effects: r.get("side_effects"),
+        adverse_mechanism: r.get("adverse_mechanism"),
+        species_dosing: r.get("species_dosing"),
+    }
+}
+
+#[inline]
+pub fn row_from_test(r: &SqliteRow) -> DiagnosticTest {
+    DiagnosticTest {
+        id: r.get("id"),
+        name_zh: r.get("name_zh"),
+        category: r.get("category"),
+        reference_ranges: r.get("reference_ranges"),
+        interpretation: r.get("interpretation"),
+        cost_estimate: r.get("cost_estimate"),
+        turnaround_time: r.get("turnaround_time"),
+    }
+}
+
+#[inline]
+pub fn row_from_treatment(r: &SqliteRow) -> Treatment {
+    Treatment {
+        id: r.get("id"),
+        name_zh: r.get("name_zh"),
+        name_en: r.get("name_en"),
+        therapy_type: r.get("therapy_type"),
+        principle: r.get("principle"),
+        procedure_text: r.get("procedure_text"),
+        physiological_basis: r.get("physiological_basis"),
+        prognosis_assessment: r.get("prognosis_assessment"),
+        created_at: r.get("created_at"),
+    }
+}
+
+#[inline]
+pub fn row_from_tag(r: &SqliteRow) -> Tag {
+    Tag {
+        id: r.get("id"),
+        name_zh: r.get("name_zh"),
+        name_en: r.get("name_en"),
+        tag_group: r.get("tag_group"),
+        emergency_level: r.get("emergency_level"),
+        clinical_action: r.get("clinical_action"),
+        textbook_logic: r.get("textbook_logic"),
+        typical_scenario: r.get("typical_scenario"),
+        color: r.get("color"),
+        created_at: r.get("created_at"),
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Disease {
     pub id: String,
     pub name_zh: String,
@@ -23,7 +126,7 @@ pub struct Disease {
     pub updated_at: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Symptom {
     pub id: String,
     pub name_zh: String,
@@ -33,7 +136,7 @@ pub struct Symptom {
     pub physiological_basis: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Drug {
     pub id: String,
     pub name_zh: String,
@@ -48,7 +151,7 @@ pub struct Drug {
     pub species_dosing: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct DiagnosticTest {
     pub id: String,
     pub name_zh: String,
@@ -59,7 +162,7 @@ pub struct DiagnosticTest {
     pub turnaround_time: Option<i64>,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Case {
     pub id: String,
     pub title: String,
@@ -79,7 +182,7 @@ pub struct Case {
     pub difficulty: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Treatment {
     pub id: String,
     pub name_zh: String,
@@ -92,7 +195,7 @@ pub struct Treatment {
     pub created_at: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct Tag {
     pub id: String,
     pub name_zh: String,

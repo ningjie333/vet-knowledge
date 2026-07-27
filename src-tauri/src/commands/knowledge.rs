@@ -1,4 +1,5 @@
 use crate::db::{DbPool, models::*};
+use crate::db::models::{row_from_disease, row_from_drug, row_from_symptom, row_from_test};
 use sqlx::Row;
 
 // ===== 疾病 =====
@@ -9,19 +10,15 @@ pub async fn get_diseases(
     species: Option<String>,
     category: Option<String>,
 ) -> Result<Vec<Disease>, String> {
-    let species = species.unwrap_or_default();
-    let category = category.unwrap_or_default();
-    let has_species = !species.is_empty();
-    let has_category = !category.is_empty();
+    let sql = crate::db::sql_builder::SqlBuilder::select("SELECT * FROM diseases")
+        .optional_where(species.as_ref().filter(|s| !s.is_empty()).map(|_| "species LIKE ?"))
+        .optional_where(category.as_ref().filter(|c| !c.is_empty()).map(|_| "category LIKE ?"))
+        .order_by("name_zh")
+        .build();
 
-    let mut query = String::from("SELECT * FROM diseases WHERE 1=1");
-    if has_species { query.push_str(" AND species LIKE ?"); }
-    if has_category { query.push_str(" AND category LIKE ?"); }
-    query.push_str(" ORDER BY name_zh");
-
-    let mut q = sqlx::query_as::<_, Disease>(&query);
-    if has_species { q = q.bind(format!("%{}%", species)); }
-    if has_category { q = q.bind(format!("%{}%", category)); }
+    let mut q = sqlx::query_as::<_, Disease>(&sql);
+    if let Some(s) = &species { if !s.is_empty() { q = q.bind(format!("%{}%", s)); } }
+    if let Some(c) = &category { if !c.is_empty() { q = q.bind(format!("%{}%", c)); } }
 
     q.fetch_all(&*pool).await.map_err(|e| e.to_string())
 }
@@ -36,29 +33,6 @@ pub async fn get_disease_by_id(
         .fetch_optional(&*pool)
         .await
         .map_err(|e| e.to_string())
-}
-
-fn row_to_disease(r: &sqlx::sqlite::SqliteRow) -> Disease {
-    Disease {
-        id: r.get("id"),
-        name_zh: r.get("name_zh"),
-        name_en: r.get("name_en"),
-        name_latin: r.get("name_latin"),
-        category: r.get("category"),
-        species: r.get("species"),
-        body_system: r.get("body_system"),
-        pathogenic_type: r.get("pathogenic_type"),
-        epidemiology: r.get("epidemiology"),
-        overview: r.get("overview"),
-        etiology: r.get("etiology"),
-        pathophysiology: r.get("pathophysiology"),
-        physiological_basis: r.get("physiological_basis"),
-        prognosis: r.get("prognosis"),
-        difficulty: r.get("difficulty"),
-        urgency_level: r.get("urgency_level"),
-        created_at: r.get("created_at"),
-        updated_at: r.get("updated_at"),
-    }
 }
 
 #[tauri::command]
@@ -78,14 +52,7 @@ pub async fn get_disease_symptoms(
     .await
     .map(|rows| {
         rows.iter().map(|r| {
-            let symptom = Symptom {
-                id: r.get("id"),
-                name_zh: r.get("name_zh"),
-                name_en: r.get("name_en"),
-                definition: r.get("definition"),
-                species_notes: r.get("species_notes"),
-                physiological_basis: r.get("physiological_basis"),
-            };
+            let symptom = row_from_symptom(r);
             let frequency: String = r.get("frequency");
             let stage: String = r.get("stage");
             let is_pathognomonic: i64 = r.get("is_pathognomonic");
@@ -110,26 +77,10 @@ pub async fn get_disease_ddx(
     .await
     .map(|rows| {
         rows.iter().map(|r| {
-            (row_to_disease(r), r.get::<String, _>("distinguishing_feature"))
+            (row_from_disease(r), r.get::<String, _>("distinguishing_feature"))
         }).collect()
     })
     .map_err(|e| e.to_string())
-}
-
-fn row_to_drug(r: &sqlx::sqlite::SqliteRow) -> Drug {
-    Drug {
-        id: r.get("id"),
-        name_zh: r.get("name_zh"),
-        name_en: r.get("name_en"),
-        drug_class: r.get("drug_class"),
-        mechanism_of_action: r.get("mechanism_of_action"),
-        pk_pd: r.get("pk_pd"),
-        indications: r.get("indications"),
-        contraindications: r.get("contraindications"),
-        side_effects: r.get("side_effects"),
-        adverse_mechanism: r.get("adverse_mechanism"),
-        species_dosing: r.get("species_dosing"),
-    }
 }
 
 #[tauri::command]
@@ -149,7 +100,7 @@ pub async fn get_disease_treatments(
     .map(|rows| {
         rows.iter().map(|r| {
             (
-                row_to_drug(r),
+                row_from_drug(r),
                 r.get::<String, _>("line"),
                 r.get::<String, _>("species"),
                 r.get::<String, _>("notes"),
@@ -157,18 +108,6 @@ pub async fn get_disease_treatments(
         }).collect()
     })
     .map_err(|e| e.to_string())
-}
-
-fn row_to_test(r: &sqlx::sqlite::SqliteRow) -> DiagnosticTest {
-    DiagnosticTest {
-        id: r.get("id"),
-        name_zh: r.get("name_zh"),
-        category: r.get("category"),
-        reference_ranges: r.get("reference_ranges"),
-        interpretation: r.get("interpretation"),
-        cost_estimate: r.get("cost_estimate"),
-        turnaround_time: r.get("turnaround_time"),
-    }
 }
 
 #[tauri::command]
@@ -188,7 +127,7 @@ pub async fn get_disease_diagnostics(
     .map(|rows| {
         rows.iter().map(|r| {
             (
-                row_to_test(r),
+                row_from_test(r),
                 r.get::<String, _>("purpose"),
                 r.get::<String, _>("evidence_level"),
                 r.get::<String, _>("species"),
@@ -215,111 +154,106 @@ pub async fn get_disease_compare(
     pool: tauri::State<'_, DbPool>,
     disease_ids: Vec<String>,
 ) -> Result<Vec<DiseaseCompareView>, String> {
-    let mut results = Vec::new();
-
-    for did in &disease_ids {
-        let disease = sqlx::query_as::<_, Disease>("SELECT * FROM diseases WHERE id = ?")
-            .bind(did)
-            .fetch_optional(&*pool)
-            .await
-            .map_err(|e| e.to_string())?;
-
-        let Some(disease) = disease else { continue; };
-
-        let symptoms = sqlx::query(
-            "SELECT s.*, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
-             FROM disease_symptom ds
-             JOIN symptoms s ON ds.symptom_id = s.id
-             WHERE ds.disease_id = ?
-             ORDER BY ds.frequency DESC"
-        )
-        .bind(did)
-        .fetch_all(&*pool)
-        .await
-        .map(|rows| {
-            rows.iter().map(|r| {
-                let symptom = Symptom {
-                    id: r.get("id"),
-                    name_zh: r.get("name_zh"),
-                    name_en: r.get("name_en"),
-                    definition: r.get("definition"),
-                    species_notes: r.get("species_notes"),
-                    physiological_basis: r.get("physiological_basis"),
-                };
-                let frequency: String = r.get("frequency");
-                let stage: String = r.get("stage");
-                let is_pathognomonic: i64 = r.get("is_pathognomonic");
-                (symptom, frequency, stage, is_pathognomonic)
-            }).collect()
-        })
-        .unwrap_or_default();
-
-        let treatments = sqlx::query(
-            "SELECT dr.*, dt.line, dt.species, dt.notes FROM disease_treatment dt
-             JOIN drugs dr ON dt.drug_id = dr.id
-             WHERE dt.disease_id = ?
-             ORDER BY dt.line"
-        )
-        .bind(did)
-        .fetch_all(&*pool)
-        .await
-        .map(|rows| {
-            rows.iter().map(|r| {
-                (
-                    row_to_drug(r),
-                    r.get::<String, _>("line"),
-                    r.get::<String, _>("species"),
-                    r.get::<String, _>("notes"),
-                )
-            }).collect()
-        })
-        .unwrap_or_default();
-
-        let diagnostics = sqlx::query(
-            "SELECT t.*, dd.purpose, dd.evidence_level, dd.species, dd.expected_result
-             FROM disease_diagnostic dd
-             JOIN diagnostic_tests t ON dd.test_id = t.id
-             WHERE dd.disease_id = ?"
-        )
-        .bind(did)
-        .fetch_all(&*pool)
-        .await
-        .map(|rows| {
-            rows.iter().map(|r| {
-                (
-                    row_to_test(r),
-                    r.get::<String, _>("purpose"),
-                    r.get::<String, _>("evidence_level"),
-                    r.get::<String, _>("species"),
-                    r.get::<String, _>("expected_result"),
-                )
-            }).collect()
-        })
-        .unwrap_or_default();
-
-        let ddx = sqlx::query(
-            "SELECT d.*, dd.distinguishing_feature FROM disease_ddx dd
-             JOIN diseases d ON dd.ddx_id = d.id
-             WHERE dd.disease_id = ?"
-        )
-        .bind(did)
-        .fetch_all(&*pool)
-        .await
-        .map(|rows| {
-            rows.iter().map(|r| {
-                (row_to_disease(r), r.get::<String, _>("distinguishing_feature"))
-            }).collect()
-        })
-        .unwrap_or_default();
-
-        results.push(DiseaseCompareView {
-            disease,
-            symptoms,
-            treatments,
-            diagnostics,
-            ddx,
-        });
+    if disease_ids.is_empty() {
+        return Ok(Vec::new());
     }
+
+    let ph = crate::db::sql_builder::placeholders(disease_ids.len());
+
+    // 1. 批量获取疾病（保持输入顺序）
+    let sql = format!("SELECT * FROM diseases WHERE id IN ({})", ph);
+    let mut q = sqlx::query_as::<_, Disease>(&sql);
+    for did in &disease_ids { q = q.bind(did); }
+    let diseases = q.fetch_all(&*pool).await.map_err(|e| e.to_string())?;
+
+    // 2. 批量获取症状、治疗、诊断、鉴别（4 条查询，Rust 端按 disease_id 分组）
+    let group_symptoms = |rows: Vec<sqlx::sqlite::SqliteRow>| {
+        let mut map: std::collections::HashMap<String, Vec<(Symptom, String, String, i64)>> = std::collections::HashMap::new();
+        for r in &rows {
+            let did: String = r.get("disease_id");
+            let entry = map.entry(did).or_default();
+            entry.push((row_from_symptom(r), r.get("frequency"), r.get("stage"), r.get("is_pathognomonic")));
+        }
+        map
+    };
+
+    let group_drugs = |rows: Vec<sqlx::sqlite::SqliteRow>| {
+        let mut map: std::collections::HashMap<String, Vec<(Drug, String, String, String)>> = std::collections::HashMap::new();
+        for r in &rows {
+            let did: String = r.get("disease_id");
+            let entry = map.entry(did).or_default();
+            entry.push((row_from_drug(r), r.get("line"), r.get("species"), r.get("notes")));
+        }
+        map
+    };
+
+    let group_tests = |rows: Vec<sqlx::sqlite::SqliteRow>| {
+        let mut map: std::collections::HashMap<String, Vec<(DiagnosticTest, String, String, String, String)>> = std::collections::HashMap::new();
+        for r in &rows {
+            let did: String = r.get("disease_id");
+            let entry = map.entry(did).or_default();
+            entry.push((row_from_test(r), r.get("purpose"), r.get("evidence_level"), r.get("species"), r.get("expected_result")));
+        }
+        map
+    };
+
+    let group_ddx = |rows: Vec<sqlx::sqlite::SqliteRow>| {
+        let mut map: std::collections::HashMap<String, Vec<(Disease, String)>> = std::collections::HashMap::new();
+        for r in &rows {
+            let did: String = r.get("disease_id");
+            let entry = map.entry(did).or_default();
+            entry.push((row_from_disease(r), r.get("distinguishing_feature")));
+        }
+        map
+    };
+
+    // 症状
+    let sql = format!(
+        "SELECT ds.disease_id, s.*, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
+         FROM disease_symptom ds JOIN symptoms s ON ds.symptom_id = s.id
+         WHERE ds.disease_id IN ({})", ph);
+    let mut q = sqlx::query(&sql);
+    for did in &disease_ids { q = q.bind(did); }
+    let symptoms_map = group_symptoms(q.fetch_all(&*pool).await.map_err(|e| e.to_string())?);
+
+    // 治疗
+    let sql = format!(
+        "SELECT dt.disease_id, dr.*, dt.line, dt.species, dt.notes
+         FROM disease_treatment dt JOIN drugs dr ON dt.drug_id = dr.id
+         WHERE dt.disease_id IN ({})", ph);
+    let mut q = sqlx::query(&sql);
+    for did in &disease_ids { q = q.bind(did); }
+    let treatments_map = group_drugs(q.fetch_all(&*pool).await.map_err(|e| e.to_string())?);
+
+    // 诊断
+    let sql = format!(
+        "SELECT dd.disease_id, t.*, dd.purpose, dd.evidence_level, dd.species, dd.expected_result
+         FROM disease_diagnostic dd JOIN diagnostic_tests t ON dd.test_id = t.id
+         WHERE dd.disease_id IN ({})", ph);
+    let mut q = sqlx::query(&sql);
+    for did in &disease_ids { q = q.bind(did); }
+    let diagnostics_map = group_tests(q.fetch_all(&*pool).await.map_err(|e| e.to_string())?);
+
+    // 鉴别
+    let sql = format!(
+        "SELECT dd.disease_id, d.*, dd.distinguishing_feature
+         FROM disease_ddx dd JOIN diseases d ON dd.ddx_id = d.id
+         WHERE dd.disease_id IN ({})", ph);
+    let mut q = sqlx::query(&sql);
+    for did in &disease_ids { q = q.bind(did); }
+    let ddx_map = group_ddx(q.fetch_all(&*pool).await.map_err(|e| e.to_string())?);
+
+    // 3. 组装结果
+    let results: Vec<DiseaseCompareView> = diseases.iter().map(|disease| {
+        let did = &disease.id;
+        DiseaseCompareView {
+            disease: disease.clone(),
+            symptoms: symptoms_map.get(did).cloned().unwrap_or_default(),
+            treatments: treatments_map.get(did).cloned().unwrap_or_default(),
+            diagnostics: diagnostics_map.get(did).cloned().unwrap_or_default(),
+            ddx: ddx_map.get(did).cloned().unwrap_or_default(),
+        }
+    }).collect();
 
     Ok(results)
 }
@@ -376,7 +310,7 @@ pub async fn get_diseases_by_symptom(
         .map(|rows| {
             rows.iter()
                 .map(|r| DiseaseWithSymptom {
-                    disease: row_to_disease(r),
+                    disease: row_from_disease(r),
                     frequency: r.get::<String, _>("frequency"),
                     stage: r.get::<String, _>("stage"),
                     is_pathognomonic: r.get::<i64, _>("is_pathognomonic"),
@@ -393,15 +327,13 @@ pub async fn get_drugs(
     pool: tauri::State<'_, DbPool>,
     drug_class: Option<String>,
 ) -> Result<Vec<Drug>, String> {
-    let drug_class = drug_class.unwrap_or_default();
-    let has_class = !drug_class.is_empty();
+    let sql = crate::db::sql_builder::SqlBuilder::select("SELECT * FROM drugs")
+        .optional_where(drug_class.as_ref().filter(|c| !c.is_empty()).map(|_| "drug_class LIKE ?"))
+        .order_by("name_zh")
+        .build();
 
-    let mut query = String::from("SELECT * FROM drugs WHERE 1=1");
-    if has_class { query.push_str(" AND drug_class LIKE ?"); }
-    query.push_str(" ORDER BY name_zh");
-
-    let mut q = sqlx::query_as::<_, Drug>(&query);
-    if has_class { q = q.bind(format!("%{}%", drug_class)); }
+    let mut q = sqlx::query_as::<_, Drug>(&sql);
+    if let Some(c) = &drug_class { if !c.is_empty() { q = q.bind(format!("%{}%", c)); } }
 
     q.fetch_all(&*pool).await.map_err(|e| e.to_string())
 }

@@ -1,4 +1,5 @@
 use crate::db::{DbPool, models::*};
+use crate::db::models::row_from_treatment;
 use sqlx::Row;
 
 // ===== 治疗 =====
@@ -8,15 +9,13 @@ pub async fn get_treatments(
     pool: tauri::State<'_, DbPool>,
     therapy_type: Option<String>,
 ) -> Result<Vec<Treatment>, String> {
-    let therapy_type = therapy_type.unwrap_or_default();
-    let has_type = !therapy_type.is_empty();
+    let sql = crate::db::sql_builder::SqlBuilder::select("SELECT * FROM treatments")
+        .optional_where(therapy_type.as_ref().filter(|t| !t.is_empty()).map(|_| "therapy_type = ?"))
+        .order_by("name_zh")
+        .build();
 
-    let mut query = String::from("SELECT * FROM treatments WHERE 1=1");
-    if has_type { query.push_str(" AND therapy_type = ?"); }
-    query.push_str(" ORDER BY name_zh");
-
-    let mut q = sqlx::query_as::<_, Treatment>(&query);
-    if has_type { q = q.bind(therapy_type); }
+    let mut q = sqlx::query_as::<_, Treatment>(&sql);
+    if let Some(t) = &therapy_type { if !t.is_empty() { q = q.bind(t); } }
 
     q.fetch_all(&*pool).await.map_err(|e| e.to_string())
 }
@@ -49,17 +48,7 @@ pub async fn get_disease_treatment_map(
     .await
     .map(|rows| {
         rows.iter().map(|r| {
-            let treatment = Treatment {
-                id: r.get("id"),
-                name_zh: r.get("name_zh"),
-                name_en: r.get("name_en"),
-                therapy_type: r.get("therapy_type"),
-                principle: r.get("principle"),
-                procedure_text: r.get("procedure_text"),
-                physiological_basis: r.get("physiological_basis"),
-                prognosis_assessment: r.get("prognosis_assessment"),
-                created_at: r.get("created_at"),
-            };
+            let treatment = row_from_treatment(r);
             let line: String = r.get("line");
             let species: String = r.get("species");
             let notes: String = r.get("notes");
@@ -76,15 +65,13 @@ pub async fn get_tags(
     pool: tauri::State<'_, DbPool>,
     tag_group: Option<String>,
 ) -> Result<Vec<Tag>, String> {
-    let tag_group = tag_group.unwrap_or_default();
-    let has_group = !tag_group.is_empty();
+    let sql = crate::db::sql_builder::SqlBuilder::select("SELECT * FROM tags")
+        .optional_where(tag_group.as_ref().filter(|g| !g.is_empty()).map(|_| "tag_group = ?"))
+        .order_by("tag_group, name_zh")
+        .build();
 
-    let mut query = String::from("SELECT * FROM tags WHERE 1=1");
-    if has_group { query.push_str(" AND tag_group = ?"); }
-    query.push_str(" ORDER BY tag_group, name_zh");
-
-    let mut q = sqlx::query_as::<_, Tag>(&query);
-    if has_group { q = q.bind(tag_group); }
+    let mut q = sqlx::query_as::<_, Tag>(&sql);
+    if let Some(g) = &tag_group { if !g.is_empty() { q = q.bind(g); } }
 
     q.fetch_all(&*pool).await.map_err(|e| e.to_string())
 }
@@ -95,6 +82,10 @@ pub async fn get_entity_tags(
     entity_type: String,
     entity_id: String,
 ) -> Result<Vec<Tag>, String> {
+    if !crate::db::entity_types::is_valid_entity_type(&entity_type) {
+        return Err(format!("无效的 entity_type: {}", entity_type));
+    }
+
     sqlx::query_as::<_, Tag>(
         "SELECT t.* FROM entity_tags et
          JOIN tags t ON et.tag_id = t.id
@@ -132,6 +123,9 @@ pub async fn add_entity_tag(
     entity_id: String,
     tag_id: String,
 ) -> Result<(), String> {
+    if !crate::db::entity_types::is_valid_entity_type(&entity_type) {
+        return Err(format!("无效的 entity_type: {}", entity_type));
+    }
     sqlx::query(
         "INSERT OR IGNORE INTO entity_tags (entity_type, entity_id, tag_id)
          VALUES (?, ?, ?)"
@@ -152,6 +146,9 @@ pub async fn remove_entity_tag(
     entity_id: String,
     tag_id: String,
 ) -> Result<(), String> {
+    if !crate::db::entity_types::is_valid_entity_type(&entity_type) {
+        return Err(format!("无效的 entity_type: {}", entity_type));
+    }
     sqlx::query(
         "DELETE FROM entity_tags
          WHERE entity_type = ? AND entity_id = ? AND tag_id = ?"
