@@ -30,7 +30,7 @@ npm run tauri:build
 
 ```bash
 # 修改数据后必须重新生成
-python tools/gen_from_yaml.py
+python tools/gen_from_json.py
 ```
 
 生成器输出到 `src-tauri/data/seed/001_initial.sql`。数据库版本号定义在 `src-tauri/src/db/mod.rs` 的 `SEED_DATA_VERSION`，数据变更后必须递增。
@@ -105,7 +105,7 @@ python tools/gen_from_yaml.py
 4. 在 `treatment_rules.yaml` 的 `disease_diagnostic` 下添加诊断关联
 5. 在 `treatment_rules.yaml` 的 `disease_treatment_map` 下添加治疗方案关联
 6. 如需新症状/药物/检查/标签，先在对应目录新建 `.md` 文件或 `tags.yaml`
-7. 运行 `python tools/gen_from_yaml.py`
+7. 运行 `python tools/gen_from_json.py`
 8. 递增 `SEED_DATA_VERSION`
 9. `cargo check` 验证
 
