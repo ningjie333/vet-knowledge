@@ -48,6 +48,7 @@ pub fn run() {
             commands::knowledge::get_cases,
             commands::knowledge::get_case_by_id,
             commands::knowledge::get_case_diseases,
+            commands::knowledge::get_drug_interactions,
             commands::knowledge::get_disease_ddx,
             commands::knowledge::get_disease_symptoms,
             commands::knowledge::get_disease_treatments,
@@ -72,10 +73,12 @@ pub fn run() {
             commands::flashcards::delete_flashcard,
             commands::flashcards::review_flashcard,
             commands::flashcards::get_review_stats,
-            // 诊断游戏（7 个转发 sidecar + 1 个本地推理）
+            // 诊断游戏（9 个转发 sidecar + 1 个本地推理）
             commands::game::game_list_cases,
             commands::game::game_new_session,
             commands::game::game_advance,
+            commands::game::game_advance_async,
+            commands::game::game_poll_status,
             commands::game::game_administer_drug,
             commands::game::game_examine,
             commands::game::game_diagnose,
@@ -83,6 +86,15 @@ pub fn run() {
             commands::game::game_list_drugs,
             commands::game::game_diagnosis_hint,
         ])
-        .run(tauri::generate_context!())
-        .expect("Tauri failed");
+        .build(tauri::generate_context!())
+        .expect("Tauri build failed")
+        .run(|app_handle, event| {
+            if let tauri::RunEvent::ExitRequested { .. } = event {
+                if let Some(sidecar) = app_handle.try_state::<sidecar::SidecarManager>() {
+                    tauri::async_runtime::block_on(async {
+                        let _ = sidecar.shutdown().await;
+                    });
+                }
+            }
+        });
 }

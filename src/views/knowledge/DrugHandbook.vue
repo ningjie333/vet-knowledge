@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
-import type { Drug, Tag } from '../../types'
+import type { Drug, Tag, DrugInteraction } from '../../types'
 
 const drugs = ref<Drug[]>([])
 const allTags = ref<Map<string, Tag>>(new Map())
 const selectedDrug = ref<Drug | null>(null)
+const interactions = ref<DrugInteraction[]>([])
 const loading = ref(true)
 
 const drugTags = computed(() => {
@@ -17,6 +18,11 @@ const drugTags = computed(() => {
 const mechanismTags = computed(() =>
   drugTags.value.filter(t => t.tag_group === 'mechanism')
 )
+
+// 按严重度分组
+const majorInteractions = computed(() => interactions.value.filter(i => i.severity === 'major'))
+const moderateInteractions = computed(() => interactions.value.filter(i => i.severity === 'moderate'))
+const mildInteractions = computed(() => interactions.value.filter(i => i.severity === 'mild'))
 
 onMounted(async () => {
   try {
@@ -34,12 +40,37 @@ onMounted(async () => {
   loading.value = false
 })
 
+watch(selectedDrug, async (drug) => {
+  if (!drug) {
+    interactions.value = []
+    return
+  }
+  try {
+    interactions.value = await invoke<DrugInteraction[]>('get_drug_interactions', { drugId: drug.id })
+  } catch (e) {
+    console.error(e)
+    interactions.value = []
+  }
+})
+
 function openDetail(drug: Drug) {
   selectedDrug.value = drug
 }
 
 function closeDetail() {
   selectedDrug.value = null
+}
+
+function severityColor(severity: string): string {
+  if (severity === 'major') return '#dc2626'
+  if (severity === 'moderate') return '#f59e0b'
+  return '#10b981'
+}
+
+function severityLabel(severity: string): string {
+  if (severity === 'major') return '严重'
+  if (severity === 'moderate') return '中等'
+  return '轻微'
 }
 </script>
 
@@ -120,6 +151,44 @@ function closeDetail() {
         <section v-if="selectedDrug.adverse_mechanism" class="detail-section">
           <h3>不良反应机制</h3>
           <p>{{ selectedDrug.adverse_mechanism }}</p>
+        </section>
+
+        <!-- 药物相互作用 -->
+        <section v-if="interactions.length" class="detail-section">
+          <h3>药物相互作用 ({{ interactions.length }})</h3>
+          <div v-if="majorInteractions.length" class="interaction-group">
+            <span class="interaction-severity major">严重</span>
+            <div
+              v-for="ix in majorInteractions"
+              :key="ix.drug_id"
+              class="interaction-item"
+            >
+              <strong>{{ ix.drug_name }}</strong>
+              <span class="interaction-desc">{{ ix.description }}</span>
+            </div>
+          </div>
+          <div v-if="moderateInteractions.length" class="interaction-group">
+            <span class="interaction-severity moderate">中等</span>
+            <div
+              v-for="ix in moderateInteractions"
+              :key="ix.drug_id"
+              class="interaction-item"
+            >
+              <strong>{{ ix.drug_name }}</strong>
+              <span class="interaction-desc">{{ ix.description }}</span>
+            </div>
+          </div>
+          <div v-if="mildInteractions.length" class="interaction-group">
+            <span class="interaction-severity mild">轻微</span>
+            <div
+              v-for="ix in mildInteractions"
+              :key="ix.drug_id"
+              class="interaction-item"
+            >
+              <strong>{{ ix.drug_name }}</strong>
+              <span class="interaction-desc">{{ ix.description }}</span>
+            </div>
+          </div>
         </section>
 
         <!-- PK/PD -->
@@ -217,6 +286,32 @@ function closeDetail() {
   margin-bottom: 8px;
 }
 .detail-section p { font-size: 14px; line-height: 1.7; color: var(--color-text); }
+
+.interaction-group { margin-bottom: 12px; }
+.interaction-severity {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: white;
+  margin-bottom: 6px;
+}
+.interaction-severity.major { background: #dc2626; }
+.interaction-severity.moderate { background: #f59e0b; }
+.interaction-severity.mild { background: #10b981; }
+.interaction-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background: #f8fafc;
+  border-left: 3px solid #cbd5e1;
+  border-radius: 4px;
+}
+.interaction-item strong { font-size: 13px; color: var(--color-text); }
+.interaction-item .interaction-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
 .dosing-text {
   font-size: 13px;
   line-height: 1.8;

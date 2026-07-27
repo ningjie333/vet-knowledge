@@ -128,6 +128,13 @@ export interface TestSuggestion {
   purpose: string
 }
 
+export interface DrugInteraction {
+  drug_id: string
+  drug_name: string
+  severity: 'major' | 'moderate' | 'mild'
+  description: string
+}
+
 // ===== 诊断游戏接口 =====
 
 export interface GameCaseSummary {
@@ -159,6 +166,7 @@ export interface GameSnapshot {
   state_time_s?: number
   time_cost_min?: number
   success?: boolean
+  message?: string
 }
 
 export interface GameVitals {
@@ -210,4 +218,18 @@ export interface GameAnimal {
 export interface NewSessionResponse {
   session_id: string
   initial_snapshot: GameSnapshot
+}
+
+// ===== 异步推进接口（阶段 3）=====
+
+export interface AdvanceJobInfo {
+  job_id: string
+  estimated_ms: number
+}
+
+export interface AdvancePollResult {
+  done: boolean
+  progress_pct: number
+  snapshot: GameSnapshot | null
+  error: string | null
 }

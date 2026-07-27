@@ -427,3 +427,47 @@ pub async fn get_case_by_id(
         .await
         .map_err(|e| e.to_string())
 }
+
+// ===== 药物相互作用 =====
+
+#[derive(Debug, serde::Serialize)]
+pub struct DrugInteraction {
+    pub drug_id: String,      // 对方药物 ID
+    pub drug_name: String,    // 对方药物名
+    pub severity: String,     // major / moderate / mild
+    pub description: String,
+}
+
+/// 获取与指定药物有相互作用的所有药物
+#[tauri::command]
+pub async fn get_drug_interactions(
+    pool: tauri::State<'_, DbPool>,
+    drug_id: String,
+) -> Result<Vec<DrugInteraction>, String> {
+    sqlx::query(
+        "SELECT
+            CASE WHEN drug_a_id = ? THEN drug_b_id ELSE drug_a_id END AS drug_id,
+            d.name_zh AS drug_name,
+            di.severity,
+            di.description
+         FROM drug_interactions di
+         JOIN drugs d ON d.id = CASE WHEN di.drug_a_id = ? THEN di.drug_b_id ELSE di.drug_a_id END
+         WHERE di.drug_a_id = ? OR di.drug_b_id = ?
+         ORDER BY di.severity DESC, d.name_zh"
+    )
+    .bind(&drug_id)
+    .bind(&drug_id)
+    .bind(&drug_id)
+    .bind(&drug_id)
+    .fetch_all(&*pool)
+    .await
+    .map(|rows| {
+        rows.iter().map(|r| DrugInteraction {
+            drug_id: r.get("drug_id"),
+            drug_name: r.get("drug_name"),
+            severity: r.get("severity"),
+            description: r.get("description"),
+        }).collect()
+    })
+    .map_err(|e| e.to_string())
+}

@@ -183,6 +183,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             (9, "Rebuild tags table without UNIQUE(name_zh)"),
             (10, "Drop unused FTS5 virtual tables (diseases_fts, symptoms_fts, drugs_fts, cases_fts)"),
             (11, "Drop unused learning_progress table"),
+            (12, "Add drug_interactions table"),
         ] {
             sqlx::query(
                 "INSERT OR IGNORE INTO schema_migrations (version, description)
@@ -512,6 +513,31 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         sqlx::query("PRAGMA foreign_keys = ON").execute(pool).await?;
     }
 
+    // ── v12: 药物相互作用表 ──
+    if current < 12 {
+        sqlx::query(
+            "CREATE TABLE IF NOT EXISTS drug_interactions (
+                drug_a_id TEXT NOT NULL REFERENCES drugs(id),
+                drug_b_id TEXT NOT NULL REFERENCES drugs(id),
+                severity TEXT NOT NULL CHECK(severity IN ('major','moderate','mild')),
+                description TEXT,
+                PRIMARY KEY (drug_a_id, drug_b_id)
+            )"
+        ).execute(pool).await?;
+        sqlx::query(
+            "CREATE INDEX IF NOT EXISTS idx_drug_interactions_a ON drug_interactions(drug_a_id)"
+        ).execute(pool).await?;
+        sqlx::query(
+            "CREATE INDEX IF NOT EXISTS idx_drug_interactions_b ON drug_interactions(drug_b_id)"
+        ).execute(pool).await?;
+        sqlx::query(
+            "INSERT OR IGNORE INTO schema_migrations (version, description)
+             VALUES (12, 'Add drug_interactions table')"
+        )
+        .execute(pool)
+        .await?;
+    }
+
     // ── v11: 删除未使用的 learning_progress 表 ──
     // schema.sql 中曾定义 learning_progress 表，但没有任何命令读写它，属于死表。
     // DROP TABLE IF EXISTS 已幂等，错误应传播。
@@ -581,6 +607,7 @@ async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
         "disease_treatment_map",
         "disease_symptom",
         "disease_ddx",
+        "drug_interactions",
         "cases", "diagnostic_tests", "drugs", "symptoms", "diseases",
         "treatments", "tags",
     ] {

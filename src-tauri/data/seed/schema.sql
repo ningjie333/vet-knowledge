@@ -166,6 +166,16 @@ CREATE TABLE IF NOT EXISTS case_disease (
     PRIMARY KEY (case_id, disease_id)
 );
 
+-- ── 药物相互作用 ──
+-- 对称关系：存一条，查时 WHERE drug_a_id = ? OR drug_b_id = ?
+CREATE TABLE IF NOT EXISTS drug_interactions (
+    drug_a_id TEXT NOT NULL REFERENCES drugs(id),
+    drug_b_id TEXT NOT NULL REFERENCES drugs(id),
+    severity TEXT NOT NULL CHECK(severity IN ('major','moderate','mild')),
+    description TEXT,
+    PRIMARY KEY (drug_a_id, drug_b_id)
+);
+
 -- ── Schema 版本管理 ──
 -- 注：曾在此处定义 diseases_fts / symptoms_fts / drugs_fts / cases_fts 四个 FTS5 虚表，
 -- 但 search.rs 始终使用 LIKE 查询而非 FTS5 MATCH，这些虚表从未被使用。
@@ -206,6 +216,8 @@ CREATE INDEX IF NOT EXISTS idx_disease_ddx ON disease_ddx(disease_id);
 CREATE INDEX IF NOT EXISTS idx_disease_treatment ON disease_treatment(disease_id);
 CREATE INDEX IF NOT EXISTS idx_disease_diagnostic ON disease_diagnostic(disease_id);
 CREATE INDEX IF NOT EXISTS idx_case_species ON cases(species);
+CREATE INDEX IF NOT EXISTS idx_drug_interactions_a ON drug_interactions(drug_a_id);
+CREATE INDEX IF NOT EXISTS idx_drug_interactions_b ON drug_interactions(drug_b_id);
 CREATE INDEX IF NOT EXISTS idx_flashcard_reviews_next ON flashcard_reviews(card_id, next_review);
 CREATE INDEX IF NOT EXISTS idx_entity_tags_type ON entity_tags(entity_type, entity_id);
 CREATE INDEX IF NOT EXISTS idx_entity_tags_tag ON entity_tags(tag_id);
