@@ -9053,7 +9053,12 @@
       "indications": "- 尿路感染\n- 皮肤感染\n- 软组织感染\n- 牙周感染\n- 呼吸道感染",
       "contraindications": "- 青霉素过敏\n- 严重肾功能不全（需调整剂量）",
       "side_effects": "- 胃肠道反应（呕吐、腹泻）\n- 过敏反应\n- 肠道菌群失调",
-      "species_dosing": "**犬**: dose=12.5-25 mg/kg, route=PO, frequency=q12h\n**猫**: dose=12.5-25 mg/kg, route=PO, frequency=q12h"
+      "species_dosing": "**犬**: dose=12.5-25 mg/kg, route=PO, frequency=q12h\n**猫**: dose=12.5-25 mg/kg, route=PO, frequency=q12h",
+      "pubchem_cid": 33613,
+      "molecular_formula": "C16H19N3O5S",
+      "molecular_weight": "365.4",
+      "smiles": null,
+      "inchikey": "LSQZJLSUYDQPKJ-NJBDSQKTSA-N"
     },
     {
       "adverse_mechanism": "幼畜软骨毒性因药物与软骨基质中镁离子螯合，抑制软骨细胞蛋白聚糖合成，导致关节软骨侵蚀。猫视网膜毒性因药物在视网膜色素上皮蓄积，产生活性氧自由基损伤光感受器细胞。中枢神经兴奋与抑制性神经递质GABA受体阻断有关。偶见结晶尿，因药物在酸性尿中溶解度降低。",
@@ -9655,7 +9660,12 @@
       "indications": "- 脱水补液\n- 围手术期液体支持\n- 低血容量休克\n- 电解质紊乱纠正\n- 维持输液",
       "contraindications": "- 高钙血症（含钙）\n- 严重乳酸酸中毒\n- 高钾血症",
       "side_effects": "- 液体过负荷\n- 低钾血症（稀释性）\n- 静脉炎（外周输注）",
-      "species_dosing": "**犬**: dose=10-30 ml/kg/h（急性休克）；40-60 ml/kg/day（维持）, route=IV, frequency=持续\n**猫**: dose=3-5 ml/kg/h（急性）；2-4 ml/kg/h（维持）, route=IV, frequency=持续（猫易过负荷）"
+      "species_dosing": "**犬**: dose=10-30 ml/kg/h（急性休克）；40-60 ml/kg/day（维持）, route=IV, frequency=持续\n**猫**: dose=3-5 ml/kg/h（急性）；2-4 ml/kg/h（维持）, route=IV, frequency=持续（猫易过负荷）",
+      "pubchem_cid": 23666456,
+      "molecular_formula": "C3H5NaO3",
+      "molecular_weight": "112.06",
+      "smiles": null,
+      "inchikey": "NGSFWBMYFKHRBD-UHFFFAOYSA-M"
     },
     {
       "adverse_mechanism": "便秘。呕吐（尤其大量给药时，误吸风险）。可能吸附其他口服药物降低其疗效。对重金属、醇类、氰化物吸附效果差。",
@@ -10093,7 +10103,12 @@
       "indications": "- 心丝虫预防\n- 疥螨\n- 耳螨\n- 肠道线虫\n- 微丝蚴清除",
       "contraindications": "- 柯利犬/牧羊犬MDR1基因突变（高剂量神经毒性）\n- 6周龄以下幼犬",
       "side_effects": "- 呕吐/腹泻\n- 镇静/共济失调（MDR1突变犬高剂量时）\n- 瞳孔散大",
-      "species_dosing": "**犬**: dose=6-12 μg/kg, route=PO, frequency=每月一次（心丝虫预防）\n**猫**: dose=24 μg/kg, route=PO, frequency=每月一次（猫心丝虫预防剂量）"
+      "species_dosing": "**犬**: dose=6-12 μg/kg, route=PO, frequency=每月一次（心丝虫预防）\n**猫**: dose=24 μg/kg, route=PO, frequency=每月一次（猫心丝虫预防剂量）",
+      "pubchem_cid": 6321424,
+      "molecular_formula": "C48H74O14",
+      "molecular_weight": "875.1",
+      "smiles": null,
+      "inchikey": "AZSNMRSAGSSBNP-XPNPUAGNSA-N"
     },
     {
       "adverse_mechanism": "腹胀、腹痛。腹泻（过量时）。电解质紊乱（罕见）。",
@@ -10390,7 +10405,12 @@
       "indications": "- 骨关节炎\n- 慢性关节退行性病变的长期辅助管理",
       "contraindications": "- 对补充剂成分过敏",
       "side_effects": "- 轻度胃肠道不适",
-      "species_dosing": "**犬**: 按体重分级给药，连续使用至少 4-6 周评估效果"
+      "species_dosing": "**犬**: 按体重分级给药，连续使用至少 4-6 周评估效果",
+      "pubchem_cid": 439213,
+      "molecular_formula": "C6H13NO5",
+      "molecular_weight": "179.17",
+      "smiles": null,
+      "inchikey": "MSWZFWKMSRAUBD-IVMDWMLBSA-N"
     },
     {
       "adverse_mechanism": "可致骨髓抑制、肝毒性和胃肠道反应。猫更易发生不良反应，需严格监测。",
@@ -10567,7 +10587,12 @@
         "胃肠道反应（呕吐、腹泻）",
         "过敏反应"
       ],
-      "species_dosing": "犬猫：12.5-25 mg/kg PO q12h，连用5-7天"
+      "species_dosing": "犬猫：12.5-25 mg/kg PO q12h，连用5-7天",
+      "pubchem_cid": 5280980,
+      "molecular_formula": "C8H9NO5",
+      "molecular_weight": "199.16",
+      "smiles": null,
+      "inchikey": "HZZVJAQRINQKSD-PBFISZAISA-N"
     },
     {
       "id": "drug_079",
