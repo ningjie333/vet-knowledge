@@ -74,7 +74,7 @@ async fn execute_tolerant(pool: &DbPool, sql: &str, ctx: &str) {
 }
 
 /// 当前种子数据版本。递增此值时，应用启动时会自动重新导入种子数据。
-const SEED_DATA_VERSION: i64 = 18;
+const SEED_DATA_VERSION: i64 = 19;
 
 pub async fn init(app: &AppHandle) -> anyhow::Result<DbPool> {
     // debug 构建用项目根目录下的 data/（src-tauri 的父目录），
