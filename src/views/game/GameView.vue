@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import type {
   GameCaseSummary,
@@ -8,7 +8,75 @@ import type {
   DiagnosisCandidate,
   Disease,
   DrugInfo,
+  AdvanceJobInfo,
+  AdvancePollResult,
+  DrugInteraction,
 } from '@/types'
+
+// virtual-vet drug_name → vet-knowledge drug_id 映射
+const GAME_DRUG_TO_VK_ID: Record<string, string> = {
+  'amoxicillin_clavulanate': 'drug_001',
+  'enrofloxacin': 'drug_002',
+  'furosemide': 'drug_003',
+  'prednisolone': 'drug_004',
+  'insulin_glargine': 'drug_005',
+  'pimobendan': 'drug_006',
+  'methimazole': 'drug_007',
+  'levothyroxine': 'drug_008',
+  'omeprazole': 'drug_009',
+  'maropitant': 'drug_010',
+  'tramadol': 'drug_011',
+  'meloxicam': 'drug_012',
+  'doxycycline': 'drug_013',
+  'metronidazole': 'drug_014',
+  'digoxin': 'drug_015',
+  'phenobarbital': 'drug_016',
+  'potassium_bromide': 'drug_017',
+  'amoxicillin': 'drug_018',
+  'cephalexin': 'drug_019',
+  'florfenicol': 'drug_020',
+  'terbinafine': 'drug_021',
+  'itraconazole': 'drug_022',
+  'diazepam': 'drug_023',
+  'atipamezole': 'drug_024',
+  'naloxone': 'drug_025',
+  'vitamin_k1': 'drug_026',
+  'sucralfate': 'drug_027',
+  'docusate_sodium': 'drug_028',
+  'lactated_ringers': 'drug_029',
+  'activated_charcoal': 'drug_030',
+  'tolfenamic_acid': 'drug_031',
+  'gabapentin': 'drug_032',
+  'ketamine': 'drug_033',
+  'butorphanol': 'drug_034',
+  'budesonide': 'drug_035',
+  'selegiline': 'drug_036',
+  'trazodone': 'drug_037',
+  'benazepril': 'drug_038',
+  'lanthanum_carbonate': 'drug_039',
+  'acepromazine': 'drug_040',
+  'loratadine': 'drug_041',
+  'azathioprine': 'drug_044',
+  'cyclophosphamide': 'drug_045',
+  'vincristine': 'drug_046',
+  'doxorubicin': 'drug_047',
+  'melarsomine': 'drug_048',
+  'ivermectin': 'drug_049',
+  'lactulose': 'drug_050',
+  'torsemide': 'drug_054',
+  'clopidogrel': 'drug_056',
+  'fluoxetine': 'drug_058',
+  'amphotericin_b': 'drug_059',
+  'hydrocortisone_acetate': 'drug_061',
+  'fludrocortisone': 'drug_062',
+  'glucosamine_chondroitin': 'drug_066',
+  'griseofulvin': 'drug_069',
+  'clotrimazole': 'drug_070',
+  'sildenafil': 'drug_073',
+  'bosentan': 'drug_074',
+  'lmwh': 'drug_075',
+  'warfarin': 'drug_076',
+}
 
 // ── 状态 ──
 const cases = ref<GameCaseSummary[]>([])
@@ -28,6 +96,43 @@ const hintStates = reactive(new Map<string, HintState>())
 // 给药弹窗状态
 const drugInput = ref({ drugName: '', doseMgKg: 0, visible: false })
 const drugList = ref<DrugInfo[]>([])
+const drugLoadError = ref<string | null>(null)
+const interactionWarning = ref<DrugInteraction[]>([])
+const checkingInteractions = ref(false)
+
+// 检查选中药物的相互作用
+async function checkDrugInteractions(drugName: string) {
+  if (!drugName) {
+    interactionWarning.value = []
+    return
+  }
+  const vkId = GAME_DRUG_TO_VK_ID[drugName]
+  if (!vkId) {
+    interactionWarning.value = []
+    return
+  }
+  checkingInteractions.value = true
+  try {
+    interactionWarning.value = await invoke<DrugInteraction[]>('get_drug_interactions', { drugId: vkId })
+  } catch {
+    interactionWarning.value = []
+  } finally {
+    checkingInteractions.value = false
+  }
+}
+
+watch(() => drugInput.value.drugName, checkDrugInteractions)
+
+// 诊断选中状态（按 session 隔离，避免跨 tab 污染）
+const selectedDiseaseIds = reactive(new Map<string, string | null>())
+
+// 异步推进状态（按 session 隔离）
+interface AdvancingJob {
+  progress: number
+  error: string | null
+}
+const advancingJobs = reactive(new Map<string, AdvancingJob>())
+const _pollTimers = new Map<string, ReturnType<typeof setInterval>>()
 
 interface SessionTab {
   sessionId: string
@@ -48,6 +153,17 @@ const activeHint = computed((): HintState | null => {
   return hintStates.get(activeSessionId.value) ?? null
 })
 
+// 当前 session 的选中诊断（按 session 隔离）
+const selectedDiseaseId = computed<string | null>(() => {
+  if (!activeSessionId.value) return null
+  return selectedDiseaseIds.get(activeSessionId.value) ?? null
+})
+
+function setSelectedDiseaseId(id: string | null) {
+  if (!activeSessionId.value) return
+  selectedDiseaseIds.set(activeSessionId.value, id)
+}
+
 // ── 生命周期 ──
 onMounted(async () => {
   await loadCases()
@@ -55,6 +171,9 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+  // 清理所有轮询定时器
+  _pollTimers.forEach((timer) => clearInterval(timer))
+  _pollTimers.clear()
   // 退出时关闭所有 session（best effort）
   sessions.forEach((tab) => {
     invoke('game_end_session', { sessionId: tab.sessionId }).catch(() => {})
@@ -77,8 +196,10 @@ async function loadCases() {
 async function loadDrugs() {
   try {
     drugList.value = await invoke('game_list_drugs') as DrugInfo[]
+    drugLoadError.value = null
   } catch (e) {
     console.error('loadDrugs failed:', e)
+    drugLoadError.value = `药物列表加载失败: ${e}`
   }
 }
 
@@ -95,13 +216,14 @@ async function openCase(caseSummary: GameCaseSummary) {
     }
     sessions.set(resp.session_id, tab)
     activeSessionId.value = resp.session_id
-    // 初始化诊断提示状态
+    // 初始化诊断提示状态 + 选中态
     hintStates.set(resp.session_id, {
       candidates: [],
       diseaseDetails: new Map(),
       loading: false,
       searched: false,
     })
+    selectedDiseaseIds.set(resp.session_id, null)
   } catch (e) {
     console.error('openCase failed:', e)
     alert(`开病历失败: ${e}`)
@@ -113,6 +235,13 @@ function switchTab(sessionId: string) {
 }
 
 async function closeTab(sessionId: string) {
+  // 清理该 session 的轮询定时器
+  const timer = _pollTimers.get(sessionId)
+  if (timer) {
+    clearInterval(timer)
+    _pollTimers.delete(sessionId)
+  }
+  advancingJobs.delete(sessionId)
   try {
     await invoke('game_end_session', { sessionId })
   } catch {
@@ -120,6 +249,7 @@ async function closeTab(sessionId: string) {
   }
   sessions.delete(sessionId)
   hintStates.delete(sessionId)
+  selectedDiseaseIds.delete(sessionId)
   if (activeSessionId.value === sessionId) {
     const remaining = Array.from(sessions.keys())
     activeSessionId.value = remaining[0] ?? null
@@ -127,16 +257,68 @@ async function closeTab(sessionId: string) {
 }
 
 // ── 游戏动作 ──
-async function doAdvance() {
-  if (!activeTab.value) return
-  activeTab.value.loading = true
+function _clearAdvanceJob(sessionId: string) {
+  const timer = _pollTimers.get(sessionId)
+  if (timer) {
+    clearInterval(timer)
+    _pollTimers.delete(sessionId)
+  }
+  advancingJobs.delete(sessionId)
+}
+
+async function _fallbackSyncAdvance(sessionId: string) {
   try {
-    const snap = await invoke('game_advance', { sessionId: activeTab.value.sessionId }) as GameSnapshot
-    activeTab.value.snapshot = snap
+    const snap = await invoke('game_advance', { sessionId }) as GameSnapshot
+    const t = sessions.get(sessionId)
+    if (t) {
+      t.snapshot = snap
+      t.loading = false
+    }
   } catch (e) {
     console.error('advance failed:', e)
-  } finally {
-    activeTab.value.loading = false
+    const t = sessions.get(sessionId)
+    if (t) t.loading = false
+  }
+}
+
+async function doAdvance() {
+  if (!activeTab.value) return
+  const sessionId = activeTab.value.sessionId
+  const tab = sessions.get(sessionId)
+  if (!tab) return
+  tab.loading = true
+  advancingJobs.set(sessionId, { progress: 0, error: null })
+
+  try {
+    // 异步路径：立即返回 job_id，后台推进
+    const jobInfo = await invoke('game_advance_async', { sessionId }) as AdvanceJobInfo
+    const jobId = jobInfo.job_id
+
+    _pollTimers.set(sessionId, setInterval(async () => {
+      try {
+        const result = await invoke('game_poll_status', { jobId }) as AdvancePollResult
+        if (result.error) {
+          _clearAdvanceJob(sessionId)
+          await _fallbackSyncAdvance(sessionId)
+        } else if (result.done) {
+          _clearAdvanceJob(sessionId)
+          const t = sessions.get(sessionId)
+          if (t && result.snapshot) {
+            t.snapshot = result.snapshot
+            t.loading = false
+          }
+        } else {
+          advancingJobs.set(sessionId, { progress: result.progress_pct, error: null })
+        }
+      } catch {
+        _clearAdvanceJob(sessionId)
+        await _fallbackSyncAdvance(sessionId)
+      }
+    }, 200))
+  } catch {
+    // 异步路径不可用，降级为同步
+    advancingJobs.delete(sessionId)
+    await _fallbackSyncAdvance(sessionId)
   }
 }
 
@@ -189,9 +371,21 @@ async function doDiagnose(diseaseId: string) {
     }) as GameSnapshot
     activeTab.value.snapshot = snap
     if (snap.phase === 'won') {
-      alert('🎉 诊断正确！')
+      alert(`🎉 诊断正确！${snap.message ? '\n' + snap.message : ''}`)
+      setSelectedDiseaseId(null)
     } else if (snap.phase === 'lost') {
-      alert('❌ 诊断错误，游戏结束')
+      alert(`❌ 诊断错误，游戏结束${snap.message ? '\n' + snap.message : ''}`)
+      setSelectedDiseaseId(null)
+    } else {
+      // phase === 'playing'：诊断错误但游戏继续，显示后端 loss_message。
+      // 清空 candidates 强制重新推理（5 分钟推进后症状已变，旧候选已过期）。
+      alert(`⚠ 诊断不正确\n${snap.message ?? '体征与诊断不符，请继续检查。'}`)
+      setSelectedDiseaseId(null)
+      if (activeHint.value) {
+        activeHint.value.candidates = []
+        activeHint.value.searched = false
+        activeHint.value.diseaseDetails.clear()
+      }
     }
   } catch (e) {
     console.error('diagnose failed:', e)
@@ -213,6 +407,8 @@ async function fetchDiagnosisHint() {
   activeHint.value.loading = true
   activeHint.value.searched = true
   activeHint.value.diseaseDetails.clear()
+  // 清除旧选中态（重新推理后 candidates 会变，旧选中可能指向不存在的候选）
+  setSelectedDiseaseId(null)
   try {
     activeHint.value.candidates = await invoke('game_diagnosis_hint', {
       symptoms: signs,
@@ -405,8 +601,22 @@ function phaseColor(phase: string): string {
             <!-- 操作按钮 -->
             <div class="actions">
               <button @click="doAdvance" :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'">
-                ⏩ +10min
+                <template v-if="advancingJobs.get(activeTab.sessionId)">
+                  推进中 {{ Math.round(advancingJobs.get(activeTab.sessionId)?.progress ?? 0) }}%
+                </template>
+                <template v-else>
+                  ⏩ +10min
+                </template>
               </button>
+              <div
+                v-if="advancingJobs.get(activeTab.sessionId)"
+                class="advance-progress"
+              >
+                <progress
+                  :value="advancingJobs.get(activeTab.sessionId)?.progress ?? 0"
+                  max="100"
+                ></progress>
+              </div>
               <button @click="doExamine('physical')" :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'">
                 🔍 体格检查
               </button>
@@ -431,7 +641,7 @@ function phaseColor(phase: string): string {
           <!-- 右侧：诊断提示面板 -->
           <div class="hint-panel">
             <div class="panel-header">
-              <h2>📖 诊断提示</h2>
+              <h2>📖 诊断推理</h2>
             </div>
 
             <div class="hint-content">
@@ -448,8 +658,9 @@ function phaseColor(phase: string): string {
                   v-for="(c, i) in (activeHint?.candidates.slice(0, 3) ?? [])"
                   :key="c.disease_id"
                   class="candidate-item clickable"
-                  @click="doDiagnose(c.disease_id)"
-                  :title="`点击提交诊断: ${c.disease_name}`"
+                  :class="{ selected: selectedDiseaseId === c.disease_id }"
+                  @click="setSelectedDiseaseId(selectedDiseaseId === c.disease_id ? null : c.disease_id)"
+                  :title="`点击选中: ${c.disease_name}`"
                 >
                   <div class="candidate-header">
                     <span class="candidate-rank">{{ i + 1 }}</span>
@@ -471,8 +682,20 @@ function phaseColor(phase: string): string {
                 </div>
               </div>
 
+              <!-- 选中后显示确认提交按钮（校验选中项仍在候选列表中） -->
+              <div v-if="selectedDiseaseId && activeHint?.candidates.some(c => c.disease_id === selectedDiseaseId)" class="diagnose-confirm">
+                <button
+                  class="diagnose-submit-btn"
+                  @click="doDiagnose(selectedDiseaseId)"
+                  :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'"
+                >
+                  📋 提交诊断：{{ activeHint.candidates.find(c => c.disease_id === selectedDiseaseId)?.disease_name }}
+                </button>
+                <p class="diagnose-warn">⚠ 提交后将推进 5 分钟，正确诊断才会给药治疗</p>
+              </div>
+
               <div class="hint-note">
-                <p>💡 提示: 仅展示 Top 3 候选。诊断考验依靠你自己判断——</p>
+                <p>💡 推理仅展示 Top 3 候选。选中后点击"提交诊断"确认——</p>
                 <p>· 不显示已匹配/缺失症状</p>
                 <p>· 不显示推荐检查目的</p>
               </div>
@@ -486,9 +709,10 @@ function phaseColor(phase: string): string {
     <div v-if="drugInput.visible" class="modal-overlay" @click.self="drugInput.visible = false">
       <div class="modal">
         <h3>给药</h3>
+        <div v-if="drugLoadError" class="drug-error">{{ drugLoadError }}</div>
         <div class="form-row">
           <label>药物名称:</label>
-          <select v-model="drugInput.drugName">
+          <select v-model="drugInput.drugName" :disabled="drugLoadError !== null">
             <option value="" disabled>选择药物</option>
             <option v-for="d in drugList" :key="d.drug_name" :value="d.drug_name">
               {{ d.name }} ({{ d.drug_name }}) — {{ d.description }}
@@ -499,9 +723,26 @@ function phaseColor(phase: string): string {
           <label>剂量 (mg/kg):</label>
           <input v-model.number="drugInput.doseMgKg" type="number" min="0" step="0.1" />
         </div>
+
+        <!-- 药物相互作用警告 -->
+        <div v-if="checkingInteractions" class="interaction-checking">检查相互作用中...</div>
+        <div v-else-if="interactionWarning.length" class="interaction-alert">
+          <div class="interaction-header">⚠ 药物相互作用 ({{ interactionWarning.length }})</div>
+          <div
+            v-for="ix in interactionWarning"
+            :key="ix.drug_id"
+            class="interaction-row"
+            :class="`severity-${ix.severity}`"
+          >
+            <strong>{{ ix.drug_name }}</strong>
+            <span class="interaction-sev">{{ ix.severity === 'major' ? '严重' : ix.severity === 'moderate' ? '中等' : '轻微' }}</span>
+            <p>{{ ix.description }}</p>
+          </div>
+        </div>
+
         <div class="modal-actions">
           <button @click="drugInput.visible = false">取消</button>
-          <button @click="doAdministerDrug">给药</button>
+          <button @click="doAdministerDrug" :class="{ 'has-warning': interactionWarning.some(i => i.severity === 'major') }">给药</button>
         </div>
       </div>
     </div>
@@ -574,6 +815,8 @@ function phaseColor(phase: string): string {
 .actions button { padding: 6px 12px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text, #1f2937); border-radius: var(--radius); cursor: pointer; }
 .actions button:hover:not(:disabled) { background: var(--color-primary); color: white; }
 .actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+.advance-progress { width: 100%; }
+.advance-progress progress { width: 100%; height: 6px; }
 
 .game-end { margin-top: 16px; padding: 12px; text-align: center; font-size: 18px; font-weight: 700; }
 
@@ -586,6 +829,17 @@ function phaseColor(phase: string): string {
 .candidate-item.clickable { cursor: pointer; transition: background 0.15s, color 0.15s; }
 .candidate-item.clickable:hover { background: var(--color-primary); color: white; }
 .candidate-item.clickable:hover .candidate-name { color: white; }
+.candidate-item.clickable.selected { background: var(--color-primary); color: white; border: 2px solid var(--color-primary); }
+.candidate-item.clickable.selected .candidate-name { color: white; }
+.candidate-item.clickable.selected .candidate-rank { background: white; color: var(--color-primary); }
+
+/* 诊断确认提交区 */
+.diagnose-confirm { display: flex; flex-direction: column; gap: 6px; padding: 8px; background: var(--color-bg); border-radius: var(--radius); border: 2px dashed var(--color-primary); }
+.diagnose-submit-btn { padding: 8px 12px; background: var(--color-primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; }
+.diagnose-submit-btn:hover:not(:disabled) { opacity: 0.9; }
+.diagnose-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.diagnose-warn { font-size: 12px; color: #d97706; margin: 0; }
+.drug-error { padding: 8px; margin-bottom: 8px; background: #fef2f2; color: #dc2626; border-radius: var(--radius); font-size: 13px; }
 .candidate-header { display: flex; align-items: center; gap: 8px; }
 .candidate-rank { background: var(--color-primary); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 .candidate-name { flex: 1; font-weight: 600; color: var(--color-text, #1f2937); }
@@ -604,4 +858,18 @@ function phaseColor(phase: string): string {
 .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .modal-actions button { padding: 6px 16px; border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius); cursor: pointer; }
 .modal-actions button:last-child { background: var(--color-primary); color: white; }
+.modal-actions button.has-warning { background: #dc2626; }
+.interaction-checking { font-size: 12px; color: var(--color-text-secondary); padding: 8px 0; }
+.interaction-alert { margin: 12px 0; padding: 10px 12px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 6px; }
+.interaction-header { font-size: 13px; font-weight: 600; color: #c2410c; margin-bottom: 8px; }
+.interaction-row { margin-bottom: 8px; padding: 6px 8px; border-radius: 4px; background: white; }
+.interaction-row.severity-major { border-left: 3px solid #dc2626; }
+.interaction-row.severity-moderate { border-left: 3px solid #f59e0b; }
+.interaction-row.severity-mild { border-left: 3px solid #10b981; }
+.interaction-row strong { font-size: 12px; }
+.interaction-row .interaction-sev { font-size: 10px; padding: 1px 6px; border-radius: 3px; color: white; margin-left: 6px; }
+.interaction-row.severity-major .interaction-sev { background: #dc2626; }
+.interaction-row.severity-moderate .interaction-sev { background: #f59e0b; }
+.interaction-row.severity-mild .interaction-sev { background: #10b981; }
+.interaction-row p { font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; line-height: 1.5; }
 </style>

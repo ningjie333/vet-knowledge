@@ -1,5 +1,8 @@
 # 兽医知识库 — 治疗规则与诊断规则关联
 # 将疾病与药物、检查关联起来
+#
+# DEPRECATED: 此文件已废弃，数据已合并到 data/knowledge.json。
+# 保留用于向后兼容，新数据请直接编辑 knowledge.json。
 
 # ===== 疾病-治疗关联 =====
 # line: first=一线 / second=二线 / adjunctive=辅助

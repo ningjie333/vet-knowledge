@@ -1589,5 +1589,15 @@ INSERT INTO case_disease (case_id, disease_id) VALUES ('case_013', 'dis_029');
 INSERT INTO case_disease (case_id, disease_id) VALUES ('case_014', 'dis_028');
 INSERT INTO case_disease (case_id, disease_id) VALUES ('case_015', 'dis_032');
 
--- ===== 药物相互作用 (0条) =====
+-- ===== 药物相互作用 (10条) =====
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_003', 'drug_012', 'major', '呋塞米与美洛昔康(NSAID)联用可显著降低利尿效果，并增加肾毒性风险。NSAIDs抑制前列腺素合成，减少肾血流，与呋塞米的肾脏作用拮抗。');
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_015', 'drug_003', 'major', '地高辛与呋塞米联用时，呋塞米引起的低钾血症可增加地高辛中毒风险。需密切监测血钾和地高辛血药浓度。');
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_042', 'drug_033', 'major', '苯巴比妥与氯胺酮联用可增强中枢神经系统抑制，延长麻醉恢复时间。苯巴比妥是肝酶诱导剂，可能加速其他药物代谢。');
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_004', 'drug_012', 'major', '泼尼松龙与美洛昔康(NSAID)联用可显著增加胃肠道溃疡和出血风险。糖皮质激素和NSAIDs均损伤胃黏膜屏障，禁止同时使用。');
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_076', 'drug_002', 'major', '华法林与恩诺沙星(氟喹诺酮)联用可增强抗凝效果，增加出血风险。氟喹诺酮可抑制华法林代谢，需密切监测INR。');
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_014', 'drug_076', 'moderate', '甲硝唑可抑制华法林代谢，增强其抗凝作用。联用时需减少华法林剂量并监测凝血功能。');
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_032', 'drug_042', 'moderate', '加巴喷丁与苯巴比妥联用可能增强中枢抑制效应。苯巴比妥是CYP酶诱导剂，可能降低加巴喷丁血药浓度。');
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_009', 'drug_056', 'moderate', '奥美拉唑可抑制氯吡格雷的活化（CYP2C19途径），降低其抗血小板效果。联用时考虑换用泮托拉唑。');
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_001', 'drug_014', 'mild', '阿莫西林-克拉维酸与甲硝唑联用可扩大抗菌谱，覆盖需氧菌和厌氧菌，常用于严重混合感染。联用通常安全。');
+INSERT INTO drug_interactions (drug_a_id,drug_b_id,severity,description) VALUES ('drug_008', 'drug_009', 'mild', '奥美拉唑可能降低左甲状腺素钠的吸收。建议两药间隔至少4小时服用。');
 

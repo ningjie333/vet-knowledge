@@ -26,7 +26,7 @@ npm run tauri:build
 
 ## 数据管线（重要）
 
-**实体数据用 Markdown+Frontmatter，关系数据用 YAML**。通过脚本生成 SQL 种子数据：
+**统一数据源：`data/knowledge.json`**。通过脚本生成 SQL 种子数据：
 
 ```bash
 # 修改数据后必须重新生成
@@ -35,26 +35,51 @@ python tools/gen_from_yaml.py
 
 生成器输出到 `src-tauri/data/seed/001_initial.sql`。数据库版本号定义在 `src-tauri/src/db/mod.rs` 的 `SEED_DATA_VERSION`，数据变更后必须递增。
 
-### 数据文件职责
+### JSON 数据结构（推荐）
 
-**实体（Markdown + Frontmatter）**：每个实体一个 `.md` 文件，frontmatter 存结构化字段，body 存长文本。
+`data/knowledge.json` 是单一数据源，疾病内嵌关系，独立实体用全局数组：
 
-| 目录 | 文件数 | frontmatter 字段 | body 章节 |
-| --- | --- | --- | --- |
-| `data/diseases/` | 50 | id, name_zh, name_en, name_latin, category, species, difficulty, urgency_level, pathogenic_type, epidemiology, body_system, physiological_basis, **tags[]** | 概述, 病因, 病理生理, 预后 |
-| `data/symptoms/` | 45 | id, name_zh, name_en, physiological_basis, **tags[]** | 定义, 物种特异性 |
-| `data/drugs/` | 60 | id, name_zh, name_en, drug_class, mechanism_of_action, pk_pd, adverse_mechanism, **tags[]** | 适应症, 禁忌症, 不良反应, 物种剂量 |
-| `data/tests/` | 36 | id, name_zh, category, cost_estimate, turnaround_time | 参考范围, 结果解读 |
-| `data/cases/` | 15 | id, title, species, breed, age, weight, difficulty | 主诉, 病史, 体格检查, 实验室检查, 影像学, 诊断, 治疗, 转归, 学习要点 |
-| `data/treatments/` | 6 | id, name_zh, name_en, therapy_type, **tags[]** | 治疗原则, 操作指南, 生理基础, 预后评估 |
+```json
+{
+  "diseases": [
+    {
+      "id": "dis_001",
+      "name_zh": "肺炎",
+      "symptoms": [{"symptom": "sym_001", "frequency": "common"}],
+      "drugs": [{"drug": "drug_001", "line": "first"}],
+      "diagnostics": [...],
+      "treatments": [...],
+      "ddx": [...]
+    }
+  ],
+  "symptoms": [...],
+  "drugs": [...],
+  "tests": [...],
+  "cases": [...],
+  "treatments": [...],
+  "drug_interactions": [
+    {"drug_a": "drug_003", "drug_b": "drug_012", "severity": "major", "description": "..."}
+  ]
+}
+```
 
-**关系（YAML）**：多对多关联，不适合拆成 MD。
+**加一种病 = 往 `diseases` 数组加 1 个对象 + 跑 `gen_from_yaml.py`。**
 
-| 文件 | 内容 |
-|------|------|
-| `data/relations.yaml` | 疾病-症状关联（frequency: common/uncommon/rare，is_pathognomonic）+ 鉴别诊断（ddx） |
-| `data/treatment_rules.yaml` | 疾病-药物关联（line: first/second/adjunctive）+ 疾病-诊断关联（purpose, evidence_level）+ 疾病-治疗方案关联 |
-| `data/tags.yaml` | 预置标签（48个），含 tag_group / emergency_level / clinical_action 等字段 |
+### 旧格式（已废弃，保留兼容）
+
+| 目录/文件 | 状态 | 说明 |
+| --- | --- | --- |
+| `data/diseases/*.md` | DEPRECATED | 疾病实体，已合并到 knowledge.json |
+| `data/symptoms/*.md` | DEPRECATED | 症状实体，已合并到 knowledge.json |
+| `data/drugs/*.md` | DEPRECATED | 药物实体，已合并到 knowledge.json |
+| `data/tests/*.md` | DEPRECATED | 检查实体，已合并到 knowledge.json |
+| `data/cases/*.md` | DEPRECATED | 病例实体，已合并到 knowledge.json |
+| `data/treatments/*.md` | DEPRECATED | 治疗方案，已合并到 knowledge.json |
+| `data/relations.yaml` | DEPRECATED | 疾病-症状/鉴别诊断关系 |
+| `data/treatment_rules.yaml` | DEPRECATED | 疾病-药物/诊断/治疗方案关系 |
+| `data/tags.yaml` | 保留 | 预置标签（48个），仍被 gen_from_yaml.py 读取 |
+
+`gen_from_yaml.py` 优先读 `knowledge.json`（JSON 模式），不存在时回退到 MD+YAML（兼容模式）。
 
 ### 标签系统（Tagging）
 

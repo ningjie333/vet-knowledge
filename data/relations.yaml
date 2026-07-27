@@ -2,6 +2,9 @@
 # 按疾病分组，每项列出其症状关联、鉴别诊断
 # frequency: common(>60%) / uncommon(30-60%) / rare(<30%)
 # is_pathognomonic: true 表示该症状对该疾病具有"一票提示"意义
+#
+# DEPRECATED: 此文件已废弃，数据已合并到 data/knowledge.json。
+# 保留用于向后兼容，新数据请直接编辑 knowledge.json。
 
 disease_symptoms:
   dis_001:  # 肺炎
