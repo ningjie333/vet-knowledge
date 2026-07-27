@@ -100,8 +100,10 @@ const drugLoadError = ref<string | null>(null)
 const interactionWarning = ref<DrugInteraction[]>([])
 const checkingInteractions = ref(false)
 
-// 检查选中药物的相互作用
+// 检查选中药物的相互作用（带竞态保护）
+let currentCheckId = 0
 async function checkDrugInteractions(drugName: string) {
+  const checkId = ++currentCheckId
   if (!drugName) {
     interactionWarning.value = []
     return
@@ -113,11 +115,14 @@ async function checkDrugInteractions(drugName: string) {
   }
   checkingInteractions.value = true
   try {
-    interactionWarning.value = await invoke<DrugInteraction[]>('get_drug_interactions', { drugId: vkId })
+    const result = await invoke<DrugInteraction[]>('get_drug_interactions', { drugId: vkId })
+    if (checkId !== currentCheckId) return  // 已过期，丢弃
+    interactionWarning.value = result
   } catch {
+    if (checkId !== currentCheckId) return
     interactionWarning.value = []
   } finally {
-    checkingInteractions.value = false
+    if (checkId === currentCheckId) checkingInteractions.value = false
   }
 }
 

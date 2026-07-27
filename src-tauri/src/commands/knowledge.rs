@@ -453,7 +453,11 @@ pub async fn get_drug_interactions(
          FROM drug_interactions di
          JOIN drugs d ON d.id = CASE WHEN di.drug_a_id = ? THEN di.drug_b_id ELSE di.drug_a_id END
          WHERE di.drug_a_id = ? OR di.drug_b_id = ?
-         ORDER BY di.severity DESC, d.name_zh"
+         ORDER BY CASE di.severity
+             WHEN 'major' THEN 3
+             WHEN 'moderate' THEN 2
+             WHEN 'mild' THEN 1
+         END DESC, d.name_zh"
     )
     .bind(&drug_id)
     .bind(&drug_id)

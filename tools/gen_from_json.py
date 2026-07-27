@@ -20,7 +20,9 @@ def S(s):
     """转义字符串为 SQL 文本字面量"""
     if s is None:
         return 'NULL'
-    return "'" + str(s).replace("'", "''") + "'"
+    # 单引号转义 + 移除 NUL 字节（SQLite 字符串终止符）
+    cleaned = str(s).replace("'", "''").replace("\x00", "")
+    return "'" + cleaned + "'"
 
 
 def V(v):
@@ -91,38 +93,6 @@ def INSERT_ROW(table, columns, values):
     cols = ', '.join(columns)
     vals = ', '.join(V(v) for v in values)
     return f"INSERT INTO {table} ({cols}) VALUES ({vals});"
-
-
-def parse_body_sections(content):
-    """从 MD body 中解析 ## 章节，返回 {标题: 内容} 字典"""
-    sections = {}
-    pattern = re.compile(r'^##\s+(.+?)\n(.*?)(?=\n##\s+|\Z)', re.MULTILINE | re.DOTALL)
-    for m in pattern.finditer(content):
-        title = m.group(1).strip()
-        body = m.group(2).strip()
-        sections[title] = body
-    return sections
-
-
-def load_md_entities(pattern, body_fields=None):
-    """从 MD 文件目录加载所有实体，返回列表（按文件名排序）。
-
-    body_fields: [(section_key, frontmatter_key), ...]
-        指定从 MD body 的哪个章节提取内容，合并到 frontmatter 字段。
-    """
-    if body_fields is None:
-        body_fields = []
-    entities = []
-    for path in sorted(glob.glob(pattern)):
-        post = frontmatter.load(path)
-        meta = dict(post.metadata)
-        if body_fields:
-            sections = parse_body_sections(post.content)
-            for section_key, fm_key in body_fields:
-                if section_key in sections:
-                    meta[fm_key] = sections[section_key]
-        entities.append(meta)
-    return entities
 
 
 def generate_from_json(json_path):
