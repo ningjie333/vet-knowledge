@@ -1,0 +1,76 @@
+name: CI
+
+# 质量门禁（docs/ENGINEERING_STANDARDS.md G1）
+# - backend：Windows runner 上跑 Rust 三连（格式 / Clippy 零告警 / 单元测试）
+# - frontend：Linux runner 上跑 npm 三连（安装 / ESLint / vue-tsc + vite build）
+# 不跑 tauri build：打包要下载 NSIS 并生成安装包，CI 不需要产物，只会拖慢门禁。
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+# 只读仓库内容；任何 job 都不需要写权限。
+permissions:
+  contents: read
+
+# 同一分支上的旧运行被新提交顶掉，避免排队浪费 Windows runner 额度。
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend · fmt / clippy / test
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain (rustfmt + clippy)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo registry and target dir
+        uses: Swatinem/rust-cache@v2
+        with:
+          # 本项目 Cargo 包在 src-tauri（workspace 根就是它）。
+          workspaces: src-tauri
+
+      - name: Format check
+        working-directory: src-tauri
+        run: cargo fmt --check
+
+      - name: Clippy (warnings are errors)
+        working-directory: src-tauri
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Test
+        working-directory: src-tauri
+        run: cargo test
+
+  frontend:
+    name: Frontend · lint / build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20 with npm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build (vue-tsc --noEmit && vite build)
+        run: npm run build

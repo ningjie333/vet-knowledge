@@ -1,0 +1,4 @@
+# 项目本地 Cargo 配置
+# 之前禁用 incremental 是为绕过 rustc 1.95.0 ICE，但代价是每次全量编译 ~40s。
+# 现恢复 incremental（默认 true），如 ICE 复现再加回 false。
+# 同时在 Cargo.toml 设 debug=1 减少 debug 信息加速链接。
