@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
-import type { Drug, Tag, DrugInteraction } from '../../types'
+import type { Drug, Tag, DrugInteraction } from '@/types'
 
 const drugs = ref<Drug[]>([])
 const allTags = ref<Map<string, Tag>>(new Map())

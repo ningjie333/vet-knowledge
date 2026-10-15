@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
-import type { Case } from '../../types'
+import type { Case, SearchResult } from '@/types'
 
 const cases = ref<Case[]>([])
 const loading = ref(true)
@@ -24,7 +24,7 @@ async function doSearch() {
   if (!searchQuery.value.trim()) { load(); return }
   loading.value = true
   try {
-    const results = await invoke<any[]>('full_text_search', {
+    const results = await invoke<SearchResult[]>('full_text_search', {
       query: searchQuery.value,
       limit: 20,
     })

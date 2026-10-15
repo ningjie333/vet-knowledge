@@ -1,25 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
-
-interface Disease {
-  id: string
-  name_zh: string
-  name_en: string | null
-  category: string[]
-  species: string[]
-  difficulty: string | null
-  urgency_level: number | null
-  overview: string | null
-}
-
-interface DiseaseCompareView {
-  disease: Disease
-  symptoms: Array<{ name_zh: string; frequency: string; stage: string; is_pathognomonic: number }>
-  treatments: Array<{ name_zh: string; line: string; drug_class: string | null }>
-  diagnostics: Array<{ name_zh: string; purpose: string; evidence_level: string }>
-  ddx: Array<{ name_zh: string; distinguishing_feature: string }>
-}
+import type { Disease, DiseaseCompareView } from '@/types'
 
 const allDiseases = ref<Disease[]>([])
 const selectedIds = ref<string[]>([])
@@ -38,11 +20,39 @@ const filteredDiseases = computed(() => {
 })
 
 const columns = computed(() => compareData.value.length)
+
+// 后端 get_disease_compare 的 symptoms / treatments / diagnostics / ddx 都是 Rust 元组 Vec，
+// 序列化后是「数组的数组」（[实体, 关联列…]），不是对象。这里统一在 computed 里按位拆开，
+// 模板只消费展开后的形状，避免到处写下标。
 const allSymptomNames = computed(() => {
   const names = new Set<string>()
-  compareData.value.forEach(d => d.symptoms.forEach(s => names.add(s.name_zh)))
+  compareData.value.forEach(d => d.symptoms.forEach(s => names.add(s[0].name_zh)))
   return Array.from(names).sort()
 })
+
+/** 症状对比矩阵：每行一个症状名，cells 与 compareData 列一一对应，缺失为 null */
+const symptomRows = computed(() =>
+  allSymptomNames.value.map(name => ({
+    name,
+    cells: compareData.value.map(d => {
+      const row = d.symptoms.find(s => s[0].name_zh === name)
+      if (!row) return null
+      return {
+        frequency: row[1],
+        stage: row[2],
+        is_pathognomonic: row[3],
+      }
+    }),
+  })),
+)
+
+/** 诊断检查区块的行数 = 各疾病 diagnostics 长度的最大值（空数据时为 0，不产生 -Infinity） */
+const diagnosticRowCount = computed(() =>
+  compareData.value.reduce((max, d) => Math.max(max, d.diagnostics.length), 0),
+)
+const diagnosticRowIndexes = computed(() =>
+  Array.from({ length: diagnosticRowCount.value }, (_, i) => i),
+)
 
 onMounted(async () => {
   try {
@@ -71,8 +81,14 @@ async function doCompare() {
   loading.value = false
 }
 
-function hasSymptom(data: DiseaseCompareView, name: string) {
-  return data.symptoms.find(s => s.name_zh === name)
+/** 一线方案（tuple 的第 2 位是 line） */
+function firstLineTreatments(d: DiseaseCompareView) {
+  return d.treatments.filter(t => t[1] === 'first')
+}
+
+/** 二线 / 辅助方案 */
+function otherLineTreatments(d: DiseaseCompareView) {
+  return d.treatments.filter(t => t[1] !== 'first')
 }
 
 function urgencyBadge(level: number | null) {
@@ -80,6 +96,11 @@ function urgencyBadge(level: number | null) {
   if (level >= 4) return { text: '紧急', cls: 'urgency-high' }
   if (level >= 3) return { text: '优先', cls: 'urgency-mid' }
   return { text: '常规', cls: 'urgency-low' }
+}
+
+function frequencyLabel(f: string) {
+  const map: Record<string, string> = { common: '常见', uncommon: '少见', rare: '罕见' }
+  return map[f] || f
 }
 
 function lineLabel(l: string) {
@@ -173,17 +194,15 @@ function evidenceLabel(e: string) {
 
           <!-- Symptoms comparison matrix -->
           <tr class="section-row"><td :colspan="columns + 1">症状对比</td></tr>
-          <tr v-for="symName in allSymptomNames" :key="symName">
-            <td class="row-header">{{ symName }}</td>
-            <td v-for="d in compareData" :key="d.disease.id">
-              <template v-if="hasSymptom(d, symName)">
-                <span :class="['freq-dot', `freq-${hasSymptom(d, symName)!.frequency}`]">
-                  {{ hasSymptom(d, symName)!.is_pathognomonic ? '★' : '●' }}
+          <tr v-for="row in symptomRows" :key="row.name">
+            <td class="row-header">{{ row.name }}</td>
+            <td v-for="(cell, i) in row.cells" :key="i">
+              <template v-if="cell">
+                <span :class="['freq-dot', `freq-${cell.frequency}`]">
+                  {{ cell.is_pathognomonic ? '★' : '●' }}
                 </span>
-                <span class="freq-text">
-                  {{ hasSymptom(d, symName)!.frequency === 'common' ? '常见' : hasSymptom(d, symName)!.frequency === 'uncommon' ? '少见' : '罕见' }}
-                </span>
-                <span v-if="hasSymptom(d, symName)!.stage" class="stage-text">{{ hasSymptom(d, symName)!.stage }}</span>
+                <span class="freq-text">{{ frequencyLabel(cell.frequency) }}</span>
+                <span v-if="cell.stage" class="stage-text">{{ cell.stage }}</span>
               </template>
               <span v-else class="no-data">—</span>
             </td>
@@ -194,8 +213,8 @@ function evidenceLabel(e: string) {
           <tr>
             <td class="row-header">一线用药</td>
             <td v-for="d in compareData" :key="d.disease.id">
-              <div v-if="d.treatments.filter(t => t.line === 'first').length">
-                <span v-for="t in d.treatments.filter(t => t.line === 'first')" :key="t.name_zh" class="drug-tag first-line">{{ t.name_zh }}</span>
+              <div v-if="firstLineTreatments(d).length">
+                <span v-for="(t, i) in firstLineTreatments(d)" :key="`${t[0].id}:${i}`" class="drug-tag first-line">{{ t[0].name_zh }}</span>
               </div>
               <span v-else class="no-data">—</span>
             </td>
@@ -203,8 +222,8 @@ function evidenceLabel(e: string) {
           <tr>
             <td class="row-header">二线/辅助</td>
             <td v-for="d in compareData" :key="d.disease.id">
-              <div v-if="d.treatments.filter(t => t.line !== 'first').length">
-                <span v-for="t in d.treatments.filter(t => t.line !== 'first')" :key="t.name_zh" class="drug-tag other-line">{{ t.name_zh }} ({{ lineLabel(t.line) }})</span>
+              <div v-if="otherLineTreatments(d).length">
+                <span v-for="(t, i) in otherLineTreatments(d)" :key="`${t[0].id}:${i}`" class="drug-tag other-line">{{ t[0].name_zh }} ({{ lineLabel(t[1]) }})</span>
               </div>
               <span v-else class="no-data">—</span>
             </td>
@@ -212,12 +231,12 @@ function evidenceLabel(e: string) {
 
           <!-- Diagnostics -->
           <tr class="section-row"><td :colspan="columns + 1">诊断检查</td></tr>
-          <tr v-for="(_, idx) in Math.max(...compareData.map(d => d.diagnostics.length) || [0])" :key="idx">
+          <tr v-for="idx in diagnosticRowIndexes" :key="idx">
             <td class="row-header">检查 {{ idx + 1 }}</td>
             <td v-for="d in compareData" :key="d.disease.id">
               <template v-if="d.diagnostics[idx]">
-                <span class="test-name">{{ d.diagnostics[idx].name_zh }}</span>
-                <span :class="['evidence-badge', `ev-${d.diagnostics[idx].evidence_level}`]">{{ evidenceLabel(d.diagnostics[idx].evidence_level) }}</span>
+                <span class="test-name">{{ d.diagnostics[idx][0].name_zh }}</span>
+                <span :class="['evidence-badge', `ev-${d.diagnostics[idx][2]}`]">{{ evidenceLabel(d.diagnostics[idx][2]) }}</span>
               </template>
               <span v-else class="no-data">—</span>
             </td>
@@ -229,9 +248,9 @@ function evidenceLabel(e: string) {
             <td class="row-header">需鉴别疾病</td>
             <td v-for="d in compareData" :key="d.disease.id">
               <div v-if="d.ddx.length">
-                <div v-for="x in d.ddx" :key="x.name_zh" class="ddx-item">
-                  <router-link :to="`/diseases/${x.name_zh}`" class="ddx-link">{{ x.name_zh }}</router-link>
-                  <span class="ddx-feature">{{ x.distinguishing_feature }}</span>
+                <div v-for="(x, i) in d.ddx" :key="`${x[0].id}:${i}`" class="ddx-item">
+                  <router-link :to="`/diseases/${x[0].id}`" class="ddx-link">{{ x[0].name_zh }}</router-link>
+                  <span class="ddx-feature">{{ x[1] }}</span>
                 </div>
               </div>
               <span v-else class="no-data">—</span>

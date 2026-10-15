@@ -2,35 +2,12 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { invoke } from '@tauri-apps/api/core'
-
-interface Symptom {
-  id: string
-  name_zh: string
-  name_en: string | null
-  definition: string | null
-  species_notes: string | null
-}
-
-interface DiseaseResult {
-  disease: {
-    id: string
-    name_zh: string
-    name_en: string | null
-    category: string[]
-    species: string[]
-    difficulty: string | null
-    urgency_level: number | null
-    overview: string | null
-  }
-  frequency: string
-  stage: string
-  is_pathognomonic: number
-}
+import type { DiseaseWithSymptom, Symptom } from '@/types'
 
 const allSymptoms = ref<Symptom[]>([])
 const selectedSymptom = ref<Symptom | null>(null)
 const speciesFilter = ref('')
-const results = ref<DiseaseResult[]>([])
+const results = ref<DiseaseWithSymptom[]>([])
 const loading = ref(false)
 const searched = ref(false)
 const searchQuery = ref('')
@@ -76,7 +53,7 @@ async function selectSymptom(symptom: Symptom) {
   searched.value = true
   speciesFilter.value = ''
   try {
-    results.value = await invoke<DiseaseResult[]>('get_diseases_by_symptom', {
+    results.value = await invoke<DiseaseWithSymptom[]>('get_diseases_by_symptom', {
       symptomId: symptom.id,
       species: null,
     })
@@ -88,7 +65,7 @@ async function applySpeciesFilter() {
   if (!selectedSymptom.value) return
   loading.value = true
   try {
-    results.value = await invoke<DiseaseResult[]>('get_diseases_by_symptom', {
+    results.value = await invoke<DiseaseWithSymptom[]>('get_diseases_by_symptom', {
       symptomId: selectedSymptom.value.id,
       species: speciesFilter.value || null,
     })

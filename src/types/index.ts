@@ -30,13 +30,22 @@ export interface Disease {
   tags: string[]
 }
 
+/**
+ * 症状实体（后端 src-tauri/src/db/models.rs 的 `pub struct Symptom` + row_from_symptom()）。
+ * 字段名与 serde 默认输出一致（snake_case，无 rename_all）。
+ */
 export interface Symptom {
   id: string
   name_zh: string
   name_en: string | null
   definition: string | null
+  /**
+   * 当前为原始 JSON 字符串（DB 直接透传，未解析），界面按纯文本渲染。
+   * 后端结构化改造（与 species / category 同层的 parse_string_list 修法）由主会话另行处理，见 G7。
+   */
   species_notes: string | null
   physiological_basis: string | null
+  /** 标签 id 列表（不是标签名），由 tags_subquery() 提供，需回查 get_tags() 取显示名/颜色 */
   tags: string[]
 }
 
@@ -83,6 +92,55 @@ export interface DiagnosticTest {
   turnaround_time: number | null
 }
 
+// ===== 实体关联视图（JOIN 结果的统一类型）=====
+// 后端有两类返回形状，必须区分清楚，否则界面会静默渲染空白：
+//   1) Rust 命名结构体（如 models.rs 的 DiseaseWithSymptom）→ JSON 对象，前端用 r.disease / r.frequency
+//   2) Rust 元组 Vec<(A, B, C)>（commands/*.rs 里大量 JOIN 查询）→ serde 序列化为 JSON **数组**，
+//      前端只能按下标取值（A = t[0]、B = t[1]…），不能写成对象属性
+// 下面的元组类型（tuple type）就是第 2 类的显式契约，顺序与 Rust 端一一对应。
+
+/** get_disease_symptoms / DiseaseCompareView.symptoms：[症状, frequency, stage, is_pathognomonic] */
+export type DiseaseSymptomRow = [Symptom, string, string, number]
+
+/** get_disease_treatments / DiseaseCompareView.treatments：[药物, line, species, notes] */
+export type DiseaseDrugRow = [Drug, string, string, string]
+
+/**
+ * get_disease_diagnostics / DiseaseCompareView.diagnostics：
+ * [检查项目, purpose, evidence_level, species, expected_result]
+ */
+export type DiseaseDiagnosticRow = [DiagnosticTest, string, string, string, string]
+
+/** get_disease_ddx / DiseaseCompareView.ddx：[需鉴别的疾病, distinguishing_feature] */
+export type DiseaseDdxRow = [Disease, string]
+
+/** get_disease_treatment_map：[疗法, line, species, notes] */
+export type DiseaseTreatmentRow = [Treatment, string, string, string]
+
+/**
+ * get_diseases_by_symptom 的单条结果。
+ * 对应 Rust `pub struct DiseaseWithSymptom`（models.rs），命名结构体 → JSON 对象。
+ */
+export interface DiseaseWithSymptom {
+  disease: Disease
+  frequency: string
+  stage: string
+  is_pathognomonic: number
+}
+
+/**
+ * get_disease_compare 的单条结果。
+ * 对应 Rust `pub struct DiseaseCompareView`（commands/knowledge.rs）。
+ * 注意：除 disease 外的四个字段在 Rust 侧是元组 Vec，序列化后是"数组的数组"。
+ */
+export interface DiseaseCompareView {
+  disease: Disease
+  symptoms: DiseaseSymptomRow[]
+  treatments: DiseaseDrugRow[]
+  diagnostics: DiseaseDiagnosticRow[]
+  ddx: DiseaseDdxRow[]
+}
+
 export interface Case {
   id: string
   title: string
@@ -100,6 +158,33 @@ export interface Case {
   outcome: string | null
   learning_points: string | null
   difficulty: string | null
+}
+
+// ===== 闪卡（SM-2 复习）=====
+
+/**
+ * 闪卡记录，对应 Rust `pub struct Flashcard`（commands/flashcards.rs）。
+ * difficulty / ease_factor 在 Rust 侧是 f64，review_count 是 COALESCE 后的 i64（非空）。
+ */
+export interface Flashcard {
+  id: string
+  front: string
+  back: string
+  card_type: string
+  entity_id: string | null
+  difficulty: number
+  created_at: string
+  next_review: string | null
+  review_count: number
+  ease_factor: number
+}
+
+/** 复习统计，对应 Rust `pub struct ReviewStats`（commands/flashcards.rs 的 get_review_stats） */
+export interface ReviewStats {
+  total_cards: number
+  due_today: number
+  reviewed_today: number
+  mastered: number
 }
 
 export interface SearchResult {
@@ -155,6 +240,27 @@ export interface GameCaseSummary {
   chief_complaint: string
 }
 
+/** 检查报告里的单项结果（virtual-vet 原始 JSON，字段随检查项目而变） */
+export interface GameReportResult {
+  param?: string
+  value?: unknown
+  unit?: string
+  normal_range?: string
+  flag?: string
+}
+
+/**
+ * GameSnapshot.new_reports 的元素类型。
+ * Rust 侧是 `Vec<serde_json::Value>`（commands/game.rs），即 sidecar 原始 JSON 直接透传、没有固定 schema，
+ * 因此这里只声明界面真正读取的字段，其余键留在索引签名里 —— 免得整条链路退化成 any（正是 lint 要拦的）。
+ */
+export interface GameReport {
+  test_type?: string
+  summary?: string
+  results?: GameReportResult[]
+  [key: string]: unknown
+}
+
 export interface GameSnapshot {
   phase: string
   medical_phase: string
@@ -164,7 +270,7 @@ export interface GameSnapshot {
   death_timer: number | null
   vitals: GameVitals
   active_signs: GameActiveSign[]
-  new_reports: any[]
+  new_reports: GameReport[]
   pending_reports: number
   case?: GameCaseInfo
   error?: string

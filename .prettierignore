@@ -1,0 +1,34 @@
+# 依赖与构建产物
+node_modules/
+dist/
+.npm-cache/
+.ui-probe/
+
+# 文档由主会话/Agent D 负责，禁止被 prettier 改写
+docs/
+*.md
+
+# Rust 后端（Agent B 负责）与其构建产物
+src-tauri/
+target/
+
+# 锁文件：由 npm 维护，人工/自动格式化都会产生无意义 diff
+package-lock.json
+
+# 非 Agent C 所有的根配置：只列文件，避免越界改动
+tsconfig.json
+vite.config.ts
+index.html
+check_config.json
+*.bat
+*.txt
+*.log
+LICENSE
+
+# 知识库数据与 Python 工具（体量大 / 非前端代码），不属于 prettier 范围
+data/
+tools/
+_tools/
+_knowledge/
+vendor/
+repro_test/

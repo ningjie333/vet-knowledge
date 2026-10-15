@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import { useRouter } from 'vue-router'
+import type { Case, Disease, Drug, Symptom } from '@/types'
 
 const router = useRouter()
 
@@ -10,14 +11,14 @@ function goCategory(cat: string) {
 }
 
 const stats = ref({ diseases: 0, symptoms: 0, drugs: 0, cases: 0 })
-const recentDiseases = ref<any[]>([])
+const recentDiseases = ref<Disease[]>([])
 
 onMounted(async () => {
   try {
-    const d = await invoke<any[]>('get_diseases', { species: null, category: null })
-    const s = await invoke<any[]>('get_symptoms')
-    const dr = await invoke<any[]>('get_drugs', { drugClass: null })
-    const c = await invoke<any[]>('get_cases', { species: null, difficulty: null })
+    const d = await invoke<Disease[]>('get_diseases', { species: null, category: null })
+    const s = await invoke<Symptom[]>('get_symptoms')
+    const dr = await invoke<Drug[]>('get_drugs', { drugClass: null })
+    const c = await invoke<Case[]>('get_cases', { species: null, difficulty: null })
     stats.value = { diseases: d.length, symptoms: s.length, drugs: dr.length, cases: c.length }
     recentDiseases.value = d.slice(0, 6)
   } catch (e) { console.error(e) }

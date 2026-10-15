@@ -1,24 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
-
-interface Flashcard {
-  id: string
-  front: string
-  back: string
-  card_type: string
-  difficulty: number
-  review_count: number
-  ease_factor: number
-  next_review: string | null
-}
-
-interface ReviewStats {
-  total_cards: number
-  due_today: number
-  reviewed_today: number
-  mastered: number
-}
+import type { Flashcard, ReviewStats } from '@/types'
 
 const stats = ref<ReviewStats | null>(null)
 const dueCards = ref<Flashcard[]>([])

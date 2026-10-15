@@ -2,14 +2,21 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { invoke } from '@tauri-apps/api/core'
-import type { Disease, Tag } from '../../types'
+import type {
+  Disease,
+  DiseaseDdxRow,
+  DiseaseSymptomRow,
+  DiseaseTreatmentRow,
+  Tag,
+} from '@/types'
 
 const route = useRoute()
 const router = useRouter()
 const disease = ref<Disease | null>(null)
-const symptoms = ref<any[]>([])
-const ddx = ref<any[]>([])
-const treatments = ref<any[]>([])
+// 这三个命令在 Rust 侧返回元组 Vec（序列化为 JSON 数组），取值按下标，见 @/types 里的 *Row 类型
+const symptoms = ref<DiseaseSymptomRow[]>([])
+const ddx = ref<DiseaseDdxRow[]>([])
+const treatments = ref<DiseaseTreatmentRow[]>([])
 const entityTags = ref<Tag[]>([])
 const allTags = ref<Map<string, Tag>>(new Map())
 const loading = ref(true)
@@ -43,16 +50,16 @@ onMounted(async () => {
   const id = route.params.id as string
   try {
     const [d, s, dx, t, tags] = await Promise.all([
-      invoke<Disease>('get_disease_by_id', { id }),
-      invoke('get_disease_symptoms', { diseaseId: id }),
-      invoke('get_disease_ddx', { diseaseId: id }),
-      invoke('get_disease_treatment_map', { diseaseId: id }),
+      invoke<Disease | null>('get_disease_by_id', { id }),
+      invoke<DiseaseSymptomRow[]>('get_disease_symptoms', { diseaseId: id }),
+      invoke<DiseaseDdxRow[]>('get_disease_ddx', { diseaseId: id }),
+      invoke<DiseaseTreatmentRow[]>('get_disease_treatment_map', { diseaseId: id }),
       invoke<Tag[]>('get_tags'),
     ])
     disease.value = d
-    symptoms.value = s as any[]
-    ddx.value = dx as any[]
-    treatments.value = t as any[]
+    symptoms.value = s
+    ddx.value = dx
+    treatments.value = t
 
     // Build tag lookup map
     const tagMap = new Map<string, Tag>()

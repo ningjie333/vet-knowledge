@@ -1,19 +1,23 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
+import type { DiagnosisCandidate, Disease, Symptom } from '@/types'
 
-const allSymptoms = ref<any[]>([])
+const allSymptoms = ref<Symptom[]>([])
 const selectedSymptoms = ref<string[]>([])
 const species = ref('犬')
-const results = ref<any[]>([])
+const results = ref<DiagnosisCandidate[]>([])
 const loading = ref(false)
 const searched = ref(false)
-const diseaseDetails = ref<Map<string, any>>(new Map())
+const diseaseDetails = ref<Map<string, Disease>>(new Map())
 
 onMounted(async () => {
   try {
-    allSymptoms.value = await invoke('get_symptoms')
-  } catch { /* silently fail, allSymptoms stays [] */ }
+    allSymptoms.value = await invoke<Symptom[]>('get_symptoms')
+  } catch (e) {
+    // 加载失败时症状池为空、页面不可用，必须留痕（原实现是空 catch 完全静默）
+    console.error('load symptoms failed:', e)
+  }
 })
 
 function toggleSymptom(name: string) {
@@ -31,7 +35,7 @@ async function onDiagnose() {
   searched.value = true
   diseaseDetails.value.clear()
   try {
-    results.value = await invoke('infer_diagnosis', {
+    results.value = await invoke<DiagnosisCandidate[]>('infer_diagnosis', {
       symptoms: selectedSymptoms.value,
       species: species.value,
       age: null,
@@ -39,9 +43,9 @@ async function onDiagnose() {
     })
     // 批量获取疾病详情以显示急迫程度
     const details = await Promise.all(
-      results.value.map((r: any) => invoke('get_disease_by_id', { id: r.disease_id }))
+      results.value.map(r => invoke<Disease | null>('get_disease_by_id', { id: r.disease_id }))
     )
-    details.forEach((d: any, i: number) => {
+    details.forEach((d, i) => {
       if (d) diseaseDetails.value.set(results.value[i].disease_id, d)
     })
   } catch (e) { console.error(e) }
@@ -113,7 +117,7 @@ function scoreColor(score: number) {
           <div class="result-info">
             <div class="result-name">
               {{ r.disease_name }}
-              <span v-if="diseaseDetails.get(r.disease_id)?.urgency_level >= 4" class="urgency-inline">⚡紧急</span>
+              <span v-if="(diseaseDetails.get(r.disease_id)?.urgency_level ?? 0) >= 4" class="urgency-inline">⚡紧急</span>
               <span v-if="r.input_coverage < 0.5" class="partial-badge">部分匹配</span>
             </div>
             <div class="result-matched">

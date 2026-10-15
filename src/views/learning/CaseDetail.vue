@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { invoke } from '@tauri-apps/api/core'
-import type { Case, Disease, Tag } from '../../types'
+import type { Case, Disease, Tag } from '@/types'
 
 const route = useRoute()
 const caseData = ref<Case | null>(null)

@@ -362,9 +362,9 @@ async function fetchDiagnosisHint() {
     // 批量获取疾病详情（仅 Top 3，不暴露推理链）
     const top3 = activeHint.value.candidates.slice(0, 3)
     const details = await Promise.all(
-      top3.map((c) => invoke('get_disease_by_id', { id: c.disease_id })),
+      top3.map((c) => invoke<Disease | null>('get_disease_by_id', { id: c.disease_id })),
     )
-    details.forEach((d: any, i: number) => {
+    details.forEach((d, i) => {
       if (d) {
         activeHint.value!.diseaseDetails.set(top3[i].disease_id, d)
       }

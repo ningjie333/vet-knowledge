@@ -2,9 +2,10 @@
 import { ref, onMounted, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import { useRoute } from 'vue-router'
+import type { Disease } from '@/types'
 
 const route = useRoute()
-const diseases = ref<any[]>([])
+const diseases = ref<Disease[]>([])
 const loading = ref(true)
 const filterSpecies = ref('')
 const filterCategory = ref((route.query.category as string) || '')
@@ -15,7 +16,7 @@ const systems = ['呼吸系统', '泌尿系统', '消化系统', '心血管系�
 async function load() {
   loading.value = true
   try {
-    diseases.value = await invoke('get_diseases', {
+    diseases.value = await invoke<Disease[]>('get_diseases', {
       species: filterSpecies.value || null,
       category: filterCategory.value || null,
     })
