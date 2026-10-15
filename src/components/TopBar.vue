@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
+import { getVersion } from '@tauri-apps/api/app'
 import type { SearchResult } from '@/types'
 
 const searchQuery = ref('')
 const searchResults = ref<SearchResult[]>([])
 const showResults = ref(false)
+// 界面右上角的版本号取自安装包自身，避免写死后与实际发布版本脱节
+const appVersion = ref('')
+onMounted(async () => { appVersion.value = await getVersion() })
 
 async function onSearch() {
   if (!searchQuery.value.trim()) return
@@ -49,7 +53,7 @@ function onClickOutside() {
       </div>
     </div>
     <div class="topbar-actions">
-      <span class="version">v0.1.0</span>
+      <span v-if="appVersion" class="version">v{{ appVersion }}</span>
     </div>
   </header>
 </template>

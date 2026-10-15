@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.tauri.app/config/2",
   "productName": "兽医知识库",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "identifier": "com.vetknowledge.app",
   "build": {
     "beforeDevCommand": "npm run dev",

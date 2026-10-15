@@ -1,1 +1,1 @@
-{}
+{"default":{"identifier":"default","description":"主窗口的默认权限集（应用自身的 IPC 命令不受 ACL 约束，此处仅为让 @tauri-apps/api 的插件类 API 可用，如 getVersion）","local":true,"windows":["main"],"permissions":["core:default"]}}
