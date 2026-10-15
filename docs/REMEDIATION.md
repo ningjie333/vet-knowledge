@@ -16,9 +16,12 @@
 **为什么之前没人发现**：项目的 `api_check` 把"注册名"和"定义名"取了并集（`_tools/dev/checkers/api_check.py:71-86`），结构上就看不见"注册了但没定义"。根因是更前面一层——**这台机器没有 Rust 工具链**（`cargo`/`rustc`/rustup/VS Build Tools 全不存在，`src-tauri/target/` 里的 `.rustc_info.json` 是旧机器留下的），所以 7 月以来的 Rust 代码一次都没编译过。
 
 ### 2. 移除写死的私人机器路径 【证据层级：grep 可验证，已验证】
-`manager.rs` 与 `game.rs` 各有一份 `C:\Users\ZhuanZ（无密码）\...`（公开仓库上等于公布账户名+标注无密码）。收敛为唯一实现 `sidecar::root::resolve_virtual_vet_root()`：环境变量 `VET_VET_ROOT` → 当前目录同级 `../virtual-vet` 探测 → 解析不出就走各调用点原有的降级分支。`grep -rn "Users" src-tauri/src` 现为 0 命中，新增 5 个单元测试。
+`manager.rs` 与 `game.rs` 各有一份写死的 `C:\Users\<某账户>\Desktop\...`（账户名本身带"无密码"备注，
+公开仓库上等于把账户名与这条备注一并公布）。收敛为唯一实现 `sidecar::root::resolve_virtual_vet_root()`：环境变量 `VET_VET_ROOT` → 当前目录同级 `../virtual-vet` 探测 → 解析不出就走各调用点原有的降级分支。`grep -rn "Users" src-tauri/src` 现为 0 命中，新增 5 个单元测试。
 
-⚠️ **未消除**：该字符串仍在 git 历史里（`git log -S "ZhuanZ"` 命中已推送的 `6512386`/`56b650d`/`3699916`），公开仓库仍可翻到。要彻底清除必须改写历史并强推。另外那个账户建议尽快设密码。
+⚠️ **未消除**：该字面量仍在 git 历史里（`git log -S` 命中已推送的 `6512386`/`56b650d`/`3699916`
+三个提交，另有 `tools/__pycache__` 两个已入库的 .pyc 也含它），公开仓库仍可翻到。要彻底清除必须
+改写历史并强推。另外那个账户建议尽快设密码。本文件刻意不再复述该字面量。
 
 ⚠️ **功能影响**：同级探测依赖启动时的工作目录。`tauri dev`/`cargo test` 的 cwd 常在 `src-tauri`，此时探测落空（只是报错误导性没了，游戏功能仍不可用）。要开箱即用，需在启动脚本里显式设 `VET_VET_ROOT`——本轮没动，因为那会把你的本机路径写进受版本控制的文件。
 
