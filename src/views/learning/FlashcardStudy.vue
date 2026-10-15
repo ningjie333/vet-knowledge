@@ -24,7 +24,9 @@ onMounted(async () => {
 async function loadStats() {
   try {
     stats.value = await invoke<ReviewStats>('get_review_stats')
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 async function loadDueCards() {
@@ -33,7 +35,9 @@ async function loadDueCards() {
     currentIndex.value = 0
     showBack.value = false
     finished.value = false
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 function flip() {
@@ -45,7 +49,9 @@ async function review(quality: number) {
   if (!currentCard.value) return
   try {
     await invoke('review_flashcard', { cardId: currentCard.value.id, quality })
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
 
   showBack.value = false
   studied.value = false
@@ -64,7 +70,9 @@ async function generateCards(cardType: string) {
     alert(`成功生成 ${count} 张闪卡`)
     await loadStats()
     await loadDueCards()
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 function typeLabel(type: string) {
@@ -117,15 +125,9 @@ function typeIcon(type: string) {
     <div v-if="stats && stats.total_cards === 0" class="generate-section">
       <p>还没有闪卡，从知识库自动生成：</p>
       <div class="generate-buttons">
-        <button @click="generateCards('disease')" class="gen-btn">
-          🏥 生成疾病闪卡
-        </button>
-        <button @click="generateCards('symptom')" class="gen-btn">
-          🔍 生成症状闪卡
-        </button>
-        <button @click="generateCards('drug')" class="gen-btn">
-          💊 生成药物闪卡
-        </button>
+        <button @click="generateCards('disease')" class="gen-btn">🏥 生成疾病闪卡</button>
+        <button @click="generateCards('symptom')" class="gen-btn">🔍 生成症状闪卡</button>
+        <button @click="generateCards('drug')" class="gen-btn">💊 生成药物闪卡</button>
       </div>
     </div>
 
@@ -136,11 +138,7 @@ function typeIcon(type: string) {
         <span class="progress-text">{{ currentIndex + 1 }} / {{ dueCards.length }}</span>
       </div>
 
-      <div
-        class="flashcard"
-        :class="{ flipped: showBack }"
-        @click="!showBack && flip()"
-      >
+      <div class="flashcard" :class="{ flipped: showBack }" @click="!showBack && flip()">
         <div class="card-inner">
           <div class="card-front">
             <div class="card-type">
@@ -201,8 +199,15 @@ function typeIcon(type: string) {
 </template>
 
 <style scoped>
-.page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-.desc { color: var(--color-text-secondary); margin-bottom: 24px; }
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.desc {
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
 
 .stats-bar {
   display: flex;
@@ -224,8 +229,16 @@ function typeIcon(type: string) {
   background: #eff6ff;
 }
 
-.stat-num { font-size: 24px; font-weight: 700; color: var(--color-primary); display: block; }
-.stat-label { font-size: 12px; color: var(--color-text-secondary); }
+.stat-num {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-primary);
+  display: block;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
 
 .generate-section {
   text-align: center;
@@ -235,7 +248,12 @@ function typeIcon(type: string) {
   border-radius: var(--radius);
 }
 
-.generate-buttons { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
+.generate-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 16px;
+}
 
 .gen-btn {
   padding: 12px 20px;
@@ -247,10 +265,16 @@ function typeIcon(type: string) {
   transition: all 0.15s;
 }
 
-.gen-btn:hover { border-color: var(--color-primary); background: #eff6ff; }
+.gen-btn:hover {
+  border-color: var(--color-primary);
+  background: #eff6ff;
+}
 
 /* Study area */
-.study-area { max-width: 600px; margin: 0 auto; }
+.study-area {
+  max-width: 600px;
+  margin: 0 auto;
+}
 
 .progress-bar {
   position: relative;
@@ -296,7 +320,8 @@ function typeIcon(type: string) {
   transform: rotateY(180deg);
 }
 
-.card-front, .card-back {
+.card-front,
+.card-back {
   position: absolute;
   inset: 0;
   backface-visibility: hidden;
@@ -346,9 +371,17 @@ function typeIcon(type: string) {
   text-align: center;
 }
 
-.review-prompt { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 12px; }
+.review-prompt {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
 
-.btn-row { display: flex; gap: 8px; justify-content: center; }
+.btn-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
 
 .review-btn {
   padding: 12px 16px;
@@ -363,25 +396,57 @@ function typeIcon(type: string) {
   min-width: 100px;
 }
 
-.review-btn:hover { opacity: 0.85; }
-.review-btn .btn-label { font-size: 14px; font-weight: 600; }
-.review-btn .btn-hint { font-size: 11px; opacity: 0.7; }
+.review-btn:hover {
+  opacity: 0.85;
+}
+.review-btn .btn-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+.review-btn .btn-hint {
+  font-size: 11px;
+  opacity: 0.7;
+}
 
-.review-btn.again { background: #fee2e2; color: #dc2626; }
-.review-btn.hard { background: #fef3c7; color: #d97706; }
-.review-btn.good { background: #dcfce7; color: #16a34a; }
-.review-btn.easy { background: #dbeafe; color: #2563eb; }
+.review-btn.again {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.review-btn.hard {
+  background: #fef3c7;
+  color: #d97706;
+}
+.review-btn.good {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.review-btn.easy {
+  background: #dbeafe;
+  color: #2563eb;
+}
 
 /* States */
-.finished-state, .empty-state {
+.finished-state,
+.empty-state {
   text-align: center;
   padding: 60px 0;
 }
 
-.finished-icon, .empty-icon { font-size: 48px; margin-bottom: 16px; }
+.finished-icon,
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
 
-.finished-state h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
-.finished-state p { color: var(--color-text-secondary); margin-bottom: 20px; }
+.finished-state h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.finished-state p {
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+}
 
 .reload-btn {
   padding: 8px 20px;
@@ -392,5 +457,7 @@ function typeIcon(type: string) {
   font-size: 14px;
 }
 
-.reload-btn:hover { border-color: var(--color-primary); }
+.reload-btn:hover {
+  border-color: var(--color-primary);
+}
 </style>

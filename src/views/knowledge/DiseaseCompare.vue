@@ -13,9 +13,8 @@ const searchQuery = ref('')
 const filteredDiseases = computed(() => {
   if (!searchQuery.value.trim()) return allDiseases.value
   const q = searchQuery.value.toLowerCase()
-  return allDiseases.value.filter(d =>
-    d.name_zh.toLowerCase().includes(q) ||
-    (d.name_en && d.name_en.toLowerCase().includes(q))
+  return allDiseases.value.filter(
+    d => d.name_zh.toLowerCase().includes(q) || (d.name_en && d.name_en.toLowerCase().includes(q)),
   )
 })
 
@@ -57,7 +56,9 @@ const diagnosticRowIndexes = computed(() =>
 onMounted(async () => {
   try {
     allDiseases.value = await invoke<Disease[]>('get_diseases', { species: null, category: null })
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
 })
 
 function toggleDisease(id: string) {
@@ -77,7 +78,9 @@ async function doCompare() {
     compareData.value = await invoke<DiseaseCompareView[]>('get_disease_compare', {
       diseaseIds: selectedIds.value,
     })
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
   loading.value = false
 }
 
@@ -109,7 +112,11 @@ function lineLabel(l: string) {
 }
 
 function evidenceLabel(e: string) {
-  const map: Record<string, string> = { gold_standard: '金标准', supportive: '支持性', exclusionary: '排除性' }
+  const map: Record<string, string> = {
+    gold_standard: '金标准',
+    supportive: '支持性',
+    exclusionary: '排除性',
+  }
   return map[e] || e
 }
 </script>
@@ -123,7 +130,12 @@ function evidenceLabel(e: string) {
     <div class="selector-section">
       <div class="selector-header">
         <span>选择疾病（已选 {{ selectedIds.length }}/4）</span>
-        <input v-model="searchQuery" type="text" class="selector-search" placeholder="搜索疾病..." />
+        <input
+          v-model="searchQuery"
+          type="text"
+          class="selector-search"
+          placeholder="搜索疾病..."
+        />
       </div>
       <div class="disease-pool">
         <button
@@ -137,11 +149,7 @@ function evidenceLabel(e: string) {
           {{ d.name_zh }}
         </button>
       </div>
-      <button
-        class="compare-btn"
-        :disabled="selectedIds.length < 2 || loading"
-        @click="doCompare"
-      >
+      <button class="compare-btn" :disabled="selectedIds.length < 2 || loading" @click="doCompare">
         {{ loading ? '加载中...' : `对比 ${selectedIds.length} 个疾病` }}
       </button>
     </div>
@@ -162,7 +170,9 @@ function evidenceLabel(e: string) {
         </thead>
         <tbody>
           <!-- Basic info -->
-          <tr class="section-row"><td :colspan="columns + 1">基本信息</td></tr>
+          <tr class="section-row">
+            <td :colspan="columns + 1">基本信息</td>
+          </tr>
           <tr>
             <td class="row-header">分类</td>
             <td v-for="d in compareData" :key="d.disease.id">
@@ -178,7 +188,10 @@ function evidenceLabel(e: string) {
           <tr>
             <td class="row-header">紧急程度</td>
             <td v-for="d in compareData" :key="d.disease.id">
-              <span v-if="urgencyBadge(d.disease.urgency_level)" :class="['urgency-badge', urgencyBadge(d.disease.urgency_level)!.cls]">
+              <span
+                v-if="urgencyBadge(d.disease.urgency_level)"
+                :class="['urgency-badge', urgencyBadge(d.disease.urgency_level)!.cls]"
+              >
                 {{ urgencyBadge(d.disease.urgency_level)!.text }} ({{ d.disease.urgency_level }}/5)
               </span>
               <span v-else>—</span>
@@ -187,13 +200,17 @@ function evidenceLabel(e: string) {
           <tr>
             <td class="row-header">难度</td>
             <td v-for="d in compareData" :key="d.disease.id">
-              <span v-if="d.disease.difficulty" :class="['diff-badge', d.disease.difficulty]">{{ d.disease.difficulty }}</span>
+              <span v-if="d.disease.difficulty" :class="['diff-badge', d.disease.difficulty]">{{
+                d.disease.difficulty
+              }}</span>
               <span v-else>—</span>
             </td>
           </tr>
 
           <!-- Symptoms comparison matrix -->
-          <tr class="section-row"><td :colspan="columns + 1">症状对比</td></tr>
+          <tr class="section-row">
+            <td :colspan="columns + 1">症状对比</td>
+          </tr>
           <tr v-for="row in symptomRows" :key="row.name">
             <td class="row-header">{{ row.name }}</td>
             <td v-for="(cell, i) in row.cells" :key="i">
@@ -209,12 +226,19 @@ function evidenceLabel(e: string) {
           </tr>
 
           <!-- Treatments -->
-          <tr class="section-row"><td :colspan="columns + 1">治疗方案</td></tr>
+          <tr class="section-row">
+            <td :colspan="columns + 1">治疗方案</td>
+          </tr>
           <tr>
             <td class="row-header">一线用药</td>
             <td v-for="d in compareData" :key="d.disease.id">
               <div v-if="firstLineTreatments(d).length">
-                <span v-for="(t, i) in firstLineTreatments(d)" :key="`${t[0].id}:${i}`" class="drug-tag first-line">{{ t[0].name_zh }}</span>
+                <span
+                  v-for="(t, i) in firstLineTreatments(d)"
+                  :key="`${t[0].id}:${i}`"
+                  class="drug-tag first-line"
+                  >{{ t[0].name_zh }}</span
+                >
               </div>
               <span v-else class="no-data">—</span>
             </td>
@@ -223,33 +247,46 @@ function evidenceLabel(e: string) {
             <td class="row-header">二线/辅助</td>
             <td v-for="d in compareData" :key="d.disease.id">
               <div v-if="otherLineTreatments(d).length">
-                <span v-for="(t, i) in otherLineTreatments(d)" :key="`${t[0].id}:${i}`" class="drug-tag other-line">{{ t[0].name_zh }} ({{ lineLabel(t[1]) }})</span>
+                <span
+                  v-for="(t, i) in otherLineTreatments(d)"
+                  :key="`${t[0].id}:${i}`"
+                  class="drug-tag other-line"
+                  >{{ t[0].name_zh }} ({{ lineLabel(t[1]) }})</span
+                >
               </div>
               <span v-else class="no-data">—</span>
             </td>
           </tr>
 
           <!-- Diagnostics -->
-          <tr class="section-row"><td :colspan="columns + 1">诊断检查</td></tr>
+          <tr class="section-row">
+            <td :colspan="columns + 1">诊断检查</td>
+          </tr>
           <tr v-for="idx in diagnosticRowIndexes" :key="idx">
             <td class="row-header">检查 {{ idx + 1 }}</td>
             <td v-for="d in compareData" :key="d.disease.id">
               <template v-if="d.diagnostics[idx]">
                 <span class="test-name">{{ d.diagnostics[idx][0].name_zh }}</span>
-                <span :class="['evidence-badge', `ev-${d.diagnostics[idx][2]}`]">{{ evidenceLabel(d.diagnostics[idx][2]) }}</span>
+                <span :class="['evidence-badge', `ev-${d.diagnostics[idx][2]}`]">{{
+                  evidenceLabel(d.diagnostics[idx][2])
+                }}</span>
               </template>
               <span v-else class="no-data">—</span>
             </td>
           </tr>
 
           <!-- DDX -->
-          <tr class="section-row"><td :colspan="columns + 1">鉴别诊断</td></tr>
+          <tr class="section-row">
+            <td :colspan="columns + 1">鉴别诊断</td>
+          </tr>
           <tr>
             <td class="row-header">需鉴别疾病</td>
             <td v-for="d in compareData" :key="d.disease.id">
               <div v-if="d.ddx.length">
                 <div v-for="(x, i) in d.ddx" :key="`${x[0].id}:${i}`" class="ddx-item">
-                  <router-link :to="`/diseases/${x[0].id}`" class="ddx-link">{{ x[0].name_zh }}</router-link>
+                  <router-link :to="`/diseases/${x[0].id}`" class="ddx-link">{{
+                    x[0].name_zh
+                  }}</router-link>
                   <span class="ddx-feature">{{ x[1] }}</span>
                 </div>
               </div>
@@ -260,15 +297,20 @@ function evidenceLabel(e: string) {
       </table>
     </div>
 
-    <div v-else-if="searched && !loading" class="no-result">
-      请选择至少 2 个疾病进行对比
-    </div>
+    <div v-else-if="searched && !loading" class="no-result">请选择至少 2 个疾病进行对比</div>
   </div>
 </template>
 
 <style scoped>
-.page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-.desc { color: var(--color-text-secondary); margin-bottom: 24px; }
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.desc {
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
 
 .selector-section {
   background: var(--color-surface);
@@ -285,7 +327,10 @@ function evidenceLabel(e: string) {
   margin-bottom: 12px;
 }
 
-.selector-header span { font-size: 14px; font-weight: 500; }
+.selector-header span {
+  font-size: 14px;
+  font-weight: 500;
+}
 
 .selector-search {
   padding: 6px 12px;
@@ -316,9 +361,18 @@ function evidenceLabel(e: string) {
   transition: all 0.1s;
 }
 
-.disease-chip:hover { border-color: var(--color-primary); }
-.disease-chip.selected { background: var(--color-primary); color: white; border-color: var(--color-primary); }
-.disease-chip:disabled { opacity: 0.4; cursor: not-allowed; }
+.disease-chip:hover {
+  border-color: var(--color-primary);
+}
+.disease-chip.selected {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+.disease-chip:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 
 .compare-btn {
   padding: 8px 24px;
@@ -331,7 +385,10 @@ function evidenceLabel(e: string) {
   cursor: pointer;
 }
 
-.compare-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.compare-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* Comparison table */
 .compare-table-wrapper {
@@ -374,8 +431,14 @@ function evidenceLabel(e: string) {
   font-size: 14px;
 }
 
-.header-link:hover { text-decoration: underline; }
-.header-en { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+.header-link:hover {
+  text-decoration: underline;
+}
+.header-en {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
 
 .section-row td {
   background: var(--color-bg);
@@ -392,9 +455,18 @@ function evidenceLabel(e: string) {
   padding: 2px 8px;
   border-radius: 8px;
 }
-.urgency-high { background: #fee2e2; color: #dc2626; }
-.urgency-mid { background: #fef3c7; color: #d97706; }
-.urgency-low { background: #f1f5f9; color: #64748b; }
+.urgency-high {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.urgency-mid {
+  background: #fef3c7;
+  color: #d97706;
+}
+.urgency-low {
+  background: #f1f5f9;
+  color: #64748b;
+}
 
 .diff-badge {
   display: inline-block;
@@ -402,17 +474,41 @@ function evidenceLabel(e: string) {
   padding: 1px 8px;
   border-radius: 8px;
 }
-.diff-badge.basic { background: #dcfce7; color: #16a34a; }
-.diff-badge.intermediate { background: #fef3c7; color: #d97706; }
-.diff-badge.advanced { background: #fee2e2; color: #dc2626; }
+.diff-badge.basic {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.diff-badge.intermediate {
+  background: #fef3c7;
+  color: #d97706;
+}
+.diff-badge.advanced {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
 /* Symptoms */
-.freq-dot { font-size: 10px; margin-right: 4px; }
-.freq-common { color: #16a34a; }
-.freq-uncommon { color: #d97706; }
-.freq-rare { color: #64748b; }
-.freq-text { font-size: 12px; }
-.stage-text { font-size: 10px; color: var(--color-text-secondary); margin-left: 4px; }
+.freq-dot {
+  font-size: 10px;
+  margin-right: 4px;
+}
+.freq-common {
+  color: #16a34a;
+}
+.freq-uncommon {
+  color: #d97706;
+}
+.freq-rare {
+  color: #64748b;
+}
+.freq-text {
+  font-size: 12px;
+}
+.stage-text {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  margin-left: 4px;
+}
 
 /* Drugs */
 .drug-tag {
@@ -422,11 +518,20 @@ function evidenceLabel(e: string) {
   border-radius: 8px;
   margin: 1px 2px;
 }
-.drug-tag.first-line { background: #dcfce7; color: #16a34a; }
-.drug-tag.other-line { background: #e0e7ff; color: #4f46e5; }
+.drug-tag.first-line {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.drug-tag.other-line {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
 
 /* Tests */
-.test-name { font-weight: 500; display: block; }
+.test-name {
+  font-weight: 500;
+  display: block;
+}
 .evidence-badge {
   display: inline-block;
   font-size: 10px;
@@ -434,16 +539,44 @@ function evidenceLabel(e: string) {
   border-radius: 6px;
   margin-top: 2px;
 }
-.ev-gold_standard { background: #fef9c3; color: #a16207; }
-.ev-supportive { background: #e0e7ff; color: #4f46e5; }
-.ev-exclusionary { background: #fee2e2; color: #dc2626; }
+.ev-gold_standard {
+  background: #fef9c3;
+  color: #a16207;
+}
+.ev-supportive {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
+.ev-exclusionary {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
 /* DDX */
-.ddx-item { margin-bottom: 4px; }
-.ddx-link { color: var(--color-primary); text-decoration: none; font-size: 12px; }
-.ddx-link:hover { text-decoration: underline; }
-.ddx-feature { display: block; font-size: 11px; color: var(--color-text-secondary); }
+.ddx-item {
+  margin-bottom: 4px;
+}
+.ddx-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 12px;
+}
+.ddx-link:hover {
+  text-decoration: underline;
+}
+.ddx-feature {
+  display: block;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
 
-.no-data { color: var(--color-text-secondary); font-style: italic; }
-.no-result { text-align: center; padding: 40px; color: var(--color-text-secondary); }
+.no-data {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+.no-result {
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-secondary);
+}
 </style>

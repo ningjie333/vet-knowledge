@@ -16,9 +16,8 @@ const route = useRoute()
 const filteredSymptoms = computed(() => {
   if (!searchQuery.value.trim()) return allSymptoms.value
   const q = searchQuery.value.toLowerCase()
-  return allSymptoms.value.filter(s =>
-    s.name_zh.toLowerCase().includes(q) ||
-    (s.name_en && s.name_en.toLowerCase().includes(q))
+  return allSymptoms.value.filter(
+    s => s.name_zh.toLowerCase().includes(q) || (s.name_en && s.name_en.toLowerCase().includes(q)),
   )
 })
 
@@ -44,7 +43,9 @@ onMounted(async () => {
         await selectSymptom(found)
       }
     }
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
 })
 
 async function selectSymptom(symptom: Symptom) {
@@ -57,7 +58,9 @@ async function selectSymptom(symptom: Symptom) {
       symptomId: symptom.id,
       species: null,
     })
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
   loading.value = false
 }
 
@@ -69,7 +72,9 @@ async function applySpeciesFilter() {
       symptomId: selectedSymptom.value.id,
       species: speciesFilter.value || null,
     })
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
   loading.value = false
 }
 
@@ -101,12 +106,7 @@ function urgencyBadge(level: number | null) {
 
     <!-- Search bar -->
     <div class="search-bar">
-      <input
-        v-model="searchQuery"
-        type="text"
-        class="symptom-search"
-        placeholder="搜索症状..."
-      />
+      <input v-model="searchQuery" type="text" class="symptom-search" placeholder="搜索症状..." />
     </div>
 
     <div class="layout">
@@ -127,7 +127,9 @@ function urgencyBadge(level: number | null) {
               <span class="card-name">{{ s.name_zh }}</span>
             </div>
             <span class="card-en">{{ s.name_en }}</span>
-            <p v-if="s.definition" class="card-def">{{ s.definition?.slice(0, 80) }}{{ (s.definition?.length || 0) > 80 ? '...' : '' }}</p>
+            <p v-if="s.definition" class="card-def">
+              {{ s.definition?.slice(0, 80) }}{{ (s.definition?.length || 0) > 80 ? '...' : '' }}
+            </p>
           </button>
         </div>
       </div>
@@ -172,9 +174,7 @@ function urgencyBadge(level: number | null) {
             </select>
           </div>
 
-          <div v-if="results.length === 0" class="no-result">
-            未找到与此症状相关的疾病
-          </div>
+          <div v-if="results.length === 0" class="no-result">未找到与此症状相关的疾病</div>
 
           <div v-else class="disease-list">
             <router-link
@@ -189,8 +189,16 @@ function urgencyBadge(level: number | null) {
                   <div class="card-name">
                     {{ r.disease.name_zh }}
                     <span class="card-en">{{ r.disease.name_en }}</span>
-                    <span v-if="r.is_pathognomonic === 1" class="patho-badge" title="该症状为此疾病的核心/特征性症状">★ 核心症状</span>
-                    <span v-if="urgencyBadge(r.disease.urgency_level)" :class="['urgency-badge', urgencyBadge(r.disease.urgency_level)!.cls]">
+                    <span
+                      v-if="r.is_pathognomonic === 1"
+                      class="patho-badge"
+                      title="该症状为此疾病的核心/特征性症状"
+                      >★ 核心症状</span
+                    >
+                    <span
+                      v-if="urgencyBadge(r.disease.urgency_level)"
+                      :class="['urgency-badge', urgencyBadge(r.disease.urgency_level)!.cls]"
+                    >
                       {{ urgencyBadge(r.disease.urgency_level)!.text }}
                     </span>
                   </div>
@@ -199,11 +207,16 @@ function urgencyBadge(level: number | null) {
                       {{ frequencyLabel(r.frequency) }}
                     </span>
                     <span v-if="r.stage" class="stage-tag">{{ r.stage }}</span>
-                    <span v-for="cat in r.disease.category" :key="cat" class="cat-tag">{{ cat }}</span>
-                    <span v-if="r.disease.difficulty" :class="['diff-tag', r.disease.difficulty]">{{ r.disease.difficulty }}</span>
+                    <span v-for="cat in r.disease.category" :key="cat" class="cat-tag">{{
+                      cat
+                    }}</span>
+                    <span v-if="r.disease.difficulty" :class="['diff-tag', r.disease.difficulty]">{{
+                      r.disease.difficulty
+                    }}</span>
                   </div>
                   <div v-if="r.disease.overview" class="card-overview">
-                    {{ r.disease.overview.slice(0, 120) }}{{ r.disease.overview.length > 120 ? '...' : '' }}
+                    {{ r.disease.overview.slice(0, 120)
+                    }}{{ r.disease.overview.length > 120 ? '...' : '' }}
                   </div>
                 </div>
               </div>
@@ -216,11 +229,24 @@ function urgencyBadge(level: number | null) {
 </template>
 
 <style scoped>
-.page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-.desc { color: var(--color-text-secondary); margin-bottom: 8px; }
-.header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.desc {
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
 
-.search-bar { margin-bottom: 20px; }
+.search-bar {
+  margin-bottom: 20px;
+}
 .symptom-search {
   width: 100%;
   max-width: 400px;
@@ -231,7 +257,10 @@ function urgencyBadge(level: number | null) {
   background: var(--color-surface);
   color: var(--color-text);
 }
-.symptom-search:focus { outline: none; border-color: var(--color-primary); }
+.symptom-search:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
 
 .layout {
   display: grid;
@@ -268,16 +297,47 @@ function urgencyBadge(level: number | null) {
   flex-direction: column;
   gap: 4px;
 }
-.symptom-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow); }
-.symptom-card.active { border-color: var(--color-primary); background: #eff6ff; }
+.symptom-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow);
+}
+.symptom-card.active {
+  border-color: var(--color-primary);
+  background: #eff6ff;
+}
 
-.card-top { display: flex; align-items: center; gap: 8px; }
-.card-name { font-weight: 600; font-size: 15px; }
-.tag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.card-en { font-size: 12px; color: var(--color-text-secondary); }
-.card-def { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; margin-top: 4px; }
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+.tag-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.card-en {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+.card-def {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  margin-top: 4px;
+}
 
-.card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
 .tag-chip {
   font-size: 10px;
   padding: 1px 6px;
@@ -303,7 +363,10 @@ function urgencyBadge(level: number | null) {
   padding: 80px 0;
   color: var(--color-text-secondary);
 }
-.empty-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
 
 .result-header {
   display: flex;
@@ -311,9 +374,17 @@ function urgencyBadge(level: number | null) {
   align-items: baseline;
   margin-bottom: 16px;
 }
-.result-header h2 { font-size: 18px; font-weight: 600; }
-.symptom-highlight { color: var(--color-primary); }
-.result-count { font-size: 13px; color: var(--color-text-secondary); }
+.result-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+.symptom-highlight {
+  color: var(--color-primary);
+}
+.result-count {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
 
 .symptom-definition {
   background: #f8fafc;
@@ -322,7 +393,9 @@ function urgencyBadge(level: number | null) {
   padding: 16px 20px;
   margin-bottom: 16px;
 }
-.symptom-definition.species-notes { background: #f0fdf4; }
+.symptom-definition.species-notes {
+  background: #f0fdf4;
+}
 .symptom-definition h3 {
   font-size: 12px;
   font-weight: 600;
@@ -344,10 +417,22 @@ function urgencyBadge(level: number | null) {
   gap: 8px;
   margin-bottom: 16px;
 }
-.species-filter label { font-size: 13px; color: var(--color-text-secondary); }
-.species-filter select { padding: 4px 10px; border: 1px solid var(--color-border); border-radius: var(--radius); font-size: 13px; }
+.species-filter label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+.species-filter select {
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 13px;
+}
 
-.disease-list { display: flex; flex-direction: column; gap: 10px; }
+.disease-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 .disease-card {
   display: flex;
@@ -358,9 +443,16 @@ function urgencyBadge(level: number | null) {
   color: var(--color-text);
   transition: all 0.15s;
 }
-.disease-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow); }
+.disease-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow);
+}
 
-.card-left { display: flex; gap: 12px; flex: 1; }
+.card-left {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
 .card-rank {
   width: 28px;
   height: 28px;
@@ -374,21 +466,65 @@ function urgencyBadge(level: number | null) {
   font-size: 13px;
   flex-shrink: 0;
 }
-.card-info { flex: 1; }
-.card-name { font-weight: 600; font-size: 15px; margin-bottom: 6px; }
-.card-en { font-size: 12px; color: var(--color-text-secondary); margin-left: 6px; font-weight: 400; }
+.card-info {
+  flex: 1;
+}
+.card-name {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.card-en {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-left: 6px;
+  font-weight: 400;
+}
 
-.card-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
-.card-meta span { font-size: 11px; padding: 1px 8px; border-radius: 10px; }
+.card-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.card-meta span {
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 10px;
+}
 
-.freq-common { background: #dcfce7; color: #16a34a; }
-.freq-uncommon { background: #fef3c7; color: #d97706; }
-.freq-rare { background: #f1f5f9; color: #64748b; }
-.stage-tag { background: #e0e7ff; color: #4f46e5; }
-.cat-tag { background: #f3e8ff; color: #9333ea; }
-.diff-tag.basic { background: #dcfce7; color: #16a34a; }
-.diff-tag.intermediate { background: #fef3c7; color: #d97706; }
-.diff-tag.advanced { background: #fee2e2; color: #dc2626; }
+.freq-common {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.freq-uncommon {
+  background: #fef3c7;
+  color: #d97706;
+}
+.freq-rare {
+  background: #f1f5f9;
+  color: #64748b;
+}
+.stage-tag {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
+.cat-tag {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+.diff-tag.basic {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.diff-tag.intermediate {
+  background: #fef3c7;
+  color: #d97706;
+}
+.diff-tag.advanced {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
 .patho-badge {
   display: inline-block;
@@ -410,11 +546,31 @@ function urgencyBadge(level: number | null) {
   margin-left: 4px;
   vertical-align: middle;
 }
-.urgency-high { background: #fee2e2; color: #dc2626; }
-.urgency-mid { background: #fef3c7; color: #d97706; }
-.urgency-low { background: #f1f5f9; color: #64748b; }
+.urgency-high {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.urgency-mid {
+  background: #fef3c7;
+  color: #d97706;
+}
+.urgency-low {
+  background: #f1f5f9;
+  color: #64748b;
+}
 
-.card-overview { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; }
-.no-result { text-align: center; padding: 40px; color: var(--color-text-secondary); }
-.loading-state { text-align: center; padding: 40px; }
+.card-overview {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+.no-result {
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-secondary);
+}
+.loading-state {
+  text-align: center;
+  padding: 40px;
+}
 </style>

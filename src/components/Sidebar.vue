@@ -57,8 +57,14 @@ const menuItems = [
   border-bottom: 1px solid var(--color-border);
 }
 
-.logo-icon { font-size: 24px; }
-.logo-text { font-size: 16px; font-weight: 700; color: var(--color-primary); }
+.logo-icon {
+  font-size: 24px;
+}
+.logo-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
 
 .menu {
   padding: 8px;
@@ -83,7 +89,16 @@ const menuItems = [
   flex-shrink: 0;
 }
 
-.menu-item:hover { background: var(--color-bg); color: var(--color-text); }
-.menu-item.active { background: #eff6ff; color: var(--color-primary); font-weight: 500; }
-.menu-icon { font-size: 16px; }
+.menu-item:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.menu-item.active {
+  background: #eff6ff;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+.menu-icon {
+  font-size: 16px;
+}
 </style>

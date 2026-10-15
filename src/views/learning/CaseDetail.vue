@@ -73,7 +73,9 @@ onMounted(async () => {
     const tagMap = new Map<string, Tag>()
     for (const tag of tags) tagMap.set(tag.id, tag)
     allTags.value = tagMap
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
   loading.value = false
 })
 </script>
@@ -96,7 +98,9 @@ onMounted(async () => {
         <span v-if="caseData.breed" class="info-chip">{{ caseData.breed }}</span>
         <span v-if="caseData.age" class="info-chip">{{ caseData.age }}岁</span>
         <span v-if="caseData.weight" class="info-chip">{{ caseData.weight }}kg</span>
-        <span class="difficulty" :class="difficultyClass(caseData.difficulty)">{{ difficultyLabel(caseData.difficulty) }}</span>
+        <span class="difficulty" :class="difficultyClass(caseData.difficulty)">{{
+          difficultyLabel(caseData.difficulty)
+        }}</span>
       </div>
     </div>
 
@@ -115,12 +119,17 @@ onMounted(async () => {
             v-for="section in sections"
             :key="section.key"
             class="section-card"
-            :class="{ expanded: expandedSections.has(section.key), diagnosis: section.key === 'diagnosis' }"
+            :class="{
+              expanded: expandedSections.has(section.key),
+              diagnosis: section.key === 'diagnosis',
+            }"
           >
             <div class="section-header" @click="toggleSection(section.key)">
               <span class="section-icon">{{ section.icon }}</span>
               <span class="section-label">{{ section.label }}</span>
-              <span class="section-toggle">{{ expandedSections.has(section.key) ? '▾' : '▸' }}</span>
+              <span class="section-toggle">{{
+                expandedSections.has(section.key) ? '▾' : '▸'
+              }}</span>
             </div>
             <div v-if="expandedSections.has(section.key)" class="section-body">
               <p>{{ section.content }}</p>
@@ -153,7 +162,9 @@ onMounted(async () => {
             </div>
             <div v-if="caseData.difficulty" class="info-item">
               <span class="info-key">难度</span>
-              <span class="difficulty" :class="difficultyClass(caseData.difficulty)">{{ difficultyLabel(caseData.difficulty) }}</span>
+              <span class="difficulty" :class="difficultyClass(caseData.difficulty)">{{
+                difficultyLabel(caseData.difficulty)
+              }}</span>
             </div>
           </div>
         </div>
@@ -179,9 +190,7 @@ onMounted(async () => {
           <router-link :to="`/cases/${caseData.id}/study`" class="action-btn study-btn">
             🧠 开始推理训练
           </router-link>
-          <router-link to="/cases" class="action-btn">
-            📋 返回病例列表
-          </router-link>
+          <router-link to="/cases" class="action-btn"> 📋 返回病例列表 </router-link>
         </div>
       </aside>
     </div>
@@ -189,7 +198,11 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.loading { text-align: center; padding: 60px; color: var(--color-text-secondary); }
+.loading {
+  text-align: center;
+  padding: 60px;
+  color: var(--color-text-secondary);
+}
 
 .not-found {
   text-align: center;
@@ -204,7 +217,9 @@ onMounted(async () => {
   text-decoration: none;
 }
 
-.case-header { margin-bottom: 24px; }
+.case-header {
+  margin-bottom: 24px;
+}
 
 .back-link {
   display: inline-block;
@@ -214,9 +229,15 @@ onMounted(async () => {
   font-size: 14px;
 }
 
-.back-link:hover { text-decoration: underline; }
+.back-link:hover {
+  text-decoration: underline;
+}
 
-.case-title { font-size: 26px; font-weight: 700; margin-bottom: 12px; }
+.case-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
 
 .case-info-row {
   display: flex;
@@ -245,9 +266,18 @@ onMounted(async () => {
   font-weight: 500;
 }
 
-.difficulty.basic { background: #dcfce7; color: #16a34a; }
-.difficulty.intermediate { background: #fef3c7; color: #d97706; }
-.difficulty.advanced { background: #fee2e2; color: #dc2626; }
+.difficulty.basic {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.difficulty.intermediate {
+  background: #fef3c7;
+  color: #d97706;
+}
+.difficulty.advanced {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
 /* ── 布局 ── */
 .detail-layout {
@@ -274,7 +304,10 @@ onMounted(async () => {
   color: var(--color-text-secondary);
 }
 
-.ctrl-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.ctrl-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
 
 /* ── 章节卡片 ── */
 .sections {
@@ -305,12 +338,21 @@ onMounted(async () => {
   transition: background 0.1s;
 }
 
-.section-header:hover { background: #f8fafc; }
+.section-header:hover {
+  background: #f8fafc;
+}
 
-.section-card.diagnosis .section-header { background: #eff6ff; }
-.section-card.diagnosis .section-header:hover { background: #dbeafe; }
+.section-card.diagnosis .section-header {
+  background: #eff6ff;
+}
+.section-card.diagnosis .section-header:hover {
+  background: #dbeafe;
+}
 
-.section-icon { font-size: 18px; flex-shrink: 0; }
+.section-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
 
 .section-label {
   font-weight: 600;
@@ -318,7 +360,9 @@ onMounted(async () => {
   flex: 1;
 }
 
-.section-card.diagnosis .section-label { color: var(--color-primary); }
+.section-card.diagnosis .section-label {
+  color: var(--color-primary);
+}
 
 .section-toggle {
   font-size: 14px;
@@ -333,7 +377,9 @@ onMounted(async () => {
   white-space: pre-wrap;
 }
 
-.section-body p { margin: 0; }
+.section-body p {
+  margin: 0;
+}
 
 /* ── 右侧面板 ── */
 .side-panel {
@@ -360,7 +406,11 @@ onMounted(async () => {
   border-bottom: 1px solid var(--color-border);
 }
 
-.info-list { display: flex; flex-direction: column; gap: 8px; }
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
 .info-item {
   display: flex;
@@ -369,10 +419,18 @@ onMounted(async () => {
   font-size: 13px;
 }
 
-.info-key { color: var(--color-text-secondary); }
-.info-val { font-weight: 500; }
+.info-key {
+  color: var(--color-text-secondary);
+}
+.info-val {
+  font-weight: 500;
+}
 
-.disease-links { display: flex; flex-direction: column; gap: 8px; }
+.disease-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
 .disease-link {
   display: flex;
@@ -391,11 +449,22 @@ onMounted(async () => {
   background: #eff6ff;
 }
 
-.disease-name { font-weight: 500; font-size: 14px; }
-.disease-en { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.disease-name {
+  font-weight: 500;
+  font-size: 14px;
+}
+.disease-en {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
 
 /* ── 操作按钮 ── */
-.actions { display: flex; flex-direction: column; gap: 8px; }
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
 .action-btn {
   display: block;
@@ -410,7 +479,10 @@ onMounted(async () => {
   transition: all 0.15s;
 }
 
-.action-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.action-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
 
 .study-btn {
   background: var(--color-primary);
@@ -418,11 +490,18 @@ onMounted(async () => {
   border-color: var(--color-primary);
 }
 
-.study-btn:hover { background: var(--color-primary-dark); color: white; }
+.study-btn:hover {
+  background: var(--color-primary-dark);
+  color: white;
+}
 
 /* ── 响应式 ── */
 @media (max-width: 900px) {
-  .detail-layout { grid-template-columns: 1fr; }
-  .side-panel { position: static; }
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+  .side-panel {
+    position: static;
+  }
 }
 </style>

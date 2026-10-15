@@ -16,21 +16,24 @@ async function load() {
       species: filterSpecies.value || null,
       difficulty: filterDifficulty.value || null,
     })
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
   loading.value = false
 }
 
 async function doSearch() {
-  if (!searchQuery.value.trim()) { load(); return }
+  if (!searchQuery.value.trim()) {
+    load()
+    return
+  }
   loading.value = true
   try {
     const results = await invoke<SearchResult[]>('full_text_search', {
       query: searchQuery.value,
       limit: 20,
     })
-    const caseIds = results
-      .filter(r => r.entity_type === 'case')
-      .map(r => r.entity_id)
+    const caseIds = results.filter(r => r.entity_type === 'case').map(r => r.entity_id)
     if (caseIds.length === 0) {
       cases.value = []
     } else {
@@ -38,7 +41,9 @@ async function doSearch() {
       const idSet = new Set(caseIds)
       cases.value = all.filter(c => idSet.has(c.id))
     }
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
   loading.value = false
 }
 
@@ -95,7 +100,11 @@ watch([filterSpecies, filterDifficulty], load)
         />
         <button class="btn-search" @click="doSearch">搜索</button>
       </div>
-      <button v-if="filterSpecies || filterDifficulty || searchQuery" class="btn-clear" @click="clearFilters">
+      <button
+        v-if="filterSpecies || filterDifficulty || searchQuery"
+        class="btn-clear"
+        @click="clearFilters"
+      >
         清除筛选
       </button>
     </div>
@@ -107,15 +116,12 @@ watch([filterSpecies, filterDifficulty], load)
     </div>
 
     <div v-else class="case-grid">
-      <router-link
-        v-for="c in cases"
-        :key="c.id"
-        :to="`/cases/${c.id}`"
-        class="case-card"
-      >
+      <router-link v-for="c in cases" :key="c.id" :to="`/cases/${c.id}`" class="case-card">
         <div class="card-top">
           <div class="card-title">{{ c.title }}</div>
-          <span class="difficulty" :class="difficultyClass(c.difficulty)">{{ difficultyLabel(c.difficulty) }}</span>
+          <span class="difficulty" :class="difficultyClass(c.difficulty)">{{
+            difficultyLabel(c.difficulty)
+          }}</span>
         </div>
         <div class="card-meta">
           <span v-if="c.species" class="meta-tag species">{{ c.species }}</span>
@@ -130,9 +136,18 @@ watch([filterSpecies, filterDifficulty], load)
 </template>
 
 <style scoped>
-.page-header { margin-bottom: 20px; }
-.page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-.page-desc { color: var(--color-text-secondary); font-size: 14px; }
+.page-header {
+  margin-bottom: 20px;
+}
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.page-desc {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
 
 .filters {
   display: flex;
@@ -142,7 +157,10 @@ watch([filterSpecies, filterDifficulty], load)
   flex-wrap: wrap;
 }
 
-.filter-group { display: flex; gap: 10px; }
+.filter-group {
+  display: flex;
+  gap: 10px;
+}
 
 .filters select {
   padding: 8px 12px;
@@ -168,7 +186,9 @@ watch([filterSpecies, filterDifficulty], load)
   outline: none;
 }
 
-.search-inline input:focus { border-color: var(--color-primary); }
+.search-inline input:focus {
+  border-color: var(--color-primary);
+}
 
 .btn-search {
   padding: 8px 14px;
@@ -181,7 +201,9 @@ watch([filterSpecies, filterDifficulty], load)
   white-space: nowrap;
 }
 
-.btn-search:hover { background: var(--color-primary-dark); }
+.btn-search:hover {
+  background: var(--color-primary-dark);
+}
 
 .btn-clear {
   padding: 8px 12px;
@@ -193,9 +215,16 @@ watch([filterSpecies, filterDifficulty], load)
   cursor: pointer;
 }
 
-.btn-clear:hover { border-color: var(--color-danger); color: var(--color-danger); }
+.btn-clear:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
 
-.loading { text-align: center; padding: 60px; color: var(--color-text-secondary); }
+.loading {
+  text-align: center;
+  padding: 60px;
+  color: var(--color-text-secondary);
+}
 
 .empty {
   background: var(--color-surface);
@@ -254,9 +283,18 @@ watch([filterSpecies, filterDifficulty], load)
   flex-shrink: 0;
 }
 
-.difficulty.basic { background: #dcfce7; color: #16a34a; }
-.difficulty.intermediate { background: #fef3c7; color: #d97706; }
-.difficulty.advanced { background: #fee2e2; color: #dc2626; }
+.difficulty.basic {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.difficulty.intermediate {
+  background: #fef3c7;
+  color: #d97706;
+}
+.difficulty.advanced {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
 .card-meta {
   display: flex;

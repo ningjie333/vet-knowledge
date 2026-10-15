@@ -15,13 +15,13 @@ const drugTags = computed(() => {
   return tags.map(id => allTags.value.get(id)).filter(Boolean) as Tag[]
 })
 
-const mechanismTags = computed(() =>
-  drugTags.value.filter(t => t.tag_group === 'mechanism')
-)
+const mechanismTags = computed(() => drugTags.value.filter(t => t.tag_group === 'mechanism'))
 
 // 按严重度分组
 const majorInteractions = computed(() => interactions.value.filter(i => i.severity === 'major'))
-const moderateInteractions = computed(() => interactions.value.filter(i => i.severity === 'moderate'))
+const moderateInteractions = computed(() =>
+  interactions.value.filter(i => i.severity === 'moderate'),
+)
 const mildInteractions = computed(() => interactions.value.filter(i => i.severity === 'mild'))
 
 onMounted(async () => {
@@ -36,17 +36,21 @@ onMounted(async () => {
       tagMap.set(tag.id, tag)
     }
     allTags.value = tagMap
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
   loading.value = false
 })
 
-watch(selectedDrug, async (drug) => {
+watch(selectedDrug, async drug => {
   if (!drug) {
     interactions.value = []
     return
   }
   try {
-    interactions.value = await invoke<DrugInteraction[]>('get_drug_interactions', { drugId: drug.id })
+    interactions.value = await invoke<DrugInteraction[]>('get_drug_interactions', {
+      drugId: drug.id,
+    })
   } catch (e) {
     console.error(e)
     interactions.value = []
@@ -146,33 +150,21 @@ function closeDetail() {
           <h3>药物相互作用 ({{ interactions.length }})</h3>
           <div v-if="majorInteractions.length" class="interaction-group">
             <span class="interaction-severity major">严重</span>
-            <div
-              v-for="ix in majorInteractions"
-              :key="ix.drug_id"
-              class="interaction-item"
-            >
+            <div v-for="ix in majorInteractions" :key="ix.drug_id" class="interaction-item">
               <strong>{{ ix.drug_name }}</strong>
               <span class="interaction-desc">{{ ix.description }}</span>
             </div>
           </div>
           <div v-if="moderateInteractions.length" class="interaction-group">
             <span class="interaction-severity moderate">中等</span>
-            <div
-              v-for="ix in moderateInteractions"
-              :key="ix.drug_id"
-              class="interaction-item"
-            >
+            <div v-for="ix in moderateInteractions" :key="ix.drug_id" class="interaction-item">
               <strong>{{ ix.drug_name }}</strong>
               <span class="interaction-desc">{{ ix.description }}</span>
             </div>
           </div>
           <div v-if="mildInteractions.length" class="interaction-group">
             <span class="interaction-severity mild">轻微</span>
-            <div
-              v-for="ix in mildInteractions"
-              :key="ix.drug_id"
-              class="interaction-item"
-            >
+            <div v-for="ix in mildInteractions" :key="ix.drug_id" class="interaction-item">
               <strong>{{ ix.drug_name }}</strong>
               <span class="interaction-desc">{{ ix.description }}</span>
             </div>
@@ -193,7 +185,11 @@ function closeDetail() {
             </div>
             <div v-if="selectedDrug.pubchem_cid" class="chem-item">
               <span class="chem-label">PubChem CID</span>
-              <a :href="`https://pubchem.ncbi.nlm.nih.gov/compound/${selectedDrug.pubchem_cid}`" target="_blank" class="chem-link">
+              <a
+                :href="`https://pubchem.ncbi.nlm.nih.gov/compound/${selectedDrug.pubchem_cid}`"
+                target="_blank"
+                class="chem-link"
+              >
                 {{ selectedDrug.pubchem_cid }}
               </a>
             </div>
@@ -220,11 +216,26 @@ function closeDetail() {
 </template>
 
 <style scoped>
-.page-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; }
-.empty { color: var(--color-text-secondary); padding: 40px; text-align: center; }
-.loading { text-align: center; padding: 40px; color: var(--color-text-secondary); }
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+.empty {
+  color: var(--color-text-secondary);
+  padding: 40px;
+  text-align: center;
+}
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-secondary);
+}
 
-.drug-layout { display: flex; gap: 24px; }
+.drug-layout {
+  display: flex;
+  gap: 24px;
+}
 .drug-list {
   flex: 0 0 320px;
   display: flex;
@@ -241,13 +252,37 @@ function closeDetail() {
   cursor: pointer;
   transition: all 0.15s;
 }
-.drug-card:hover { border-color: var(--color-primary); }
-.drug-card.active { border-color: var(--color-primary); background: #eff6ff; }
-.drug-name { font-weight: 600; font-size: 15px; }
-.drug-en { font-size: 12px; color: var(--color-text-secondary); }
-.drug-class { font-size: 12px; color: var(--color-primary); margin-top: 4px; }
-.drug-tags-preview { display: flex; gap: 4px; margin-top: 6px; }
-.tag-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.drug-card:hover {
+  border-color: var(--color-primary);
+}
+.drug-card.active {
+  border-color: var(--color-primary);
+  background: #eff6ff;
+}
+.drug-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+.drug-en {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+.drug-class {
+  font-size: 12px;
+  color: var(--color-primary);
+  margin-top: 4px;
+}
+.drug-tags-preview {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+.tag-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
 
 .drug-detail {
   flex: 1;
@@ -270,10 +305,25 @@ function closeDetail() {
   color: var(--color-text-secondary);
   padding: 4px 8px;
 }
-.close-btn:hover { color: var(--color-text); }
-.drug-detail h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.detail-en { font-size: 13px; color: var(--color-text-secondary); display: block; margin-bottom: 8px; }
-.detail-class { font-size: 13px; color: var(--color-primary); margin-bottom: 16px; }
+.close-btn:hover {
+  color: var(--color-text);
+}
+.drug-detail h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.detail-en {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  display: block;
+  margin-bottom: 8px;
+}
+.detail-class {
+  font-size: 13px;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
 
 .tag-group {
   display: flex;
@@ -282,7 +332,11 @@ function closeDetail() {
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
-.tag-group-label { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); }
+.tag-group-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
 .tag-chip {
   font-size: 12px;
   padding: 3px 10px;
@@ -291,16 +345,24 @@ function closeDetail() {
   font-weight: 500;
 }
 
-.detail-section { margin-bottom: 20px; }
+.detail-section {
+  margin-bottom: 20px;
+}
 .detail-section h3 {
   font-size: 15px;
   font-weight: 600;
   color: var(--color-primary);
   margin-bottom: 8px;
 }
-.detail-section p { font-size: 14px; line-height: 1.7; color: var(--color-text); }
+.detail-section p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text);
+}
 
-.interaction-group { margin-bottom: 12px; }
+.interaction-group {
+  margin-bottom: 12px;
+}
 .interaction-severity {
   display: inline-block;
   font-size: 11px;
@@ -310,9 +372,15 @@ function closeDetail() {
   color: white;
   margin-bottom: 6px;
 }
-.interaction-severity.major { background: #dc2626; }
-.interaction-severity.moderate { background: #f59e0b; }
-.interaction-severity.mild { background: #10b981; }
+.interaction-severity.major {
+  background: #dc2626;
+}
+.interaction-severity.moderate {
+  background: #f59e0b;
+}
+.interaction-severity.mild {
+  background: #10b981;
+}
 .interaction-item {
   display: flex;
   flex-direction: column;
@@ -323,8 +391,15 @@ function closeDetail() {
   border-left: 3px solid #cbd5e1;
   border-radius: 4px;
 }
-.interaction-item strong { font-size: 13px; color: var(--color-text); }
-.interaction-item .interaction-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+.interaction-item strong {
+  font-size: 13px;
+  color: var(--color-text);
+}
+.interaction-item .interaction-desc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
 .dosing-text {
   font-size: 13px;
   line-height: 1.8;
@@ -332,13 +407,50 @@ function closeDetail() {
   white-space: pre-wrap;
   font-family: inherit;
 }
-.chem-section { background: #f8fafc; }
-.chem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-.chem-item { display: flex; flex-direction: column; gap: 2px; padding: 8px; background: white; border-radius: 4px; }
-.chem-label { font-size: 11px; color: var(--color-text-secondary); }
-.chem-value { font-size: 13px; font-weight: 600; color: var(--color-text); }
-.chem-link { font-size: 13px; color: var(--color-primary); text-decoration: none; }
-.chem-link:hover { text-decoration: underline; }
-.chem-smiles { margin-top: 8px; }
-.chem-smiles code { display: block; font-size: 11px; padding: 6px 8px; background: white; border-radius: 4px; word-break: break-all; color: var(--color-text); }
+.chem-section {
+  background: #f8fafc;
+}
+.chem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.chem-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  background: white;
+  border-radius: 4px;
+}
+.chem-label {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+.chem-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.chem-link {
+  font-size: 13px;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.chem-link:hover {
+  text-decoration: underline;
+}
+.chem-smiles {
+  margin-top: 8px;
+}
+.chem-smiles code {
+  display: block;
+  font-size: 11px;
+  padding: 6px 8px;
+  background: white;
+  border-radius: 4px;
+  word-break: break-all;
+  color: var(--color-text);
+}
 </style>

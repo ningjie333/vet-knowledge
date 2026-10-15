@@ -11,7 +11,16 @@ const filterSpecies = ref('')
 const filterCategory = ref((route.query.category as string) || '')
 const filterDifficulty = ref('')
 
-const systems = ['呼吸系统', '泌尿系统', '消化系统', '心血管系统', '内分泌系统', '中毒与急救', '传染病', '外科']
+const systems = [
+  '呼吸系统',
+  '泌尿系统',
+  '消化系统',
+  '心血管系统',
+  '内分泌系统',
+  '中毒与急救',
+  '传染病',
+  '外科',
+]
 
 async function load() {
   loading.value = true
@@ -23,7 +32,9 @@ async function load() {
     if (filterDifficulty.value) {
       diseases.value = diseases.value.filter(d => d.difficulty === filterDifficulty.value)
     }
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
   loading.value = false
 }
 
@@ -56,12 +67,7 @@ watch([filterSpecies, filterCategory, filterDifficulty], load)
     <div v-if="loading" class="loading">加载中...</div>
 
     <div v-else class="disease-grid">
-      <router-link
-        v-for="d in diseases"
-        :key="d.id"
-        :to="`/diseases/${d.id}`"
-        class="disease-card"
-      >
+      <router-link v-for="d in diseases" :key="d.id" :to="`/diseases/${d.id}`" class="disease-card">
         <div class="card-header">
           <span class="disease-name">{{ d.name_zh }}</span>
           <span class="difficulty" :class="d.difficulty">{{ d.difficulty }}</span>
@@ -77,7 +83,11 @@ watch([filterSpecies, filterCategory, filterDifficulty], load)
 </template>
 
 <style scoped>
-.page-title { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
 
 .filters {
   display: flex;
@@ -109,19 +119,60 @@ watch([filterSpecies, filterCategory, filterDifficulty], load)
   transition: all 0.15s;
 }
 
-.disease-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow); }
+.disease-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow);
+}
 
-.card-header { display: flex; justify-content: space-between; align-items: center; }
-.disease-name { font-weight: 600; font-size: 16px; }
-.disease-en { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.disease-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+.disease-en {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
 
-.disease-species { display: flex; gap: 6px; margin: 8px 0; }
-.species-tag { font-size: 11px; background: #eff6ff; color: var(--color-primary); padding: 2px 8px; border-radius: 10px; }
+.disease-species {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0;
+}
+.species-tag {
+  font-size: 11px;
+  background: #eff6ff;
+  color: var(--color-primary);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
 
-.disease-overview { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; }
+.disease-overview {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
 
-.difficulty { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
-.difficulty.basic { background: #dcfce7; color: #16a34a; }
-.difficulty.intermediate { background: #fef3c7; color: #d97706; }
-.difficulty.advanced { background: #fee2e2; color: #dc2626; }
+.difficulty {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.difficulty.basic {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.difficulty.intermediate {
+  background: #fef3c7;
+  color: #d97706;
+}
+.difficulty.advanced {
+  background: #fee2e2;
+  color: #dc2626;
+}
 </style>

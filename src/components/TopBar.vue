@@ -9,7 +9,9 @@ const searchResults = ref<SearchResult[]>([])
 const showResults = ref(false)
 // 界面右上角的版本号取自安装包自身，避免写死后与实际发布版本脱节
 const appVersion = ref('')
-onMounted(async () => { appVersion.value = await getVersion() })
+onMounted(async () => {
+  appVersion.value = await getVersion()
+})
 
 async function onSearch() {
   if (!searchQuery.value.trim()) return
@@ -40,12 +42,12 @@ function onClickOutside() {
         @focus="showResults = searchResults.length > 0"
       />
       <button class="search-btn" @click="onSearch">🔍</button>
-      <div v-if="showResults && searchResults.length" class="search-dropdown" @click="onClickOutside">
-        <div
-          v-for="r in searchResults"
-          :key="r.entity_id"
-          class="search-result-item"
-        >
+      <div
+        v-if="showResults && searchResults.length"
+        class="search-dropdown"
+        @click="onClickOutside"
+      >
+        <div v-for="r in searchResults" :key="r.entity_id" class="search-result-item">
           <span class="result-type">{{ r.entity_type }}</span>
           <span class="result-title">{{ r.title }}</span>
           <span class="result-snippet">{{ r.snippet?.slice(0, 60) }}...</span>
@@ -86,7 +88,9 @@ function onClickOutside() {
   outline: none;
 }
 
-.search-box input:focus { border-color: var(--color-primary); }
+.search-box input:focus {
+  border-color: var(--color-primary);
+}
 
 .search-btn {
   padding: 8px 12px;
@@ -129,8 +133,17 @@ function onClickOutside() {
   white-space: nowrap;
 }
 
-.result-title { font-weight: 500; flex: 1; }
-.result-snippet { color: var(--color-text-secondary); font-size: 12px; }
+.result-title {
+  font-weight: 500;
+  flex: 1;
+}
+.result-snippet {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
 
-.version { font-size: 12px; color: var(--color-text-secondary); }
+.version {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
 </style>

@@ -21,7 +21,9 @@ onMounted(async () => {
     const c = await invoke<Case[]>('get_cases', { species: null, difficulty: null })
     stats.value = { diseases: d.length, symptoms: s.length, drugs: dr.length, cases: c.length }
     recentDiseases.value = d.slice(0, 6)
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
 })
 </script>
 
@@ -106,8 +108,15 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.page-title { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
-.page-subtitle { color: var(--color-text-secondary); margin-bottom: 32px; }
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.page-subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: 32px;
+}
 
 .stats-grid {
   display: grid;
@@ -124,11 +133,25 @@ onMounted(async () => {
   text-align: center;
 }
 
-.stat-number { font-size: 32px; font-weight: 700; color: var(--color-primary); }
-.stat-label { font-size: 14px; color: var(--color-text-secondary); margin-top: 4px; }
+.stat-number {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+.stat-label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
 
-.section { margin-bottom: 40px; }
-.section h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+.section {
+  margin-bottom: 40px;
+}
+.section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
 
 .category-grid {
   display: grid;
@@ -147,9 +170,19 @@ onMounted(async () => {
   transition: all 0.15s;
 }
 
-.category-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow); }
-.cat-icon { font-size: 28px; display: block; margin-bottom: 8px; }
-.cat-name { font-size: 14px; font-weight: 500; }
+.category-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow);
+}
+.cat-icon {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 8px;
+}
+.cat-name {
+  font-size: 14px;
+  font-weight: 500;
+}
 
 .disease-list {
   display: grid;
@@ -167,9 +200,18 @@ onMounted(async () => {
   position: relative;
 }
 
-.disease-card:hover { border-color: var(--color-primary); }
-.disease-name { font-weight: 600; font-size: 15px; }
-.disease-en { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.disease-card:hover {
+  border-color: var(--color-primary);
+}
+.disease-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+.disease-en {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
 
 .difficulty {
   position: absolute;
@@ -180,7 +222,16 @@ onMounted(async () => {
   border-radius: 10px;
 }
 
-.difficulty.basic { background: #dcfce7; color: #16a34a; }
-.difficulty.intermediate { background: #fef3c7; color: #d97706; }
-.difficulty.advanced { background: #fee2e2; color: #dc2626; }
+.difficulty.basic {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.difficulty.intermediate {
+  background: #fef3c7;
+  color: #d97706;
+}
+.difficulty.advanced {
+  background: #fee2e2;
+  color: #dc2626;
+}
 </style>

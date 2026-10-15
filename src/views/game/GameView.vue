@@ -56,7 +56,7 @@ async function checkDrugInteractions(drugName: string) {
   checkingInteractions.value = true
   try {
     const result = await invoke<DrugInteraction[]>('get_drug_interactions', { drugId: vkId })
-    if (checkId !== currentCheckId) return  // 已过期，丢弃
+    if (checkId !== currentCheckId) return // 已过期，丢弃
     interactionWarning.value = result
   } catch {
     if (checkId !== currentCheckId) return
@@ -117,10 +117,10 @@ onMounted(async () => {
 
 onUnmounted(() => {
   // 清理所有轮询定时器
-  _pollTimers.forEach((timer) => clearInterval(timer))
+  _pollTimers.forEach(timer => clearInterval(timer))
   _pollTimers.clear()
   // 退出时关闭所有 session（best effort）
-  sessions.forEach((tab) => {
+  sessions.forEach(tab => {
     invoke('game_end_session', { sessionId: tab.sessionId }).catch(() => {})
   })
 })
@@ -129,7 +129,7 @@ onUnmounted(() => {
 async function loadCases() {
   loadingCases.value = true
   try {
-    cases.value = await invoke('game_list_cases') as GameCaseSummary[]
+    cases.value = (await invoke('game_list_cases')) as GameCaseSummary[]
   } catch (e) {
     console.error('loadCases failed:', e)
   } finally {
@@ -140,7 +140,7 @@ async function loadCases() {
 // ── 药物列表（给药弹窗下拉选项）──
 async function loadDrugs() {
   try {
-    drugList.value = await invoke('game_list_drugs') as DrugInfo[]
+    drugList.value = (await invoke('game_list_drugs')) as DrugInfo[]
     drugLoadError.value = null
   } catch (e) {
     console.error('loadDrugs failed:', e)
@@ -151,7 +151,9 @@ async function loadDrugs() {
 // ── 会话管理 ──
 async function openCase(caseSummary: GameCaseSummary) {
   try {
-    const resp = await invoke('game_new_session', { caseId: caseSummary.id }) as NewSessionResponse
+    const resp = (await invoke('game_new_session', {
+      caseId: caseSummary.id,
+    })) as NewSessionResponse
     const tab: SessionTab = {
       sessionId: resp.session_id,
       caseId: caseSummary.id,
@@ -177,6 +179,12 @@ async function openCase(caseSummary: GameCaseSummary) {
 
 function switchTab(sessionId: string) {
   activeSessionId.value = sessionId
+}
+
+/** 关闭所有标签、回到病例库选择页（原为模板内多语句 handler，提成方法以兼容 prettier 的 semi:false） */
+function backToCaseLibrary() {
+  sessions.clear()
+  activeSessionId.value = null
 }
 
 async function closeTab(sessionId: string) {
@@ -213,7 +221,7 @@ function _clearAdvanceJob(sessionId: string) {
 
 async function _fallbackSyncAdvance(sessionId: string) {
   try {
-    const snap = await invoke('game_advance', { sessionId }) as GameSnapshot
+    const snap = (await invoke('game_advance', { sessionId })) as GameSnapshot
     const t = sessions.get(sessionId)
     if (t) {
       t.snapshot = snap
@@ -236,30 +244,33 @@ async function doAdvance() {
 
   try {
     // 异步路径：立即返回 job_id，后台推进
-    const jobInfo = await invoke('game_advance_async', { sessionId }) as AdvanceJobInfo
+    const jobInfo = (await invoke('game_advance_async', { sessionId })) as AdvanceJobInfo
     const jobId = jobInfo.job_id
 
-    _pollTimers.set(sessionId, setInterval(async () => {
-      try {
-        const result = await invoke('game_poll_status', { jobId }) as AdvancePollResult
-        if (result.error) {
+    _pollTimers.set(
+      sessionId,
+      setInterval(async () => {
+        try {
+          const result = (await invoke('game_poll_status', { jobId })) as AdvancePollResult
+          if (result.error) {
+            _clearAdvanceJob(sessionId)
+            await _fallbackSyncAdvance(sessionId)
+          } else if (result.done) {
+            _clearAdvanceJob(sessionId)
+            const t = sessions.get(sessionId)
+            if (t && result.snapshot) {
+              t.snapshot = result.snapshot
+              t.loading = false
+            }
+          } else {
+            advancingJobs.set(sessionId, { progress: result.progress_pct, error: null })
+          }
+        } catch {
           _clearAdvanceJob(sessionId)
           await _fallbackSyncAdvance(sessionId)
-        } else if (result.done) {
-          _clearAdvanceJob(sessionId)
-          const t = sessions.get(sessionId)
-          if (t && result.snapshot) {
-            t.snapshot = result.snapshot
-            t.loading = false
-          }
-        } else {
-          advancingJobs.set(sessionId, { progress: result.progress_pct, error: null })
         }
-      } catch {
-        _clearAdvanceJob(sessionId)
-        await _fallbackSyncAdvance(sessionId)
-      }
-    }, 200))
+      }, 200),
+    )
   } catch {
     // 异步路径不可用，降级为同步
     advancingJobs.delete(sessionId)
@@ -271,10 +282,10 @@ async function doExamine(testType: string) {
   if (!activeTab.value) return
   activeTab.value.loading = true
   try {
-    const snap = await invoke('game_examine', {
+    const snap = (await invoke('game_examine', {
       sessionId: activeTab.value.sessionId,
       testType,
-    }) as GameSnapshot
+    })) as GameSnapshot
     activeTab.value.snapshot = snap
   } catch (e) {
     console.error('examine failed:', e)
@@ -289,12 +300,12 @@ async function doAdministerDrug() {
   activeTab.value.loading = true
   drugInput.value.visible = false
   try {
-    const snap = await invoke('game_administer_drug', {
+    const snap = (await invoke('game_administer_drug', {
       sessionId: activeTab.value.sessionId,
       drugName: drugInput.value.drugName,
       doseMgKg: drugInput.value.doseMgKg > 0 ? drugInput.value.doseMgKg : null,
       volumeMl: null,
-    }) as GameSnapshot
+    })) as GameSnapshot
     activeTab.value.snapshot = snap
     drugInput.value.drugName = ''
     drugInput.value.doseMgKg = 0
@@ -310,10 +321,10 @@ async function doDiagnose(diseaseId: string) {
   if (!diseaseId.trim()) return
   activeTab.value.loading = true
   try {
-    const snap = await invoke('game_diagnose', {
+    const snap = (await invoke('game_diagnose', {
       sessionId: activeTab.value.sessionId,
       diagnosis: diseaseId,
-    }) as GameSnapshot
+    })) as GameSnapshot
     activeTab.value.snapshot = snap
     if (snap.phase === 'won') {
       alert(`🎉 诊断正确！${snap.message ? '\n' + snap.message : ''}`)
@@ -342,7 +353,7 @@ async function doDiagnose(diseaseId: string) {
 // ── 诊断提示（本地 infer_diagnosis）──
 async function fetchDiagnosisHint() {
   if (!activeTab.value || !activeHint.value) return
-  const signs = activeTab.value.snapshot.active_signs.map((s) => s.display_name)
+  const signs = activeTab.value.snapshot.active_signs.map(s => s.display_name)
   if (signs.length === 0) {
     alert('当前无活跃症状，无法推理')
     return
@@ -355,14 +366,14 @@ async function fetchDiagnosisHint() {
   // 清除旧选中态（重新推理后 candidates 会变，旧选中可能指向不存在的候选）
   setSelectedDiseaseId(null)
   try {
-    activeHint.value.candidates = await invoke('game_diagnosis_hint', {
+    activeHint.value.candidates = (await invoke('game_diagnosis_hint', {
       symptoms: signs,
       species,
-    }) as DiagnosisCandidate[]
+    })) as DiagnosisCandidate[]
     // 批量获取疾病详情（仅 Top 3，不暴露推理链）
     const top3 = activeHint.value.candidates.slice(0, 3)
     const details = await Promise.all(
-      top3.map((c) => invoke<Disease | null>('get_disease_by_id', { id: c.disease_id })),
+      top3.map(c => invoke<Disease | null>('get_disease_by_id', { id: c.disease_id })),
     )
     details.forEach((d, i) => {
       if (d) {
@@ -385,11 +396,16 @@ function scoreColor(score: number): string {
 
 function phaseColor(phase: string): string {
   switch (phase) {
-    case 'stable': return '#16a34a'
-    case 'worsening': return '#d97706'
-    case 'critical': return '#dc2626'
-    case 'moribund': return '#7f1d1d'
-    default: return '#64748b'
+    case 'stable':
+      return '#16a34a'
+    case 'worsening':
+      return '#d97706'
+    case 'critical':
+      return '#dc2626'
+    case 'moribund':
+      return '#7f1d1d'
+    default:
+      return '#64748b'
   }
 }
 </script>
@@ -403,12 +419,7 @@ function phaseColor(phase: string): string {
       <p class="desc">选择一个病历开始诊断游戏。每个病历来自 virtual-vet 仿真引擎。</p>
       <div v-if="loadingCases" class="loading">加载病历中...</div>
       <div v-else class="case-grid">
-        <div
-          v-for="c in cases"
-          :key="c.id"
-          class="case-card"
-          @click="openCase(c)"
-        >
+        <div v-for="c in cases" :key="c.id" class="case-card" @click="openCase(c)">
           <div class="case-card-header">
             <span class="case-title">{{ c.title }}</span>
             <span class="case-difficulty">{{ c.difficulty_label }}</span>
@@ -434,14 +445,9 @@ function phaseColor(phase: string): string {
           @click="switchTab(tab.sessionId)"
         >
           <span class="tab-title">{{ tab.caseTitle }}</span>
-          <span
-            class="tab-close"
-            @click.stop="closeTab(tab.sessionId)"
-          >×</span>
+          <span class="tab-close" @click.stop="closeTab(tab.sessionId)">×</span>
         </div>
-        <div class="tab tab-new" @click="sessions.clear(); activeSessionId = null">
-          + 病历库
-        </div>
+        <div class="tab tab-new" @click="backToCaseLibrary()">+ 病历库</div>
       </div>
 
       <!-- 当前会话面板 -->
@@ -461,8 +467,14 @@ function phaseColor(phase: string): string {
 
             <!-- 游戏元信息 -->
             <div class="meta-info">
-              <span>⏱ {{ activeTab.snapshot.time_elapsed_min.toFixed(0) }} / {{ activeTab.snapshot.time_budget_min.toFixed(0) }} min</span>
-              <span v-if="activeTab.snapshot.death_timer != null && activeTab.snapshot.death_timer > 0" class="death-timer">
+              <span
+                >⏱ {{ activeTab.snapshot.time_elapsed_min.toFixed(0) }} /
+                {{ activeTab.snapshot.time_budget_min.toFixed(0) }} min</span
+              >
+              <span
+                v-if="activeTab.snapshot.death_timer != null && activeTab.snapshot.death_timer > 0"
+                class="death-timer"
+              >
                 ⚠ 死亡倒计时: {{ (activeTab.snapshot.death_timer ?? 0).toFixed(0) }} min
               </span>
             </div>
@@ -522,11 +534,7 @@ function phaseColor(phase: string): string {
             <!-- 报告区 -->
             <div v-if="activeTab.snapshot.new_reports.length > 0" class="reports-section">
               <h3>新报告 ({{ activeTab.snapshot.new_reports.length }})</h3>
-              <div
-                v-for="(r, i) in activeTab.snapshot.new_reports"
-                :key="i"
-                class="report-item"
-              >
+              <div v-for="(r, i) in activeTab.snapshot.new_reports" :key="i" class="report-item">
                 <div class="report-header">
                   <span class="report-type">{{ r.test_type || '未知检查' }}</span>
                   <span v-if="r.summary" class="report-summary">{{ r.summary }}</span>
@@ -545,33 +553,43 @@ function phaseColor(phase: string): string {
 
             <!-- 操作按钮 -->
             <div class="actions">
-              <button @click="doAdvance" :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'">
+              <button
+                @click="doAdvance"
+                :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'"
+              >
                 <template v-if="advancingJobs.get(activeTab.sessionId)">
                   推进中 {{ Math.round(advancingJobs.get(activeTab.sessionId)?.progress ?? 0) }}%
                 </template>
-                <template v-else>
-                  ⏩ +10min
-                </template>
+                <template v-else> ⏩ +10min </template>
               </button>
-              <div
-                v-if="advancingJobs.get(activeTab.sessionId)"
-                class="advance-progress"
-              >
+              <div v-if="advancingJobs.get(activeTab.sessionId)" class="advance-progress">
                 <progress
                   :value="advancingJobs.get(activeTab.sessionId)?.progress ?? 0"
                   max="100"
                 ></progress>
               </div>
-              <button @click="doExamine('physical')" :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'">
+              <button
+                @click="doExamine('physical')"
+                :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'"
+              >
                 🔍 体格检查
               </button>
-              <button @click="doExamine('cbc')" :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'">
+              <button
+                @click="doExamine('cbc')"
+                :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'"
+              >
                 🧪 血常规
               </button>
-              <button @click="doExamine('blood_chem')" :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'">
+              <button
+                @click="doExamine('blood_chem')"
+                :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'"
+              >
                 🧪 生化
               </button>
-              <button @click="drugInput.visible = true" :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'">
+              <button
+                @click="drugInput.visible = true"
+                :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'"
+              >
                 💉 给药
               </button>
             </div>
@@ -594,47 +612,65 @@ function phaseColor(phase: string): string {
                 {{ activeHint?.loading ? '推理中...' : '基于当前症状推理' }}
               </button>
 
-              <div v-if="activeHint?.searched && activeHint.candidates.length === 0" class="empty-hint">
+              <div
+                v-if="activeHint?.searched && activeHint.candidates.length === 0"
+                class="empty-hint"
+              >
                 无匹配候选疾病
               </div>
 
               <div v-else class="candidates-list">
                 <div
-                  v-for="(c, i) in (activeHint?.candidates.slice(0, 3) ?? [])"
+                  v-for="(c, i) in activeHint?.candidates.slice(0, 3) ?? []"
                   :key="c.disease_id"
                   class="candidate-item clickable"
                   :class="{ selected: selectedDiseaseId === c.disease_id }"
-                  @click="setSelectedDiseaseId(selectedDiseaseId === c.disease_id ? null : c.disease_id)"
+                  @click="
+                    setSelectedDiseaseId(selectedDiseaseId === c.disease_id ? null : c.disease_id)
+                  "
                   :title="`点击选中: ${c.disease_name}`"
                 >
                   <div class="candidate-header">
                     <span class="candidate-rank">{{ i + 1 }}</span>
                     <span class="candidate-name">{{ c.disease_name }}</span>
-                    <span
-                      class="candidate-score"
-                      :style="{ color: scoreColor(c.match_score) }"
-                    >
+                    <span class="candidate-score" :style="{ color: scoreColor(c.match_score) }">
                       {{ c.match_score.toFixed(2) }}
                     </span>
                   </div>
                   <!-- 不显示 matched_symptoms / missing_key_symptoms / suggested_tests.purpose -->
                   <div
-                    v-if="hintStates.get(activeSessionId!)?.diseaseDetails.get(c.disease_id)?.urgency_level"
+                    v-if="
+                      hintStates.get(activeSessionId!)?.diseaseDetails.get(c.disease_id)
+                        ?.urgency_level
+                    "
                     class="candidate-urgency"
                   >
-                    急迫度: {{ hintStates.get(activeSessionId!)!.diseaseDetails.get(c.disease_id)!.urgency_level }}
+                    急迫度:
+                    {{
+                      hintStates.get(activeSessionId!)!.diseaseDetails.get(c.disease_id)!
+                        .urgency_level
+                    }}
                   </div>
                 </div>
               </div>
 
               <!-- 选中后显示确认提交按钮（校验选中项仍在候选列表中） -->
-              <div v-if="selectedDiseaseId && activeHint?.candidates.some(c => c.disease_id === selectedDiseaseId)" class="diagnose-confirm">
+              <div
+                v-if="
+                  selectedDiseaseId &&
+                  activeHint?.candidates.some(c => c.disease_id === selectedDiseaseId)
+                "
+                class="diagnose-confirm"
+              >
                 <button
                   class="diagnose-submit-btn"
                   @click="doDiagnose(selectedDiseaseId)"
                   :disabled="activeTab.loading || activeTab.snapshot.phase !== 'playing'"
                 >
-                  📋 提交诊断：{{ activeHint.candidates.find(c => c.disease_id === selectedDiseaseId)?.disease_name }}
+                  📋 提交诊断：{{
+                    activeHint.candidates.find(c => c.disease_id === selectedDiseaseId)
+                      ?.disease_name
+                  }}
                 </button>
                 <p class="diagnose-warn">⚠ 提交后将推进 5 分钟，正确诊断才会给药治疗</p>
               </div>
@@ -680,141 +716,592 @@ function phaseColor(phase: string): string {
             :class="`severity-${ix.severity}`"
           >
             <strong>{{ ix.drug_name }}</strong>
-            <span class="interaction-sev">{{ ix.severity === 'major' ? '严重' : ix.severity === 'moderate' ? '中等' : '轻微' }}</span>
+            <span class="interaction-sev">{{
+              ix.severity === 'major' ? '严重' : ix.severity === 'moderate' ? '中等' : '轻微'
+            }}</span>
             <p>{{ ix.description }}</p>
           </div>
         </div>
 
         <div class="modal-actions">
           <button @click="drugInput.visible = false">取消</button>
-          <button @click="doAdministerDrug" :class="{ 'has-warning': interactionWarning.some(i => i.severity === 'major') }">给药</button>
+          <button
+            @click="doAdministerDrug"
+            :class="{ 'has-warning': interactionWarning.some(i => i.severity === 'major') }"
+          >
+            给药
+          </button>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <style scoped>
-.game-page { padding: 20px; }
-.page-title { font-size: 24px; font-weight: 700; margin-bottom: 20px; }
-.desc { color: var(--color-text-secondary); margin-bottom: 16px; }
+.game-page {
+  padding: 20px;
+}
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.desc {
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
 
 /* 病历库 */
-.case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-.case-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.2s; }
-.case-card:hover { border-color: var(--color-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-.case-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.case-title { font-weight: 600; }
-.case-difficulty { color: var(--color-text-secondary); font-size: 14px; }
-.case-card-body { display: flex; flex-direction: column; gap: 4px; color: var(--color-text-secondary); font-size: 14px; margin-bottom: 8px; }
-.case-card-complaint { font-size: 13px; color: var(--color-text-secondary); border-top: 1px solid var(--color-border); padding-top: 8px; }
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.case-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.case-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.case-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.case-title {
+  font-weight: 600;
+}
+.case-difficulty {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+.case-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.case-card-complaint {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
+  padding-top: 8px;
+}
 
 /* 选项卡栏 */
-.tab-bar { display: flex; gap: 4px; border-bottom: 1px solid var(--color-border); margin-bottom: 16px; flex-wrap: wrap; }
-.tab { padding: 8px 16px; cursor: pointer; border-radius: var(--radius) var(--radius) 0 0; background: var(--color-surface); border: 1px solid var(--color-border); border-bottom: none; display: flex; align-items: center; gap: 8px; }
-.tab.active { background: var(--color-primary); color: white; }
-.tab-new { color: var(--color-text-secondary); }
-.tab-close { font-size: 18px; line-height: 1; opacity: 0.6; }
-.tab-close:hover { opacity: 1; }
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.tab {
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tab.active {
+  background: var(--color-primary);
+  color: white;
+}
+.tab-new {
+  color: var(--color-text-secondary);
+}
+.tab-close {
+  font-size: 18px;
+  line-height: 1;
+  opacity: 0.6;
+}
+.tab-close:hover {
+  opacity: 1;
+}
 
 /* 会话面板 */
-.session-layout { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
-.vitals-panel, .hint-panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 16px; }
-.panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer; }
-.panel-header h2 { font-size: 18px; margin: 0; }
-.phase-badge { color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.session-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+}
+.vitals-panel,
+.hint-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+.panel-header h2 {
+  font-size: 18px;
+  margin: 0;
+}
+.phase-badge {
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
 
-.meta-info { display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--color-text-secondary); }
-.death-timer { color: #dc2626; font-weight: 600; }
+.meta-info {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+.death-timer {
+  color: #dc2626;
+  font-weight: 600;
+}
 
-.vitals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-.vital-item { display: flex; flex-direction: column; align-items: center; padding: 8px; background: var(--color-bg); border-radius: var(--radius); }
-.vital-label { font-size: 12px; color: var(--color-text-secondary); }
-.vital-value { font-size: 24px; font-weight: 700; }
-.vital-unit { font-size: 12px; color: var(--color-text-secondary); }
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.vital-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  background: var(--color-bg);
+  border-radius: var(--radius);
+}
+.vital-label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+.vital-value {
+  font-size: 24px;
+  font-weight: 700;
+}
+.vital-unit {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
 
-.signs-section, .reports-section { margin-bottom: 16px; }
-.signs-section h3, .reports-section h3 { font-size: 14px; margin-bottom: 8px; }
-.signs-list { display: flex; flex-direction: column; gap: 4px; }
-.sign-item { display: flex; justify-content: space-between; padding: 6px 8px; background: var(--color-bg); border-radius: 4px; font-size: 14px; }
-.sign-severity { color: var(--color-text-secondary); }
-.report-item { padding: 10px; background: var(--color-bg); border-radius: var(--radius); margin-bottom: 8px; border-left: 3px solid var(--color-primary); }
-.report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.report-type { font-weight: 600; color: var(--color-text, #1f2937); text-transform: uppercase; font-size: 13px; }
-.report-summary { font-size: 12px; color: var(--color-text-secondary); text-align: right; flex: 1; margin-left: 12px; }
-.report-results { display: flex; flex-direction: column; gap: 4px; }
-.report-result-row { display: grid; grid-template-columns: 100px 100px 1fr 60px; gap: 8px; padding: 4px 6px; font-size: 13px; align-items: center; }
-.report-result-row:nth-child(odd) { background: rgba(0,0,0,0.02); border-radius: 3px; }
-.result-param { font-weight: 500; color: var(--color-text, #1f2937); }
-.result-value { font-weight: 700; color: var(--color-text, #1f2937); }
-.result-range { font-size: 11px; color: var(--color-text-secondary); }
-.result-flag { font-size: 11px; padding: 1px 6px; border-radius: 3px; text-align: center; font-weight: 600; }
-.flag-normal { background: #dcfce7; color: #16a34a; }
-.flag-high, .flag-critical { background: #fee2e2; color: #dc2626; }
-.flag-low { background: #fef3c7; color: #d97706; }
-.report-raw { font-size: 11px; color: var(--color-text-secondary); white-space: pre-wrap; word-break: break-all; margin: 0; padding: 8px; background: rgba(0,0,0,0.03); border-radius: 4px; max-height: 200px; overflow-y: auto; }
-.empty-hint { color: var(--color-text-secondary); font-size: 14px; padding: 8px; }
+.signs-section,
+.reports-section {
+  margin-bottom: 16px;
+}
+.signs-section h3,
+.reports-section h3 {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.signs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sign-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: var(--color-bg);
+  border-radius: 4px;
+  font-size: 14px;
+}
+.sign-severity {
+  color: var(--color-text-secondary);
+}
+.report-item {
+  padding: 10px;
+  background: var(--color-bg);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  border-left: 3px solid var(--color-primary);
+}
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.report-type {
+  font-weight: 600;
+  color: var(--color-text, #1f2937);
+  text-transform: uppercase;
+  font-size: 13px;
+}
+.report-summary {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  text-align: right;
+  flex: 1;
+  margin-left: 12px;
+}
+.report-results {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.report-result-row {
+  display: grid;
+  grid-template-columns: 100px 100px 1fr 60px;
+  gap: 8px;
+  padding: 4px 6px;
+  font-size: 13px;
+  align-items: center;
+}
+.report-result-row:nth-child(odd) {
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 3px;
+}
+.result-param {
+  font-weight: 500;
+  color: var(--color-text, #1f2937);
+}
+.result-value {
+  font-weight: 700;
+  color: var(--color-text, #1f2937);
+}
+.result-range {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+.result-flag {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  text-align: center;
+  font-weight: 600;
+}
+.flag-normal {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.flag-high,
+.flag-critical {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.flag-low {
+  background: #fef3c7;
+  color: #d97706;
+}
+.report-raw {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.empty-hint {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  padding: 8px;
+}
 
-.actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid var(--color-border); }
-.actions button { padding: 6px 12px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text, #1f2937); border-radius: var(--radius); cursor: pointer; }
-.actions button:hover:not(:disabled) { background: var(--color-primary); color: white; }
-.actions button:disabled { opacity: 0.5; cursor: not-allowed; }
-.advance-progress { width: 100%; }
-.advance-progress progress { width: 100%; height: 6px; }
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+.actions button {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text, #1f2937);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.actions button:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: white;
+}
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.advance-progress {
+  width: 100%;
+}
+.advance-progress progress {
+  width: 100%;
+  height: 6px;
+}
 
-.game-end { margin-top: 16px; padding: 12px; text-align: center; font-size: 18px; font-weight: 700; }
+.game-end {
+  margin-top: 16px;
+  padding: 12px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+}
 
 /* 诊断提示面板 */
-.hint-content { display: flex; flex-direction: column; gap: 12px; }
-.hint-content button { padding: 8px; background: var(--color-primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; }
-.hint-content button:disabled { opacity: 0.5; }
-.candidates-list { display: flex; flex-direction: column; gap: 8px; }
-.candidate-item { padding: 8px; background: var(--color-bg); border-radius: var(--radius); }
-.candidate-item.clickable { cursor: pointer; transition: background 0.15s, color 0.15s; }
-.candidate-item.clickable:hover { background: var(--color-primary); color: white; }
-.candidate-item.clickable:hover .candidate-name { color: white; }
-.candidate-item.clickable.selected { background: var(--color-primary); color: white; border: 2px solid var(--color-primary); }
-.candidate-item.clickable.selected .candidate-name { color: white; }
-.candidate-item.clickable.selected .candidate-rank { background: white; color: var(--color-primary); }
+.hint-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.hint-content button {
+  padding: 8px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.hint-content button:disabled {
+  opacity: 0.5;
+}
+.candidates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.candidate-item {
+  padding: 8px;
+  background: var(--color-bg);
+  border-radius: var(--radius);
+}
+.candidate-item.clickable {
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.candidate-item.clickable:hover {
+  background: var(--color-primary);
+  color: white;
+}
+.candidate-item.clickable:hover .candidate-name {
+  color: white;
+}
+.candidate-item.clickable.selected {
+  background: var(--color-primary);
+  color: white;
+  border: 2px solid var(--color-primary);
+}
+.candidate-item.clickable.selected .candidate-name {
+  color: white;
+}
+.candidate-item.clickable.selected .candidate-rank {
+  background: white;
+  color: var(--color-primary);
+}
 
 /* 诊断确认提交区 */
-.diagnose-confirm { display: flex; flex-direction: column; gap: 6px; padding: 8px; background: var(--color-bg); border-radius: var(--radius); border: 2px dashed var(--color-primary); }
-.diagnose-submit-btn { padding: 8px 12px; background: var(--color-primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; }
-.diagnose-submit-btn:hover:not(:disabled) { opacity: 0.9; }
-.diagnose-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.diagnose-warn { font-size: 12px; color: #d97706; margin: 0; }
-.drug-error { padding: 8px; margin-bottom: 8px; background: #fef2f2; color: #dc2626; border-radius: var(--radius); font-size: 13px; }
-.candidate-header { display: flex; align-items: center; gap: 8px; }
-.candidate-rank { background: var(--color-primary); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-.candidate-name { flex: 1; font-weight: 600; color: var(--color-text, #1f2937); }
-.candidate-score { font-weight: 700; }
-.candidate-urgency { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
-.hint-note { font-size: 12px; color: var(--color-text-secondary); padding: 8px; background: var(--color-bg); border-radius: var(--radius); }
-.hint-note p { margin: 2px 0; }
+.diagnose-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: var(--color-bg);
+  border-radius: var(--radius);
+  border: 2px dashed var(--color-primary);
+}
+.diagnose-submit-btn {
+  padding: 8px 12px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+}
+.diagnose-submit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+.diagnose-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.diagnose-warn {
+  font-size: 12px;
+  color: #d97706;
+  margin: 0;
+}
+.drug-error {
+  padding: 8px;
+  margin-bottom: 8px;
+  background: #fef2f2;
+  color: #dc2626;
+  border-radius: var(--radius);
+  font-size: 13px;
+}
+.candidate-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.candidate-rank {
+  background: var(--color-primary);
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+.candidate-name {
+  flex: 1;
+  font-weight: 600;
+  color: var(--color-text, #1f2937);
+}
+.candidate-score {
+  font-weight: 700;
+}
+.candidate-urgency {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+.hint-note {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  padding: 8px;
+  background: var(--color-bg);
+  border-radius: var(--radius);
+}
+.hint-note p {
+  margin: 2px 0;
+}
 
 /* 弹窗 */
-.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-.modal { background: var(--color-surface); border-radius: var(--radius); padding: 24px; min-width: 320px; }
-.modal h3 { margin: 0 0 16px; }
-.form-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
-.form-row label { font-size: 14px; }
-.form-row input { padding: 8px; border: 1px solid var(--color-border); border-radius: var(--radius); }
-.modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
-.modal-actions button { padding: 6px 16px; border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius); cursor: pointer; }
-.modal-actions button:last-child { background: var(--color-primary); color: white; }
-.modal-actions button.has-warning { background: #dc2626; }
-.interaction-checking { font-size: 12px; color: var(--color-text-secondary); padding: 8px 0; }
-.interaction-alert { margin: 12px 0; padding: 10px 12px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 6px; }
-.interaction-header { font-size: 13px; font-weight: 600; color: #c2410c; margin-bottom: 8px; }
-.interaction-row { margin-bottom: 8px; padding: 6px 8px; border-radius: 4px; background: white; }
-.interaction-row.severity-major { border-left: 3px solid #dc2626; }
-.interaction-row.severity-moderate { border-left: 3px solid #f59e0b; }
-.interaction-row.severity-mild { border-left: 3px solid #10b981; }
-.interaction-row strong { font-size: 12px; }
-.interaction-row .interaction-sev { font-size: 10px; padding: 1px 6px; border-radius: 3px; color: white; margin-left: 6px; }
-.interaction-row.severity-major .interaction-sev { background: #dc2626; }
-.interaction-row.severity-moderate .interaction-sev { background: #f59e0b; }
-.interaction-row.severity-mild .interaction-sev { background: #10b981; }
-.interaction-row p { font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; line-height: 1.5; }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 24px;
+  min-width: 320px;
+}
+.modal h3 {
+  margin: 0 0 16px;
+}
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.form-row label {
+  font-size: 14px;
+}
+.form-row input {
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.modal-actions button {
+  padding: 6px 16px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.modal-actions button:last-child {
+  background: var(--color-primary);
+  color: white;
+}
+.modal-actions button.has-warning {
+  background: #dc2626;
+}
+.interaction-checking {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  padding: 8px 0;
+}
+.interaction-alert {
+  margin: 12px 0;
+  padding: 10px 12px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 6px;
+}
+.interaction-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: #c2410c;
+  margin-bottom: 8px;
+}
+.interaction-row {
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: white;
+}
+.interaction-row.severity-major {
+  border-left: 3px solid #dc2626;
+}
+.interaction-row.severity-moderate {
+  border-left: 3px solid #f59e0b;
+}
+.interaction-row.severity-mild {
+  border-left: 3px solid #10b981;
+}
+.interaction-row strong {
+  font-size: 12px;
+}
+.interaction-row .interaction-sev {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: white;
+  margin-left: 6px;
+}
+.interaction-row.severity-major .interaction-sev {
+  background: #dc2626;
+}
+.interaction-row.severity-moderate .interaction-sev {
+  background: #f59e0b;
+}
+.interaction-row.severity-mild .interaction-sev {
+  background: #10b981;
+}
+.interaction-row p {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+  line-height: 1.5;
+}
 </style>

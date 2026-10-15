@@ -16,7 +16,11 @@ import TopBar from '@/components/TopBar.vue'
 </template>
 
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 :root {
   --sidebar-width: 220px;
@@ -32,11 +36,14 @@ import TopBar from '@/components/TopBar.vue'
   --color-warning: #d97706;
   --color-danger: #dc2626;
   --radius: 8px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 body {
-  font-family: 'Noto Sans SC', -apple-system, sans-serif;
+  font-family:
+    'Noto Sans SC',
+    -apple-system,
+    sans-serif;
   background: var(--color-bg);
   color: var(--color-text);
 }

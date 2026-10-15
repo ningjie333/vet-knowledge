@@ -18,9 +18,18 @@ const caseId = route.params.id
 </template>
 
 <style scoped>
-.page-header { margin-bottom: 20px; }
-.page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-.page-desc { color: var(--color-text-secondary); font-size: 14px; }
+.page-header {
+  margin-bottom: 20px;
+}
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.page-desc {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
 .coming-soon {
   background: var(--color-surface);
   border: 1px dashed var(--color-border);
@@ -37,5 +46,7 @@ const caseId = route.params.id
   text-decoration: none;
   font-size: 14px;
 }
-.back-link:hover { text-decoration: underline; }
+.back-link:hover {
+  text-decoration: underline;
+}
 </style>

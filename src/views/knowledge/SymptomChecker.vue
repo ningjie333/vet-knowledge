@@ -43,12 +43,14 @@ async function onDiagnose() {
     })
     // 批量获取疾病详情以显示急迫程度
     const details = await Promise.all(
-      results.value.map(r => invoke<Disease | null>('get_disease_by_id', { id: r.disease_id }))
+      results.value.map(r => invoke<Disease | null>('get_disease_by_id', { id: r.disease_id })),
     )
     details.forEach((d, i) => {
       if (d) diseaseDetails.value.set(results.value[i].disease_id, d)
     })
-  } catch (e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
   loading.value = false
 }
 
@@ -117,14 +119,25 @@ function scoreColor(score: number) {
           <div class="result-info">
             <div class="result-name">
               {{ r.disease_name }}
-              <span v-if="(diseaseDetails.get(r.disease_id)?.urgency_level ?? 0) >= 4" class="urgency-inline">⚡紧急</span>
+              <span
+                v-if="(diseaseDetails.get(r.disease_id)?.urgency_level ?? 0) >= 4"
+                class="urgency-inline"
+                >⚡紧急</span
+              >
               <span v-if="r.input_coverage < 0.5" class="partial-badge">部分匹配</span>
             </div>
             <div class="result-matched">
-              匹配症状：<span v-for="m in r.matched_symptoms" :key="m" class="match-tag">{{ m }}</span>
+              匹配症状：<span v-for="m in r.matched_symptoms" :key="m" class="match-tag">{{
+                m
+              }}</span>
             </div>
             <div v-if="r.missing_key_symptoms?.length" class="result-missing">
-              缺失关键症状：<span v-for="m in r.missing_key_symptoms" :key="m" class="missing-tag">{{ m }}</span>
+              缺失关键症状：<span
+                v-for="m in r.missing_key_symptoms"
+                :key="m"
+                class="missing-tag"
+                >{{ m }}</span
+              >
             </div>
             <div class="result-coverage">
               症状覆盖度：{{ (r.input_coverage * 100).toFixed(0) }}%
@@ -140,8 +153,15 @@ function scoreColor(score: number) {
 </template>
 
 <style scoped>
-.page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-.desc { color: var(--color-text-secondary); margin-bottom: 24px; }
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.desc {
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
 
 .input-section {
   background: var(--color-surface);
@@ -151,13 +171,31 @@ function scoreColor(score: number) {
   margin-bottom: 32px;
 }
 
-.species-select { margin-bottom: 20px; }
-.species-select label { font-weight: 500; margin-right: 8px; }
-.species-select select { padding: 6px 12px; border: 1px solid var(--color-border); border-radius: var(--radius); }
+.species-select {
+  margin-bottom: 20px;
+}
+.species-select label {
+  font-weight: 500;
+  margin-right: 8px;
+}
+.species-select select {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
 
-h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
 
-.symptom-pool { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.symptom-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
 
 .symptom-btn {
   padding: 6px 14px;
@@ -169,11 +207,23 @@ h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
   transition: all 0.15s;
 }
 
-.symptom-btn:hover { border-color: var(--color-primary); }
-.symptom-btn.selected { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+.symptom-btn:hover {
+  border-color: var(--color-primary);
+}
+.symptom-btn.selected {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
 
-.selected-bar { margin-bottom: 16px; }
-.selected-bar .label { font-size: 13px; color: var(--color-text-secondary); margin-right: 8px; }
+.selected-bar {
+  margin-bottom: 16px;
+}
+.selected-bar .label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-right: 8px;
+}
 .selected-tag {
   display: inline-flex;
   align-items: center;
@@ -185,7 +235,13 @@ h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
   font-size: 13px;
   margin-right: 6px;
 }
-.selected-tag button { background: none; border: none; cursor: pointer; font-size: 14px; color: var(--color-primary); }
+.selected-tag button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-primary);
+}
 
 .diagnose-btn {
   padding: 10px 24px;
@@ -197,11 +253,22 @@ h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
   font-weight: 500;
   cursor: pointer;
 }
-.diagnose-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.diagnose-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
-.results-section h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+.results-section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
 
-.result-list { display: flex; flex-direction: column; gap: 12px; }
+.result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
 .result-card {
   background: var(--color-surface);
@@ -216,7 +283,10 @@ h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
   transition: all 0.15s;
 }
 
-.result-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow); }
+.result-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow);
+}
 
 .result-rank {
   width: 32px;
@@ -232,17 +302,52 @@ h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
   flex-shrink: 0;
 }
 
-.result-info { flex: 1; }
-.result-name { font-weight: 600; font-size: 16px; margin-bottom: 6px; }
-.result-matched, .result-missing { font-size: 13px; margin-top: 4px; }
+.result-info {
+  flex: 1;
+}
+.result-name {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+.result-matched,
+.result-missing {
+  font-size: 13px;
+  margin-top: 4px;
+}
 
-.match-tag { background: #dcfce7; color: #16a34a; padding: 1px 6px; border-radius: 4px; margin-right: 4px; font-size: 12px; }
-.missing-tag { background: #fef3c7; color: #d97706; padding: 1px 6px; border-radius: 4px; margin-right: 4px; font-size: 12px; }
+.match-tag {
+  background: #dcfce7;
+  color: #16a34a;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-right: 4px;
+  font-size: 12px;
+}
+.missing-tag {
+  background: #fef3c7;
+  color: #d97706;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-right: 4px;
+  font-size: 12px;
+}
 
-.result-score { font-size: 24px; font-weight: 700; flex-shrink: 0; }
-.no-result { color: var(--color-text-secondary); padding: 24px; text-align: center; }
+.result-score {
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.no-result {
+  color: var(--color-text-secondary);
+  padding: 24px;
+  text-align: center;
+}
 
-.result-card.partial-match { border-color: #f59e0b; opacity: 0.85; }
+.result-card.partial-match {
+  border-color: #f59e0b;
+  opacity: 0.85;
+}
 .partial-badge {
   display: inline-block;
   background: #fef3c7;
@@ -254,7 +359,11 @@ h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
   margin-left: 8px;
   vertical-align: middle;
 }
-.result-coverage { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
+.result-coverage {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
 .urgency-inline {
   display: inline-block;
   background: #fee2e2;
