@@ -215,3 +215,8 @@
   name_zh: 异宠
   tag_group: species
   color: "#455A64"
+
+- id: mech_parasitic
+  name_zh: 寄生虫
+  name_en: Parasitic
+  tag_group: mechanism

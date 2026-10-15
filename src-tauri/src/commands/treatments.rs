@@ -1,5 +1,6 @@
 use crate::db::{DbPool, models::*};
 use crate::db::models::row_from_treatment;
+use crate::db::sql_builder::tags_subquery;
 use sqlx::Row;
 
 // ===== 治疗 =====
@@ -9,15 +10,17 @@ pub async fn get_treatments(
     pool: tauri::State<'_, DbPool>,
     therapy_type: Option<String>,
 ) -> Result<Vec<Treatment>, String> {
-    let sql = crate::db::sql_builder::SqlBuilder::select("SELECT * FROM treatments")
+    let base = format!("SELECT t.*, {} FROM treatments t", tags_subquery("t", "treatment"));
+    let sql = crate::db::sql_builder::SqlBuilder::select(base)
         .optional_where(therapy_type.as_ref().filter(|t| !t.is_empty()).map(|_| "therapy_type = ?"))
         .order_by("name_zh")
         .build();
 
-    let mut q = sqlx::query_as::<_, Treatment>(&sql);
+    let mut q = sqlx::query(&sql);
     if let Some(t) = &therapy_type { if !t.is_empty() { q = q.bind(t); } }
 
-    q.fetch_all(&*pool).await.map_err(|e| e.to_string())
+    let rows = q.fetch_all(&*pool).await.map_err(|e| e.to_string())?;
+    Ok(rows.iter().map(row_from_treatment).collect())
 }
 
 #[tauri::command]
@@ -25,11 +28,16 @@ pub async fn get_treatment_by_id(
     pool: tauri::State<'_, DbPool>,
     id: String,
 ) -> Result<Option<Treatment>, String> {
-    sqlx::query_as::<_, Treatment>("SELECT * FROM treatments WHERE id = ?")
+    let sql = format!(
+        "SELECT t.*, {} FROM treatments t WHERE t.id = ?",
+        tags_subquery("t", "treatment")
+    );
+    let row = sqlx::query(&sql)
         .bind(&id)
         .fetch_optional(&*pool)
         .await
-        .map_err(|e| e.to_string())
+        .map_err(|e| e.to_string())?;
+    Ok(row.as_ref().map(row_from_treatment))
 }
 
 #[tauri::command]
@@ -37,25 +45,25 @@ pub async fn get_disease_treatment_map(
     pool: tauri::State<'_, DbPool>,
     disease_id: String,
 ) -> Result<Vec<(Treatment, String, String, String)>, String> {
-    sqlx::query(
-        "SELECT t.*, dtm.line, dtm.species, dtm.notes FROM disease_treatment_map dtm
+    let sql = format!(
+        "SELECT t.*, {}, dtm.line, dtm.species, dtm.notes FROM disease_treatment_map dtm
          JOIN treatments t ON dtm.treatment_id = t.id
          WHERE dtm.disease_id = ?
-         ORDER BY dtm.line"
-    )
-    .bind(&disease_id)
-    .fetch_all(&*pool)
-    .await
-    .map(|rows| {
-        rows.iter().map(|r| {
-            let treatment = row_from_treatment(r);
-            let line: String = r.get("line");
-            let species: String = r.get("species");
-            let notes: String = r.get("notes");
-            (treatment, line, species, notes)
-        }).collect()
-    })
-    .map_err(|e| e.to_string())
+         ORDER BY dtm.line",
+        tags_subquery("t", "treatment")
+    );
+    let rows = sqlx::query(&sql)
+        .bind(&disease_id)
+        .fetch_all(&*pool)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(rows.iter().map(|r| {
+        let treatment = row_from_treatment(r);
+        let line: String = r.get("line");
+        let species: String = r.get("species");
+        let notes: String = r.get("notes");
+        (treatment, line, species, notes)
+    }).collect())
 }
 
 // ===== 标签 =====

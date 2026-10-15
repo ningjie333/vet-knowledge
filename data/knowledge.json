@@ -3398,13 +3398,13 @@
       ],
       "drugs": [
         {
-          "drug": "drug_042",
+          "drug": "drug_016",
           "line": "first",
           "species": "犬",
           "notes": "苯巴比妥是犬特发性癫痫一线抗癫痫药，需监测血药浓度（目标15-40 μg/mL）"
         },
         {
-          "drug": "drug_043",
+          "drug": "drug_017",
           "line": "second",
           "species": "犬",
           "notes": "溴化钾用于苯巴比妥单药控制不佳时联合用药，起效慢（需3-6月达稳态）"
@@ -4101,7 +4101,7 @@
       ],
       "drugs": [
         {
-          "drug": "drug_055",
+          "drug": "drug_038",
           "line": "adjunctive",
           "species": "犬",
           "notes": "贝那普利控制糖尿病相关白内障进展（辅助）"
@@ -4352,7 +4352,7 @@
           "notes": "美洛昔康控制脊髓水肿和疼痛，严格笼养休息"
         },
         {
-          "drug": "drug_052",
+          "drug": "drug_032",
           "line": "adjunctive",
           "species": "犬",
           "notes": "加巴喷丁用于神经性疼痛辅助治疗"
@@ -4438,7 +4438,7 @@
           "notes": "美洛昔康长期控制骨关节炎疼痛和炎症"
         },
         {
-          "drug": "drug_053",
+          "drug": "drug_011",
           "line": "adjunctive",
           "species": "犬",
           "notes": "曲马多用于中重度疼痛辅助"
@@ -5010,7 +5010,7 @@
       ],
       "drugs": [
         {
-          "drug": "drug_051",
+          "drug": "drug_010",
           "line": "adjunctive",
           "species": "犬",
           "notes": "马罗匹坦止吐，预防继发感染"
@@ -5556,7 +5556,7 @@
           "notes": "严重贫血需输血和液体支持"
         },
         {
-          "drug": "drug_060",
+          "drug": "drug_022",
           "line": "adjunctive",
           "species": "犬",
           "notes": "铁剂补充纠正贫血"
@@ -5742,7 +5742,7 @@
           "notes": "液体治疗维持呼吸功能和肾脏灌注"
         },
         {
-          "drug": "drug_042",
+          "drug": "drug_016",
           "line": "adjunctive",
           "species": "犬",
           "notes": "地西泮控制惊厥"
@@ -5818,7 +5818,7 @@
       ],
       "drugs": [
         {
-          "drug": "drug_042",
+          "drug": "drug_016",
           "line": "first",
           "species": null,
           "notes": "地西泮是控制士的宁惊厥的一线药物，大剂量使用"
@@ -6015,7 +6015,7 @@
           "notes": "局部抗生素滴眼液预防感染"
         },
         {
-          "drug": "drug_057",
+          "drug": "drug_024",
           "line": "adjunctive",
           "species": null,
           "notes": "人工泪液保持眼部湿润"
@@ -6085,7 +6085,7 @@
       ],
       "drugs": [
         {
-          "drug": "drug_057",
+          "drug": "drug_024",
           "line": "first",
           "species": "犬",
           "notes": "人工泪液是干眼症基础治疗，需终身使用"
@@ -6390,7 +6390,7 @@
           "notes": "支持治疗：输液、输血、抗生素预防感染"
         },
         {
-          "drug": "drug_060",
+          "drug": "drug_022",
           "line": "adjunctive",
           "species": null,
           "notes": "铁剂补充（再障常伴缺铁性贫血）"
@@ -6469,7 +6469,7 @@
       ],
       "drugs": [
         {
-          "drug": "drug_042",
+          "drug": "drug_016",
           "line": "first",
           "species": null,
           "notes": "地西泮是SE急救一线，快速控制惊厥，必要时IV持续输注"
@@ -6627,7 +6627,7 @@
       "prognosis": "药物保守治疗（质子泵抑制剂+胃黏膜保护剂）预后良好。穿孔性溃疡需手术，预后差。",
       "tags": [
         "body_digestive",
-        "damnit_inflammatory",
+        "damnit_infectious",
         "em_orange",
         "mech_inflammation",
         "species_cat",
@@ -7279,7 +7279,7 @@
       "physiological_basis": "脑脊液（CSF）产生于脉络丛，循环于脑室和蛛网膜下腔，最终被蛛网膜颗粒吸收进入静脉系统。脑积水因CSF产生过多、循环受阻或吸收障碍导致CSF在脑室内蓄积，脑室扩大压迫脑实质。大脑皮质受压变薄，胼胝体拉伸透明隔。急性颅内压升高导致昏睡、呕吐和癫痫；慢性压迫导致发育迟缓、视力障碍和强迫旋回。先天型因中脑导水管狭窄（品种性）或颅骨畸形（短头品种）导致CSF循环受阻。",
       "prognosis": "轻症可用皮质类固醇和降颅压药对症治疗。严重病例需手术（脑室-腹腔分流）但费用高昂。先天型需长期管理，预后取决于脑损伤程度。",
       "tags": [
-        "damnit_congenital",
+        "damnit_anomalous",
         "damnit_neoplastic",
         "em_orange",
         "mech_obstruction",
@@ -7594,7 +7594,6 @@
       "tags": [
         "body_digestive",
         "damnit_infectious",
-        "damnit_inflammation",
         "em_yellow",
         "mech_inflammation",
         "species_cat",
@@ -8335,7 +8334,7 @@
       "physiological_basis": "弓形虫生活史：猫摄入卵囊或组织包囊后，子孢子或缓殖子在小肠上皮细胞内进行有性生殖，产生卵囊随粪便排出（粪便中的卵囊需1-5天才能感染新宿主）。犬猫摄入卵囊后，虫体穿过肠壁经血流播散至各组织（肌肉、心肌、神经系统、眼），形成组织包囊（慢性期）。犬猫感染后若免疫功能正常，虫体被控制形成组织包囊，但犬猫不向外界排卵囊（不同于猫）。临床症状取决于感染量和宿主免疫状态：高热、肺炎、肝炎、脑炎、眼炎为常见表现。",
       "prognosis": "免疫功能正常者多为自限性，预后良好。免疫抑制者需抗弓形虫治疗（磺胺甲氧苄啶+乙胺嘧啶），严重脑炎者预后差。",
       "tags": [
-        "damnit_parasitic",
+        "damnit_infectious",
         "em_yellow",
         "mech_parasitic",
         "species_cat",
@@ -8446,8 +8445,8 @@
       "pathophysiology": "体温过高→细胞代谢障碍→全身炎症反应→内毒素血症→DIC→多器官衰竭",
       "progenosis": "取决于高温持续时间和降温速度。降温延迟>90分钟死亡率显著升高。存活者可能遗留神经系统后遗症（共济失调、癫痫、认知障碍）。",
       "tags": [
-        "emergency_red",
-        "mechanism_inflammation",
+        "em_red",
+        "mech_inflammation",
         "species_dog"
       ],
       "symptoms": [
@@ -8507,7 +8506,7 @@
           "notes": "氯丙嗪0.5-2 mg/kg IM/IV，抑制体温调节中枢促进散热，与物理降温联用"
         },
         {
-          "drug": "drug_042",
+          "drug": "drug_016",
           "line": "second",
           "species": "犬",
           "notes": "抽搐时用地西泮或苯巴比妥控制"
@@ -11595,7 +11594,7 @@
       "description": "地高辛与呋塞米联用时，呋塞米引起的低钾血症可增加地高辛中毒风险。需密切监测血钾和地高辛血药浓度。"
     },
     {
-      "drug_a": "drug_042",
+      "drug_a": "drug_016",
       "drug_b": "drug_033",
       "severity": "major",
       "description": "苯巴比妥与氯胺酮联用可增强中枢神经系统抑制，延长麻醉恢复时间。苯巴比妥是肝酶诱导剂，可能加速其他药物代谢。"
@@ -11620,7 +11619,7 @@
     },
     {
       "drug_a": "drug_032",
-      "drug_b": "drug_042",
+      "drug_b": "drug_016",
       "severity": "moderate",
       "description": "加巴喷丁与苯巴比妥联用可能增强中枢抑制效应。苯巴比妥是CYP酶诱导剂，可能降低加巴喷丁血药浓度。"
     },
@@ -11644,7 +11643,7 @@
     },
     {
       "drug_a": "drug_077",
-      "drug_b": "drug_042",
+      "drug_b": "drug_016",
       "severity": "moderate",
       "description": "氯丙嗪与苯巴比妥联用可增强中枢抑制效应，加重镇静和呼吸抑制。联用时需减少苯巴比妥剂量并密切监测。"
     }

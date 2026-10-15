@@ -9,11 +9,27 @@
 import os
 import re
 import json
+import collections
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 SEED_DIR = os.path.join(BASE_DIR, 'src-tauri', 'data', 'seed')
 OUT = os.path.join(SEED_DIR, '001_initial.sql')
+
+# ── 可打标签的实体：(entity_tags.entity_type, knowledge.json 的集合名) ──
+# entity_type 必须同时是下列两处的取值，三者一起改，否则种子导入会报
+# CHECK 约束或外键错误：
+#   - src-tauri/data/seed/schema.sql  → entity_tags CHECK(entity_type IN (...))
+#   - src-tauri/src/db/entity_types.rs → ENTITY_TYPES
+ENTITY_TAG_SCOPES = [
+    ('disease', 'diseases'),
+    ('symptom', 'symptoms'),
+    ('drug', 'drugs'),
+    ('treatment', 'treatments'),
+    ('case', 'cases'),
+]
+# knowledge.json 里所有已知集合（tests 不支持 entity_tags：schema.sql 里没有 'test' 类型）
+KNOWN_COLLECTIONS = {key for _, key in ENTITY_TAG_SCOPES} | {'tests', 'drug_interactions', 'relations'}
 
 
 def S(s):
@@ -95,6 +111,100 @@ def INSERT_ROW(table, columns, values):
     return f"INSERT INTO {table} ({cols}) VALUES ({vals});"
 
 
+# ── 生成后校验用的小解析器 ──
+_ET_ROW = re.compile(
+    r"^INSERT INTO entity_tags \(entity_type, entity_id, tag_id\) "
+    r"VALUES \('([^']*)', '([^']*)', '([^']*)'\);$"
+)
+_TAG_ROW = re.compile(r"^INSERT INTO tags \([^)]*\) VALUES \('([^']*)'")
+
+
+def verify_entity_tags(data, lines, resolve_tag_id):
+    """生成后断言：钉住"标签数据链路断在生成器"这一类问题（不只是疾病一个症状）。
+
+    校验四件事，任何一条不满足直接抛 AssertionError，让 `python tools/gen_from_json.py` 失败：
+
+    1. knowledge.json 里【每个】带 tags 的实体（疾病/症状/药物/治疗/病例）都在生成的 SQL 里
+       有对应的 entity_tags 行，且没有多余行；
+    2. entity_tags 用到的 entity_type 全部来自 ENTITY_TAG_SCOPES（不往 CHECK 约束里塞自创命名）；
+    3. 被引用的 tag_id 都已写进 tags 注册表 —— 漏注册会撞上 entity_tags.tag_id → tags(id) 外键，
+       导致整份种子在一个事务里回滚、用户库里连疾病标签都没有；
+    4. tags 字段没有落在 ENTITY_TAG_SCOPES 之外的集合上（防止"静默丢标签"回归）。
+    """
+    # ── 4) 未声明的集合带 tags → 直接报错，不许静默丢弃 ──
+    unsupported = [
+        key for key, items in data.items()
+        if key not in KNOWN_COLLECTIONS
+        and isinstance(items, list)
+        and any(isinstance(e, dict) and e.get('tags') for e in items)
+    ]
+    assert not unsupported, (
+        f'knowledge.json 集合 {unsupported} 带 tags，但 ENTITY_TAG_SCOPES 未声明。'
+        f'新增实体类型要同时改：ENTITY_TAG_SCOPES / schema.sql 的 entity_tags CHECK / '
+        f'src-tauri/src/db/entity_types.rs 的 ENTITY_TYPES'
+    )
+
+    # ── 期望行（来自数据源）──
+    expected = set()
+    for entity_type, collection in ENTITY_TAG_SCOPES:
+        for ent in data.get(collection, []):
+            for tag_ref in ent.get('tags', []) or []:
+                expected.add((entity_type, ent['id'], resolve_tag_id(tag_ref)))
+
+    # ── 实际行（来自生成的 SQL）──
+    actual = set()
+    duplicates = []
+    for line in lines:
+        m = _ET_ROW.match(line)
+        if not m:
+            continue
+        triple = (m.group(1), m.group(2), m.group(3))
+        if triple in actual:
+            duplicates.append(triple)
+        actual.add(triple)
+    assert not duplicates, f'entity_tags 出现重复主键行（种子导入会失败）: {duplicates[:5]}'
+
+    missing = expected - actual
+    extra = actual - expected
+    assert not missing, (
+        f'{len(missing)} 个带 tags 的实体没有生成 entity_tags 行，例如: {sorted(missing)[:5]}'
+    )
+    assert not extra, f'entity_tags 生成了数据源里不存在的行，例如: {sorted(extra)[:5]}'
+
+    known_types = {entity_type for entity_type, _ in ENTITY_TAG_SCOPES}
+    unknown_types = {entity_type for entity_type, _, _ in actual} - known_types
+    assert not unknown_types, f'entity_tags 使用了未声明的 entity_type: {sorted(unknown_types)}'
+
+    registered = set()
+    for line in lines:
+        m = _TAG_ROW.match(line)
+        if m:
+            registered.add(m.group(1))
+    unregistered = {tag_id for _, _, tag_id in actual} - registered
+    assert not unregistered, (
+        f'entity_tags 引用了未注册的标签，会违反 tags(id) 外键: {sorted(unregistered)[:10]}'
+    )
+
+    # ── 打印对账数字（验收用）──
+    exp_by_type = collections.Counter(entity_type for entity_type, _, _ in expected)
+    act_by_type = collections.Counter(entity_type for entity_type, _, _ in actual)
+    json_total = sum(
+        len(ent.get('tags', []) or [])
+        for _, collection in ENTITY_TAG_SCOPES
+        for ent in data.get(collection, [])
+    )
+    print(f'[VERIFY] entity_tags: knowledge.json tag 引用 {json_total} 条 / '
+          f'去重后期望 {len(expected)} 行 / SQL 实际 {len(actual)} 行 → 一致')
+    for entity_type, collection in ENTITY_TAG_SCOPES:
+        print(f'   {entity_type:<10} expected={exp_by_type.get(entity_type, 0):<5} '
+              f'actual={act_by_type.get(entity_type, 0):<5} '
+              f'(来源集合 {collection}, 已注册标签 {len(registered)} 个)')
+    for entity_type in sorted(exp_by_type):
+        assert exp_by_type[entity_type] == act_by_type[entity_type], (
+            f'{entity_type} 行数不一致: expected {exp_by_type[entity_type]} vs actual {act_by_type[entity_type]}'
+        )
+
+
 def generate_from_json(json_path):
     """从 knowledge.json 生成 SQL，返回 (lines_dict, stats)。
     lines_dict 按表名分组，方便调试。
@@ -105,7 +215,7 @@ def generate_from_json(json_path):
     lines = []  # 最终有序输出
     stats = {}
 
-    # ── 标签（从 knowledge.json 的疾病 tags 收集）──
+    # ── 标签注册表（从【全部可打标签实体】的 tags 收集）──
     tag_registry = {}
     tag_name_to_id = {}
 
@@ -118,7 +228,7 @@ def generate_from_json(json_path):
             return tag_name_to_id[tag_ref]
         return tag_ref.lower().replace(' ', '_').replace('#', '')
 
-    # 从疾病 tags 收集标签（预置标签从 tags.yaml 加载，若存在）
+    # 预置标签从 tags.yaml 加载（若存在）
     tags_yaml_path = os.path.join(DATA_DIR, 'tags.yaml')
     if os.path.exists(tags_yaml_path):
         import yaml
@@ -128,12 +238,22 @@ def generate_from_json(json_path):
             tag_registry[tag['id']] = tag
             tag_name_to_id[tag['name_zh']] = tag['id']
 
-    # 收集疾病中引用的标签
-    for dis in data.get('diseases', []):
-        for tag_ref in dis.get('tags', []):
-            tag_id = resolve_tag_id(tag_ref)
-            if tag_id not in tag_registry:
-                tag_registry[tag_id] = {'id': tag_id, 'name_zh': tag_ref, 'tag_group': 'custom'}
+    # 收集各实体类型引用的标签。
+    # 只收集疾病标签会让 symptom/drug/treatment 的 entity_tags 行撞上 tags(id) 外键
+    # （标签没注册 → INSERT 失败），所以这里必须遍历 ENTITY_TAG_SCOPES 全部集合。
+    # 引用词表外的标签直接失败：静默按 id 当中文名登记会让界面显示 damnit_parasitic 这类原始 id。
+    undefined = {}
+    for _, collection in ENTITY_TAG_SCOPES:
+        for ent in data.get(collection, []):
+            for tag_ref in ent.get('tags') or []:
+                tag_id = resolve_tag_id(tag_ref)
+                if tag_id not in tag_registry:
+                    undefined.setdefault(tag_id, []).append(f"{collection}:{ent['id']}")
+                    tag_registry[tag_id] = {'id': tag_id, 'name_zh': tag_ref, 'tag_group': 'custom'}
+    assert not undefined, (
+        '以下标签不在 data/tags.yaml 词表内，会被登记成"中文名=英文id"并直接显示给用户。'
+        f'请在 tags.yaml 补条目（或把引用改成既有标签）: {undefined}'
+    )
 
     # ── 标签 ──
     L = []
@@ -260,18 +380,33 @@ def generate_from_json(json_path):
     lines.extend(L)
     stats['diseases'] = len(diseases_list)
 
-    # ── 疾病-标签关联 ──
+    # ── 实体-标签关联（全部可打标签的实体类型）──
     L = []
-    L.append('-- ===== 疾病-标签关联 =====')
+    L.append('-- ===== 实体-标签关联 =====')
     et_count = 0
-    for d in diseases_list:
-        for tag_name in d.get('tags', []):
-            tag_id = resolve_tag_id(tag_name)
-            L.append(f"INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', {S(d['id'])}, {S(tag_id)});")
-            et_count += 1
+    et_by_type = {}
+    et_seen = set()
+    for entity_type, collection in ENTITY_TAG_SCOPES:
+        for ent in data.get(collection, []):
+            for tag_name in ent.get('tags') or []:
+                tag_id = resolve_tag_id(tag_name)
+                key = (entity_type, ent['id'], tag_id)
+                if key in et_seen:
+                    # 主键是 (entity_type, entity_id, tag_id)，重复行会让种子导入整体回滚
+                    print(f'[WARN] 重复标签已跳过: {key}')
+                    continue
+                et_seen.add(key)
+                L.append(
+                    f"INSERT INTO entity_tags (entity_type, entity_id, tag_id) "
+                    f"VALUES ('{entity_type}', {S(ent['id'])}, {S(tag_id)});"
+                )
+                et_count += 1
+                et_by_type[entity_type] = et_by_type.get(entity_type, 0) + 1
     L.append('')
     lines.extend(L)
     stats['entity_tags'] = et_count
+    for entity_type in sorted(et_by_type):
+        stats[f'entity_tags_{entity_type}'] = et_by_type[entity_type]
 
     # ── 疾病-症状关联 ──
     L = []
@@ -444,6 +579,9 @@ def generate_from_json(json_path):
     L.append('')
     lines.extend(L)
     stats['drug_interactions'] = len(interactions_list)
+
+    # ── 生成后校验：标签链路必须完整，否则拒绝写出种子 SQL ──
+    verify_entity_tags(data, lines, resolve_tag_id)
 
     return lines, stats
 

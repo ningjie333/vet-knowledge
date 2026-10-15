@@ -1,6 +1,12 @@
 use crate::db::{DbPool, models::*};
 use crate::db::models::{row_from_disease, row_from_drug, row_from_symptom, row_from_test};
+use crate::db::sql_builder::tags_subquery;
 use sqlx::Row;
+
+// 标签链路约定：tags_subquery() 在 SQL 侧把 entity_tags → tags.name_zh 聚合成 JSON 文本，
+// 由 models::row_from_*() 解析成 Vec<String> 后返回前端（前端 tags: string[]）。
+// 凡是返回 Disease / Symptom / Drug / Treatment 的查询都要带上对应的 tags 子查询，
+// 否则前端的标签区域就是空白。
 
 // ===== 疾病 =====
 
@@ -10,17 +16,19 @@ pub async fn get_diseases(
     species: Option<String>,
     category: Option<String>,
 ) -> Result<Vec<Disease>, String> {
-    let sql = crate::db::sql_builder::SqlBuilder::select("SELECT * FROM diseases")
+    let base = format!("SELECT d.*, {} FROM diseases d", tags_subquery("d", "disease"));
+    let sql = crate::db::sql_builder::SqlBuilder::select(base)
         .optional_where(species.as_ref().filter(|s| !s.is_empty()).map(|_| "species LIKE ?"))
         .optional_where(category.as_ref().filter(|c| !c.is_empty()).map(|_| "category LIKE ?"))
         .order_by("name_zh")
         .build();
 
-    let mut q = sqlx::query_as::<_, Disease>(&sql);
+    let mut q = sqlx::query(&sql);
     if let Some(s) = &species { if !s.is_empty() { q = q.bind(format!("%{}%", s)); } }
     if let Some(c) = &category { if !c.is_empty() { q = q.bind(format!("%{}%", c)); } }
 
-    q.fetch_all(&*pool).await.map_err(|e| e.to_string())
+    let rows = q.fetch_all(&*pool).await.map_err(|e| e.to_string())?;
+    Ok(rows.iter().map(row_from_disease).collect())
 }
 
 #[tauri::command]
@@ -28,11 +36,16 @@ pub async fn get_disease_by_id(
     pool: tauri::State<'_, DbPool>,
     id: String,
 ) -> Result<Option<Disease>, String> {
-    sqlx::query_as::<_, Disease>("SELECT * FROM diseases WHERE id = ?")
+    let sql = format!(
+        "SELECT d.*, {} FROM diseases d WHERE d.id = ?",
+        tags_subquery("d", "disease")
+    );
+    let row = sqlx::query(&sql)
         .bind(&id)
         .fetch_optional(&*pool)
         .await
-        .map_err(|e| e.to_string())
+        .map_err(|e| e.to_string())?;
+    Ok(row.as_ref().map(row_from_disease))
 }
 
 #[tauri::command]
@@ -40,26 +53,26 @@ pub async fn get_disease_symptoms(
     pool: tauri::State<'_, DbPool>,
     disease_id: String,
 ) -> Result<Vec<(Symptom, String, String, i64)>, String> {
-    sqlx::query(
-        "SELECT s.*, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
+    let sql = format!(
+        "SELECT s.*, {}, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
          FROM disease_symptom ds
          JOIN symptoms s ON ds.symptom_id = s.id
          WHERE ds.disease_id = ?
-         ORDER BY ds.frequency DESC"
-    )
-    .bind(&disease_id)
-    .fetch_all(&*pool)
-    .await
-    .map(|rows| {
-        rows.iter().map(|r| {
-            let symptom = row_from_symptom(r);
-            let frequency: String = r.get("frequency");
-            let stage: String = r.get("stage");
-            let is_pathognomonic: i64 = r.get("is_pathognomonic");
-            (symptom, frequency, stage, is_pathognomonic)
-        }).collect()
-    })
-    .map_err(|e| e.to_string())
+         ORDER BY ds.frequency DESC",
+        tags_subquery("s", "symptom")
+    );
+    let rows = sqlx::query(&sql)
+        .bind(&disease_id)
+        .fetch_all(&*pool)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(rows.iter().map(|r| {
+        let symptom = row_from_symptom(r);
+        let frequency: String = r.get("frequency");
+        let stage: String = r.get("stage");
+        let is_pathognomonic: i64 = r.get("is_pathognomonic");
+        (symptom, frequency, stage, is_pathognomonic)
+    }).collect())
 }
 
 #[tauri::command]
@@ -67,20 +80,20 @@ pub async fn get_disease_ddx(
     pool: tauri::State<'_, DbPool>,
     disease_id: String,
 ) -> Result<Vec<(Disease, String)>, String> {
-    sqlx::query(
-        "SELECT d.*, dd.distinguishing_feature FROM disease_ddx dd
+    let sql = format!(
+        "SELECT d.*, {}, dd.distinguishing_feature FROM disease_ddx dd
          JOIN diseases d ON dd.ddx_id = d.id
-         WHERE dd.disease_id = ?"
-    )
-    .bind(&disease_id)
-    .fetch_all(&*pool)
-    .await
-    .map(|rows| {
-        rows.iter().map(|r| {
-            (row_from_disease(r), r.get::<String, _>("distinguishing_feature"))
-        }).collect()
-    })
-    .map_err(|e| e.to_string())
+         WHERE dd.disease_id = ?",
+        tags_subquery("d", "disease")
+    );
+    let rows = sqlx::query(&sql)
+        .bind(&disease_id)
+        .fetch_all(&*pool)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(rows.iter().map(|r| {
+        (row_from_disease(r), r.get::<String, _>("distinguishing_feature"))
+    }).collect())
 }
 
 #[tauri::command]
@@ -88,26 +101,26 @@ pub async fn get_disease_treatments(
     pool: tauri::State<'_, DbPool>,
     disease_id: String,
 ) -> Result<Vec<(Drug, String, String, String)>, String> {
-    sqlx::query(
-        "SELECT dr.*, dt.line, dt.species, dt.notes FROM disease_treatment dt
+    let sql = format!(
+        "SELECT dr.*, {}, dt.line, dt.species, dt.notes FROM disease_treatment dt
          JOIN drugs dr ON dt.drug_id = dr.id
          WHERE dt.disease_id = ?
-         ORDER BY dt.line"
-    )
-    .bind(&disease_id)
-    .fetch_all(&*pool)
-    .await
-    .map(|rows| {
-        rows.iter().map(|r| {
-            (
-                row_from_drug(r),
-                r.get::<String, _>("line"),
-                r.get::<String, _>("species"),
-                r.get::<String, _>("notes"),
-            )
-        }).collect()
-    })
-    .map_err(|e| e.to_string())
+         ORDER BY dt.line",
+        tags_subquery("dr", "drug")
+    );
+    let rows = sqlx::query(&sql)
+        .bind(&disease_id)
+        .fetch_all(&*pool)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(rows.iter().map(|r| {
+        (
+            row_from_drug(r),
+            r.get::<String, _>("line"),
+            r.get::<String, _>("species"),
+            r.get::<String, _>("notes"),
+        )
+    }).collect())
 }
 
 #[tauri::command]
@@ -161,10 +174,19 @@ pub async fn get_disease_compare(
     let ph = crate::db::sql_builder::placeholders(disease_ids.len());
 
     // 1. 批量获取疾病（保持输入顺序）
-    let sql = format!("SELECT * FROM diseases WHERE id IN ({})", ph);
-    let mut q = sqlx::query_as::<_, Disease>(&sql);
+    let sql = format!(
+        "SELECT d.*, {} FROM diseases d WHERE d.id IN ({})",
+        tags_subquery("d", "disease"), ph
+    );
+    let mut q = sqlx::query(&sql);
     for did in &disease_ids { q = q.bind(did); }
-    let diseases = q.fetch_all(&*pool).await.map_err(|e| e.to_string())?;
+    let diseases: Vec<Disease> = q
+        .fetch_all(&*pool)
+        .await
+        .map_err(|e| e.to_string())?
+        .iter()
+        .map(row_from_disease)
+        .collect();
 
     // 2. 批量获取症状、治疗、诊断、鉴别（4 条查询，Rust 端按 disease_id 分组）
     let group_symptoms = |rows: Vec<sqlx::sqlite::SqliteRow>| {
@@ -209,18 +231,18 @@ pub async fn get_disease_compare(
 
     // 症状
     let sql = format!(
-        "SELECT ds.disease_id, s.*, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
+        "SELECT ds.disease_id, s.*, {}, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
          FROM disease_symptom ds JOIN symptoms s ON ds.symptom_id = s.id
-         WHERE ds.disease_id IN ({})", ph);
+         WHERE ds.disease_id IN ({})", tags_subquery("s", "symptom"), ph);
     let mut q = sqlx::query(&sql);
     for did in &disease_ids { q = q.bind(did); }
     let symptoms_map = group_symptoms(q.fetch_all(&*pool).await.map_err(|e| e.to_string())?);
 
     // 治疗
     let sql = format!(
-        "SELECT dt.disease_id, dr.*, dt.line, dt.species, dt.notes
+        "SELECT dt.disease_id, dr.*, {}, dt.line, dt.species, dt.notes
          FROM disease_treatment dt JOIN drugs dr ON dt.drug_id = dr.id
-         WHERE dt.disease_id IN ({})", ph);
+         WHERE dt.disease_id IN ({})", tags_subquery("dr", "drug"), ph);
     let mut q = sqlx::query(&sql);
     for did in &disease_ids { q = q.bind(did); }
     let treatments_map = group_drugs(q.fetch_all(&*pool).await.map_err(|e| e.to_string())?);
@@ -236,9 +258,9 @@ pub async fn get_disease_compare(
 
     // 鉴别
     let sql = format!(
-        "SELECT dd.disease_id, d.*, dd.distinguishing_feature
+        "SELECT dd.disease_id, d.*, {}, dd.distinguishing_feature
          FROM disease_ddx dd JOIN diseases d ON dd.ddx_id = d.id
-         WHERE dd.disease_id IN ({})", ph);
+         WHERE dd.disease_id IN ({})", tags_subquery("d", "disease"), ph);
     let mut q = sqlx::query(&sql);
     for did in &disease_ids { q = q.bind(did); }
     let ddx_map = group_ddx(q.fetch_all(&*pool).await.map_err(|e| e.to_string())?);
@@ -264,10 +286,15 @@ pub async fn get_disease_compare(
 pub async fn get_symptoms(
     pool: tauri::State<'_, DbPool>,
 ) -> Result<Vec<Symptom>, String> {
-    sqlx::query_as::<_, Symptom>("SELECT * FROM symptoms ORDER BY name_zh")
+    let sql = format!(
+        "SELECT s.*, {} FROM symptoms s ORDER BY s.name_zh",
+        tags_subquery("s", "symptom")
+    );
+    let rows = sqlx::query(&sql)
         .fetch_all(&*pool)
         .await
-        .map_err(|e| e.to_string())
+        .map_err(|e| e.to_string())?;
+    Ok(rows.iter().map(row_from_symptom).collect())
 }
 
 #[tauri::command]
@@ -275,11 +302,16 @@ pub async fn get_symptom_by_id(
     pool: tauri::State<'_, DbPool>,
     id: String,
 ) -> Result<Option<Symptom>, String> {
-    sqlx::query_as::<_, Symptom>("SELECT * FROM symptoms WHERE id = ?")
+    let sql = format!(
+        "SELECT s.*, {} FROM symptoms s WHERE s.id = ?",
+        tags_subquery("s", "symptom")
+    );
+    let row = sqlx::query(&sql)
         .bind(&id)
         .fetch_optional(&*pool)
         .await
-        .map_err(|e| e.to_string())
+        .map_err(|e| e.to_string())?;
+    Ok(row.as_ref().map(row_from_symptom))
 }
 
 #[tauri::command]
@@ -288,11 +320,12 @@ pub async fn get_diseases_by_symptom(
     symptom_id: String,
     species: Option<String>,
 ) -> Result<Vec<DiseaseWithSymptom>, String> {
-    let mut query = String::from(
-        "SELECT d.*, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
+    let mut query = format!(
+        "SELECT d.*, {}, ds.frequency, ds.stage, COALESCE(ds.is_pathognomonic, 0) AS is_pathognomonic
          FROM disease_symptom ds
          JOIN diseases d ON ds.disease_id = d.id
-         WHERE ds.symptom_id = ?"
+         WHERE ds.symptom_id = ?",
+        tags_subquery("d", "disease")
     );
     if species.is_some() {
         query.push_str(" AND d.species LIKE ?");
@@ -327,15 +360,17 @@ pub async fn get_drugs(
     pool: tauri::State<'_, DbPool>,
     drug_class: Option<String>,
 ) -> Result<Vec<Drug>, String> {
-    let sql = crate::db::sql_builder::SqlBuilder::select("SELECT * FROM drugs")
+    let base = format!("SELECT dr.*, {} FROM drugs dr", tags_subquery("dr", "drug"));
+    let sql = crate::db::sql_builder::SqlBuilder::select(base)
         .optional_where(drug_class.as_ref().filter(|c| !c.is_empty()).map(|_| "drug_class LIKE ?"))
         .order_by("name_zh")
         .build();
 
-    let mut q = sqlx::query_as::<_, Drug>(&sql);
+    let mut q = sqlx::query(&sql);
     if let Some(c) = &drug_class { if !c.is_empty() { q = q.bind(format!("%{}%", c)); } }
 
-    q.fetch_all(&*pool).await.map_err(|e| e.to_string())
+    let rows = q.fetch_all(&*pool).await.map_err(|e| e.to_string())?;
+    Ok(rows.iter().map(row_from_drug).collect())
 }
 
 #[tauri::command]
@@ -343,11 +378,16 @@ pub async fn get_drug_by_id(
     pool: tauri::State<'_, DbPool>,
     id: String,
 ) -> Result<Option<Drug>, String> {
-    sqlx::query_as::<_, Drug>("SELECT * FROM drugs WHERE id = ?")
+    let sql = format!(
+        "SELECT dr.*, {} FROM drugs dr WHERE dr.id = ?",
+        tags_subquery("dr", "drug")
+    );
+    let row = sqlx::query(&sql)
         .bind(&id)
         .fetch_optional(&*pool)
         .await
-        .map_err(|e| e.to_string())
+        .map_err(|e| e.to_string())?;
+    Ok(row.as_ref().map(row_from_drug))
 }
 
 // ===== 检查项目 =====
@@ -381,16 +421,19 @@ pub async fn get_case_diseases(
     pool: tauri::State<'_, DbPool>,
     case_id: String,
 ) -> Result<Vec<Disease>, String> {
-    sqlx::query_as::<_, Disease>(
-        "SELECT d.* FROM diseases d
+    let sql = format!(
+        "SELECT d.*, {} FROM diseases d
          INNER JOIN case_disease cd ON cd.disease_id = d.id
          WHERE cd.case_id = ?
-         ORDER BY d.name_zh"
-    )
-    .bind(&case_id)
-    .fetch_all(&*pool)
-    .await
-    .map_err(|e| e.to_string())
+         ORDER BY d.name_zh",
+        tags_subquery("d", "disease")
+    );
+    let rows = sqlx::query(&sql)
+        .bind(&case_id)
+        .fetch_all(&*pool)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(rows.iter().map(row_from_disease).collect())
 }
 
 #[tauri::command]

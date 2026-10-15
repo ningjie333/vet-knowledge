@@ -74,7 +74,9 @@ async fn execute_tolerant(pool: &DbPool, sql: &str, ctx: &str) {
 }
 
 /// 当前种子数据版本。递增此值时，应用启动时会自动重新导入种子数据。
-const SEED_DATA_VERSION: i64 = 19;
+/// v20: entity_tags 覆盖全部可打标签实体（disease/symptom/drug/treatment），
+///      此前只有 disease 有标签行 → 症状/药物/治疗的标签区永远空白。
+const SEED_DATA_VERSION: i64 = 22;
 
 pub async fn init(app: &AppHandle) -> anyhow::Result<DbPool> {
     // debug 构建用项目根目录下的 data/（src-tauri 的父目录），
@@ -707,5 +709,71 @@ mod tests {
         let stmts = split_sql_statements(sql);
         // 只有 `;` 前的内容算一个 statement，注释和空行不会单独分割
         assert_eq!(stmts.len(), 1);
+    }
+
+    /// 种子 SQL 端到端冒烟测试：schema.sql + 001_initial.sql 全量执行，
+    /// 外键打开（应用启动时就是这个配置），确认：
+    /// - 没有任何外键违规（漏注册标签会在这里爆炸）
+    /// - 四类可打标签的实体都有 entity_tags 行（"标签区永远空白"的根因）
+    #[tokio::test]
+    async fn test_seed_sql_imports_with_foreign_keys_on() {
+        use sqlx::Row;
+
+        let pool = SqlitePoolOptions::new()
+            .max_connections(1)
+            .connect("sqlite::memory:")
+            .await
+            .expect("内存 SQLite 连接失败");
+        sqlx::query("PRAGMA foreign_keys = ON")
+            .execute(&pool)
+            .await
+            .expect("开启外键失败");
+
+        for script in [
+            include_str!("../../data/seed/schema.sql"),
+            include_str!("../../data/seed/001_initial.sql"),
+        ] {
+            let cleaned = strip_sql_comments(script);
+            for stmt in split_sql_statements(&cleaned) {
+                let t = stmt.trim();
+                if t.is_empty() {
+                    continue;
+                }
+                if let Err(e) = sqlx::query(t).execute(&pool).await {
+                    let snippet: String = t.chars().take(160).collect();
+                    panic!("种子 SQL 执行失败: {} | sql: {}", e, snippet);
+                }
+            }
+        }
+
+        let violations = sqlx::query("PRAGMA foreign_key_check")
+            .fetch_all(&pool)
+            .await
+            .expect("foreign_key_check 查询失败");
+        assert!(violations.is_empty(), "种子数据存在外键违规: {} 条", violations.len());
+
+        let rows = sqlx::query("SELECT entity_type, COUNT(*) FROM entity_tags GROUP BY entity_type")
+            .fetch_all(&pool)
+            .await
+            .expect("entity_tags 统计失败");
+        let counts: std::collections::HashMap<String, i64> = rows
+            .iter()
+            .map(|r| (r.get::<String, _>(0), r.get::<i64, _>(1)))
+            .collect();
+
+        // 只有疾病有标签行 = 症状/药物/治疗的标签区永远空白（本次修复的根因）
+        for entity_type in ["disease", "symptom", "drug", "treatment"] {
+            let n = counts.get(entity_type).copied().unwrap_or(0);
+            assert!(n > 0, "种子数据里 {} 没有任何 entity_tags 行", entity_type);
+        }
+        // entity_tags 的 entity_type 必须都在注册表里（schema.sql 的 CHECK 约束已经保证，
+        // 这里再对一次账，防止两处取值漂移）
+        for entity_type in counts.keys() {
+            assert!(
+                entity_types::is_valid_entity_type(entity_type),
+                "entity_tags 使用了未注册的 entity_type: {}",
+                entity_type
+            );
+        }
     }
 }

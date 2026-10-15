@@ -6,6 +6,64 @@ use sqlx::Row;
 // ── Row 构造函数 ──
 // 从 SqliteRow 手动构造实体，用于 JOIN 查询（query() 而非 query_as）。
 // 统一放在 models.rs，避免各 commands 模块重复定义。
+//
+// tags 字段的约定：
+//   查询用 sql_builder::tags_subquery() 附加一个关联子查询，
+//   把 entity_tags → tags.name_zh 聚合为 JSON 数组文本，列别名固定为 `tags`；
+//   这里由 row_tags() 统一解析成 Vec<String>（序列化为 JSON 数组，前端 tags: string[]）。
+//   没有 tags 列的查询（历史 SQL / `SELECT *`）回退成空数组，不报错。
+//
+// 为什么 Disease/Symptom/Drug/Treatment 手写 FromRow 而不用 #[derive(FromRow)]：
+//   SQLite 没有数组类型，`Vec<String>` 不满足 sqlx 的 Decode，derive 版无法编译；
+//   手写 impl 直接复用下面的 row_from_*()，让 query_as 与手动映射走同一条解析路径。
+
+/// 把 json_group_array 产出的 JSON 文本解析为 Vec<String>。
+///
+/// - `None` / 空串 / `[]` → 空 Vec
+/// - 数组里的 `null`（标签名缺失）→ 跳过
+/// - 非数组或非法 JSON → 空 Vec 并在 stderr 记录（依据 E-08：不允许完全静默吞错）
+pub fn parse_tags_json(raw: Option<&str>) -> Vec<String> {
+    let Some(text) = raw else {
+        return Vec::new();
+    };
+    let text = text.trim();
+    if text.is_empty() {
+        return Vec::new();
+    }
+    match serde_json::from_str::<serde_json::Value>(text) {
+        Ok(serde_json::Value::Array(items)) => items
+            .into_iter()
+            .filter_map(|v| match v {
+                serde_json::Value::Null => None,
+                serde_json::Value::String(s) => Some(s),
+                other => Some(other.to_string()),
+            })
+            .collect(),
+        Ok(other) => {
+            eprintln!("[parse_tags_json] tags 列不是 JSON 数组: {}", other);
+            Vec::new()
+        }
+        Err(e) => {
+            eprintln!("[parse_tags_json] tags 列 JSON 解析失败: {} | raw: {}", e, text);
+            Vec::new()
+        }
+    }
+}
+
+/// 读取行里的 `tags` 列并解析为标签名列表；列不存在时返回空 Vec。
+///
+/// 列不存在是合法场景：不是每条查询都附加了 tags_subquery（例如只用 `SELECT *` 的历史 SQL）。
+#[inline]
+pub fn row_tags(r: &SqliteRow) -> Vec<String> {
+    match r.try_get::<Option<String>, _>("tags") {
+        Ok(raw) => parse_tags_json(raw.as_deref()),
+        Err(sqlx::Error::ColumnNotFound(_)) => Vec::new(),
+        Err(e) => {
+            eprintln!("[row_tags] tags 列读取失败: {}", e);
+            Vec::new()
+        }
+    }
+}
 
 #[inline]
 pub fn row_from_disease(r: &SqliteRow) -> Disease {
@@ -28,6 +86,7 @@ pub fn row_from_disease(r: &SqliteRow) -> Disease {
         urgency_level: r.get("urgency_level"),
         created_at: r.get("created_at"),
         updated_at: r.get("updated_at"),
+        tags: row_tags(r),
     }
 }
 
@@ -40,6 +99,7 @@ pub fn row_from_symptom(r: &SqliteRow) -> Symptom {
         definition: r.get("definition"),
         species_notes: r.get("species_notes"),
         physiological_basis: r.get("physiological_basis"),
+        tags: row_tags(r),
     }
 }
 
@@ -63,6 +123,7 @@ pub fn row_from_drug(r: &SqliteRow) -> Drug {
         smiles: r.get("smiles"),
         inchikey: r.get("inchikey"),
         iupac_name: r.get("iupac_name"),
+        tags: row_tags(r),
     }
 }
 
@@ -91,6 +152,7 @@ pub fn row_from_treatment(r: &SqliteRow) -> Treatment {
         physiological_basis: r.get("physiological_basis"),
         prognosis_assessment: r.get("prognosis_assessment"),
         created_at: r.get("created_at"),
+        tags: row_tags(r),
     }
 }
 
@@ -110,7 +172,7 @@ pub fn row_from_tag(r: &SqliteRow) -> Tag {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Disease {
     pub id: String,
     pub name_zh: String,
@@ -130,9 +192,12 @@ pub struct Disease {
     pub urgency_level: Option<i64>,
     pub created_at: Option<String>,
     pub updated_at: Option<String>,
+    /// 标签名列表（entity_tags JOIN tags.name_zh），与前端 Disease.tags: string[] 对应。
+    /// 由 tags_subquery() 附加的 `tags` 列提供；缺列时为空数组。
+    pub tags: Vec<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Symptom {
     pub id: String,
     pub name_zh: String,
@@ -140,9 +205,11 @@ pub struct Symptom {
     pub definition: Option<String>,
     pub species_notes: Option<String>,
     pub physiological_basis: Option<String>,
+    /// 标签名列表，与前端 Symptom.tags: string[] 对应。
+    pub tags: Vec<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Drug {
     pub id: String,
     pub name_zh: String,
@@ -161,6 +228,8 @@ pub struct Drug {
     pub smiles: Option<String>,
     pub inchikey: Option<String>,
     pub iupac_name: Option<String>,
+    /// 标签名列表，与前端 Drug.tags: string[] 对应。
+    pub tags: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
@@ -194,7 +263,7 @@ pub struct Case {
     pub difficulty: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Treatment {
     pub id: String,
     pub name_zh: String,
@@ -205,6 +274,8 @@ pub struct Treatment {
     pub physiological_basis: Option<String>,
     pub prognosis_assessment: Option<String>,
     pub created_at: Option<String>,
+    /// 标签名列表，与前端 Treatment.tags: string[] 对应。
+    pub tags: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
@@ -219,6 +290,34 @@ pub struct Tag {
     pub typical_scenario: Option<String>,
     pub color: Option<String>,
     pub created_at: Option<String>,
+}
+
+// ── FromRow 实现 ──
+// 带 tags 的四个实体复用 row_from_*()：query_as 与手动映射走同一条解析路径，
+// tags 列缺失时由 row_tags() 回退成空 Vec（不报错）。
+
+impl<'r> FromRow<'r, SqliteRow> for Disease {
+    fn from_row(row: &'r SqliteRow) -> Result<Self, sqlx::Error> {
+        Ok(row_from_disease(row))
+    }
+}
+
+impl<'r> FromRow<'r, SqliteRow> for Symptom {
+    fn from_row(row: &'r SqliteRow) -> Result<Self, sqlx::Error> {
+        Ok(row_from_symptom(row))
+    }
+}
+
+impl<'r> FromRow<'r, SqliteRow> for Drug {
+    fn from_row(row: &'r SqliteRow) -> Result<Self, sqlx::Error> {
+        Ok(row_from_drug(row))
+    }
+}
+
+impl<'r> FromRow<'r, SqliteRow> for Treatment {
+    fn from_row(row: &'r SqliteRow) -> Result<Self, sqlx::Error> {
+        Ok(row_from_treatment(row))
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -259,4 +358,309 @@ pub struct SearchResult {
     pub title: String,
     pub snippet: String,
     pub relevance: f64,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::db::sql_builder::tags_subquery;
+    use crate::db::{split_sql_statements, strip_sql_comments};
+    use sqlx::sqlite::SqlitePoolOptions;
+
+    fn parse(raw: Option<&str>) -> Vec<String> {
+        parse_tags_json(raw)
+    }
+
+    fn strings(v: &[&str]) -> Vec<String> {
+        v.iter().map(|s| s.to_string()).collect()
+    }
+
+    // ── 纯解析测试 ──
+
+    #[test]
+    fn test_parse_tags_json_array_of_names() {
+        assert_eq!(parse(Some(r#"["呼吸系统","感染"]"#)), strings(&["呼吸系统", "感染"]));
+    }
+
+    #[test]
+    fn test_parse_tags_json_empty_cases_are_empty_vec() {
+        // 空标签实体：json_group_array 产出 []；NULL / 空串同样解析成空 Vec
+        assert!(parse(Some("[]")).is_empty());
+        assert!(parse(None).is_empty());
+        assert!(parse(Some("")).is_empty());
+        assert!(parse(Some("   ")).is_empty());
+    }
+
+    #[test]
+    fn test_parse_tags_json_skips_null_items() {
+        assert_eq!(parse(Some(r#"["a",null,"b"]"#)), strings(&["a", "b"]));
+    }
+
+    #[test]
+    fn test_parse_tags_json_rejects_bad_input() {
+        // 逗号字符串 / 裸字符串不是数组 → 空 Vec（会打 stderr，不静默）
+        // 注：这两个用例会看到 [parse_tags_json] 的 stderr 输出，属于预期。
+        assert!(parse(Some("呼吸系统,感染")).is_empty());
+        assert!(parse(Some(r#""呼吸系统""#)).is_empty());
+        assert!(parse(Some("{not json")).is_empty());
+    }
+
+    // ── JSON 形状：与前端 src/types/index.ts 的 tags: string[] 对齐 ──
+
+    fn disease_with(tags: Vec<String>) -> Disease {
+        Disease {
+            id: "dis_t1".into(),
+            name_zh: "测试疾病".into(),
+            name_en: None,
+            name_latin: None,
+            category: None,
+            species: None,
+            body_system: None,
+            pathogenic_type: None,
+            epidemiology: None,
+            overview: None,
+            etiology: None,
+            pathophysiology: None,
+            physiological_basis: None,
+            prognosis: None,
+            difficulty: None,
+            urgency_level: None,
+            created_at: None,
+            updated_at: None,
+            tags,
+        }
+    }
+
+    fn symptom_with(tags: Vec<String>) -> Symptom {
+        Symptom {
+            id: "sym_t1".into(),
+            name_zh: "咳嗽".into(),
+            name_en: None,
+            definition: None,
+            species_notes: None,
+            physiological_basis: None,
+            tags,
+        }
+    }
+
+    fn drug_with(tags: Vec<String>) -> Drug {
+        Drug {
+            id: "drug_t1".into(),
+            name_zh: "阿莫西林".into(),
+            name_en: None,
+            drug_class: None,
+            mechanism_of_action: None,
+            pk_pd: None,
+            indications: None,
+            contraindications: None,
+            side_effects: None,
+            adverse_mechanism: None,
+            species_dosing: None,
+            pubchem_cid: None,
+            molecular_formula: None,
+            molecular_weight: None,
+            smiles: None,
+            inchikey: None,
+            iupac_name: None,
+            tags,
+        }
+    }
+
+    fn treatment_with(tags: Vec<String>) -> Treatment {
+        Treatment {
+            id: "trt_t1".into(),
+            name_zh: "抗菌方案".into(),
+            name_en: None,
+            therapy_type: None,
+            principle: None,
+            procedure_text: None,
+            physiological_basis: None,
+            prognosis_assessment: None,
+            created_at: None,
+            tags,
+        }
+    }
+
+    #[test]
+    fn test_tags_field_serializes_as_json_array_on_all_entities() {
+        // 四个实体都必须暴露 tags 键，且形状是 JSON 数组（不是逗号字符串）
+        let with_tags = [
+            serde_json::to_value(disease_with(strings(&["呼吸系统", "感染"]))).unwrap(),
+            serde_json::to_value(symptom_with(strings(&["呼吸系统"]))).unwrap(),
+            serde_json::to_value(drug_with(strings(&["感染"]))).unwrap(),
+            serde_json::to_value(treatment_with(strings(&["感染"]))).unwrap(),
+        ];
+        for v in &with_tags {
+            assert!(v.get("tags").is_some(), "返回体里没有 tags 键");
+            assert!(v["tags"].is_array(), "tags 不是 JSON 数组: {}", v["tags"]);
+            assert_ne!(v["tags"], serde_json::json!("呼吸系统,感染"));
+        }
+        assert_eq!(with_tags[0]["tags"], serde_json::json!(["呼吸系统", "感染"]));
+
+        // 无标签实体 → "tags": []（前端直接渲染空数组，不会出现 undefined）
+        let empty = [
+            serde_json::to_value(disease_with(vec![])).unwrap(),
+            serde_json::to_value(symptom_with(vec![])).unwrap(),
+            serde_json::to_value(drug_with(vec![])).unwrap(),
+            serde_json::to_value(treatment_with(vec![])).unwrap(),
+        ];
+        for v in &empty {
+            assert_eq!(v["tags"], serde_json::json!([]), "{}", v);
+        }
+    }
+
+    // ── 种子数据：四类实体的 entity_tags 都要生成（根因：生成器只写了 disease）──
+
+    #[test]
+    fn test_seed_sql_has_entity_tags_for_every_taggable_type() {
+        let seed = include_str!("../../data/seed/001_initial.sql");
+        let rows: Vec<&str> = seed
+            .lines()
+            .filter(|l| l.starts_with("INSERT INTO entity_tags"))
+            .collect();
+        let mut total = 0usize;
+        // case 目前数据源里没有 tags，允许 0 行；其余四类必须 > 0
+        for entity_type in ["disease", "symptom", "drug", "treatment"] {
+            let prefix = format!(
+                "INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('{}',",
+                entity_type
+            );
+            let n = rows.iter().filter(|r| r.starts_with(prefix.as_str())).count();
+            assert!(n > 0, "种子 SQL 里没有 {} 的 entity_tags 行（标签区会永远空白）", entity_type);
+            total += n;
+        }
+        assert_eq!(total, rows.len(), "entity_tags 出现了未预期的 entity_type");
+    }
+
+    // ── 端到端：真实 schema.sql + tags_subquery + row_from_* ──
+
+    async fn setup_pool() -> sqlx::SqlitePool {
+        let pool = SqlitePoolOptions::new()
+            .max_connections(1)
+            .connect("sqlite::memory:")
+            .await
+            .expect("内存 SQLite 连接失败");
+        let schema = strip_sql_comments(include_str!("../../data/seed/schema.sql"));
+        for stmt in split_sql_statements(&schema) {
+            let t = stmt.trim();
+            if !t.is_empty() {
+                sqlx::query(t).execute(&pool).await.expect("schema.sql 执行失败");
+            }
+        }
+        for stmt in [
+            "INSERT INTO tags (id, name_zh, tag_group) VALUES ('body_resp','呼吸系统','body_system')",
+            "INSERT INTO tags (id, name_zh, tag_group) VALUES ('mech_inf','感染','mechanism')",
+            "INSERT INTO diseases (id, name_zh) VALUES ('dis_t1','测试疾病')",
+            "INSERT INTO diseases (id, name_zh) VALUES ('dis_t2','无标签疾病')",
+            "INSERT INTO symptoms (id, name_zh) VALUES ('sym_t1','咳嗽')",
+            "INSERT INTO drugs (id, name_zh) VALUES ('drug_t1','阿莫西林')",
+            "INSERT INTO treatments (id, name_zh, therapy_type) VALUES ('trt_t1','抗菌方案','药物疗法')",
+            "INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease','dis_t1','mech_inf')",
+            "INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease','dis_t1','body_resp')",
+            "INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('symptom','sym_t1','body_resp')",
+            "INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('drug','drug_t1','mech_inf')",
+            "INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('treatment','trt_t1','body_resp')",
+        ] {
+            sqlx::query(stmt).execute(&pool).await.expect("测试种子插入失败");
+        }
+        pool
+    }
+
+    /// 拼装 commands 层用的查询：主表全部列 + tags 子查询
+    fn select_one(table: &str, alias: &str, entity_type: &str) -> String {
+        format!(
+            "SELECT {}.*, {} FROM {} {} WHERE {}.id = ?",
+            alias,
+            tags_subquery(alias, entity_type),
+            table,
+            alias,
+            alias
+        )
+    }
+
+    #[tokio::test]
+    async fn test_row_from_all_four_entity_types_parse_tags() {
+        let pool = setup_pool().await;
+
+        let row = sqlx::query(&select_one("diseases", "d", "disease"))
+            .bind("dis_t1")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        // 排序：tag_group, name_zh → 呼吸系统(body_system) 在 感染(mechanism) 前
+        assert_eq!(row_from_disease(&row).tags, strings(&["呼吸系统", "感染"]));
+
+        let row = sqlx::query(&select_one("symptoms", "s", "symptom"))
+            .bind("sym_t1")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert_eq!(row_from_symptom(&row).tags, strings(&["呼吸系统"]));
+
+        let row = sqlx::query(&select_one("drugs", "dr", "drug"))
+            .bind("drug_t1")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert_eq!(row_from_drug(&row).tags, strings(&["感染"]));
+
+        let row = sqlx::query(&select_one("treatments", "t", "treatment"))
+            .bind("trt_t1")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert_eq!(row_from_treatment(&row).tags, strings(&["呼吸系统"]));
+    }
+
+    #[tokio::test]
+    async fn test_entity_without_tags_yields_empty_vec() {
+        let pool = setup_pool().await;
+        let d = row_from_disease(
+            &sqlx::query(&select_one("diseases", "d", "disease"))
+                .bind("dis_t2")
+                .fetch_one(&pool)
+                .await
+                .unwrap(),
+        );
+        assert!(d.tags.is_empty());
+        assert_eq!(serde_json::to_value(&d).unwrap()["tags"], serde_json::json!([]));
+    }
+
+    #[tokio::test]
+    async fn test_query_without_tags_column_still_works() {
+        let pool = setup_pool().await;
+        // 不含 tags 列的历史 SQL：手动映射与 query_as 都不能崩，tags 为空
+        let row = sqlx::query("SELECT * FROM diseases WHERE id = ?")
+            .bind("dis_t1")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert!(row_from_disease(&row).tags.is_empty());
+
+        let d = sqlx::query_as::<_, Disease>("SELECT * FROM diseases WHERE id = ?")
+            .bind("dis_t1")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert!(d.tags.is_empty());
+
+        // 带 tags 列时 query_as（手写 FromRow）同样解析出标签
+        let d = sqlx::query_as::<_, Disease>(&select_one("diseases", "d", "disease"))
+            .bind("dis_t1")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert_eq!(d.tags, strings(&["呼吸系统", "感染"]));
+    }
+
+    #[tokio::test]
+    async fn test_null_tags_column_yields_empty_vec() {
+        let pool = setup_pool().await;
+        let row = sqlx::query("SELECT d.*, NULL AS tags FROM diseases d WHERE d.id = ?")
+            .bind("dis_t1")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert!(row_from_disease(&row).tags.is_empty());
+    }
 }
