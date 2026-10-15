@@ -1191,4 +1191,57 @@ mod tests {
             );
         }
     }
+
+    #[tokio::test]
+    async fn test_seed_symptom_species_notes_parse_to_structured() {
+        use sqlx::Row;
+        // 端到端钉死：真实种子里的症状（sym_001 咳嗽）在 DB 里是 JSON 对象字符串，
+        // 经 row_from_symptom 必须解析成结构化 SpeciesNote 列表，而不是把 JSON 原样丢给前端。
+        let pool = SqlitePoolOptions::new()
+            .max_connections(1)
+            .connect("sqlite::memory:")
+            .await
+            .expect("内存 SQLite 连接失败");
+        for script in [
+            include_str!("../../data/seed/schema.sql"),
+            include_str!("../../data/seed/001_initial.sql"),
+        ] {
+            for stmt in split_sql_statements(&strip_sql_comments(script)) {
+                let t = stmt.trim();
+                if !t.is_empty() {
+                    sqlx::query(t).execute(&pool).await.expect("种子 SQL 失败");
+                }
+            }
+        }
+        let raw: Option<String> =
+            sqlx::query("SELECT species_notes FROM symptoms WHERE id = 'sym_001'")
+                .fetch_one(&pool)
+                .await
+                .map(|r| r.get("species_notes"))
+                .expect("查询 sym_001 失败");
+        assert!(
+            raw.as_deref().unwrap_or("").starts_with('{'),
+            "种子列应为 JSON 对象，实际: {:?}",
+            raw
+        );
+        let row = sqlx::query("SELECT * FROM symptoms WHERE id = 'sym_001'")
+            .fetch_one(&pool)
+            .await
+            .expect("读取 sym_001 整行失败");
+        let symptom = models::row_from_symptom(&row);
+        assert!(
+            symptom.species_notes.len() >= 2,
+            "sym_001 应解析出 ≥2 条物种备注，实际 {} 条",
+            symptom.species_notes.len()
+        );
+        // 结构化后绝不能再带 JSON 标点（否则就是原样透传，前端会显示 {"犬": ...}）
+        for n in &symptom.species_notes {
+            assert!(
+                !n.note.contains('"') && !n.note.contains('{'),
+                "物种备注残留 JSON: {:?}",
+                n
+            );
+            assert!(!n.species.is_empty(), "物种名不应为空: {:?}", n);
+        }
+    }
 }
