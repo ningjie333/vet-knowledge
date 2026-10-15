@@ -29,6 +29,12 @@ uuid = { version = "1", features = ["v4"] }
 [features]
 default = []
 
+# dev profile 优化：减少 debug 信息从 2（full）到 1（line tables only），
+# 大幅加速 link.exe 链接时间（~8s → ~3s），调试仍可用。
+# incremental 保持默认 true（改 Rust 代码后增量编译 ~5s 而非全量 ~30s）。
+[profile.dev]
+debug = 1
+
 # Patch multiple crates to work around a Rust std library bug:
 # `std::sys::process::output()` panics on Windows when the user path contains
 # non-ASCII characters (e.g., Chinese username). The panic occurs at

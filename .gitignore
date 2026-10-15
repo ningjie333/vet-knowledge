@@ -13,6 +13,8 @@ node_modules/
 *.db
 *.db-wal
 *.db-shm
+*.db-journal
+/data/
 
 # 系统文件
 .DS_Store
