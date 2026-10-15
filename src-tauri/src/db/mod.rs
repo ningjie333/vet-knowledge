@@ -958,7 +958,6 @@ mod tests {
     /// 光比对 schema.sql 与种子是查不出来的（两边都有这些列），必须真的从老结构走一遍。
     #[tokio::test]
     async fn test_legacy_drugs_schema_upgrades_then_accepts_seed() {
-        use sqlx::Row;
         let pool = SqlitePoolOptions::new()
             .max_connections(1)
             .connect("sqlite::memory:")
