@@ -141,3 +141,21 @@ release 资源（`failed to bundle project: timeout: global`）。解法记录�
 - 看真界面：`npx tauri build --no-bundle`（`cargo build --release` 单独跑会让窗口去连 devUrl，
   因为 `#[cfg(dev)]` 由 tauri CLI 决定）→ PrintWindow 抓窗口自身像素（普通截屏会被别的窗口压住）→
   点击前需模拟一次 ALT 解除前台锁，坐标换算约为 屏幕 y = 界面 y - 45。
+
+## 2026-10-15 质量复检（v0.2.0 发布后）
+
+- `cargo test` 77/77 绿；`npx vue-tsc --noEmit` 0 错误。
+- clippy（组件为本次新装）：**0 错误、约 15 条警告**，绝大多数是有意预留的 JSON-RPC 错误码
+  常量与暂未使用的辅助函数。逐一看过后仅一处值得说明：`commands/flashcards.rs:56` SM-2
+  首次复习分支里 `quality < 3` 与 `quality == 3` 同为 1 天，属写法冗余而非逻辑错误
+  （语义为：仅质量 >3 才给 6 天间隔）。另有 2 条复杂类型、1 条 `manual Range::contains`、
+  1 条 `repeat().take()` 的化简建议。
+- `cargo fmt --check`：仅 `build.rs` 一行式 `main` 不合规范，无其他差异。
+- **新增台账两条：**
+  1. 仓库**没有 CI**（`.github/workflows/` 不存在）——测试目前只在这台机器上有人记得时才跑；
+     公开仓库建议加最小流水线（`cargo test` + `vue-tsc`）。
+  2. clippy / rustfmt 组件 2026-10-15 才补装（工具链当初按最小集安装）。
+- 复检确认**仍未决**的旧账：README 三处失实原样（导入导出功能不存在 / "WAL + FTS5" /
+  "Pinia"）；`SymptomExplorer.vue` 的 `species_notes` 仍直出原始 JSON；`DiseaseCompare.vue` /
+  `SymptomExplorer.vue` 各自复制的局部 `interface` 仍在；`CODE_WIKI.md` 仍整体过期；
+  10 组重复药物仍待逐组定夺。
