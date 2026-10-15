@@ -36,6 +36,9 @@ repro_test/
 src-tauri/build_log.txt
 src-tauri/cargo_check_log.txt
 
+# 界面排查临时产物（截图脚本、数据库备份等，永不入库）
+.ui-probe/
+
 # IDE
 .vscode/
 .idea/
