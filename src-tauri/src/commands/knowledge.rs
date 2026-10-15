@@ -9,6 +9,10 @@ use sqlx::Row;
 // 凡是返回 Disease / Symptom / Drug / Treatment 的查询都要带上对应的 tags 子查询，
 // 否则前端的标签区域就是空白。
 
+/// 疾病-检查项目关联行：(检查项目, 目的, 证据等级, 适用物种, 预期结果)。
+/// 对应 disease_diagnostic JOIN diagnostic_tests 的查询结果，序列化给前端为五元组 JSON 数组。
+type DiseaseDiagnosticRow = (DiagnosticTest, String, String, String, String);
+
 // ===== 疾病 =====
 
 #[tauri::command]
@@ -128,7 +132,7 @@ pub async fn get_disease_treatments(
 pub async fn get_disease_diagnostics(
     pool: tauri::State<'_, DbPool>,
     disease_id: String,
-) -> Result<Vec<(DiagnosticTest, String, String, String, String)>, String> {
+) -> Result<Vec<DiseaseDiagnosticRow>, String> {
     sqlx::query(
         "SELECT t.*, dd.purpose, dd.evidence_level, dd.species, dd.expected_result
          FROM disease_diagnostic dd
@@ -159,7 +163,7 @@ pub struct DiseaseCompareView {
     pub disease: Disease,
     pub symptoms: Vec<(Symptom, String, String, i64)>,
     pub treatments: Vec<(Drug, String, String, String)>,
-    pub diagnostics: Vec<(DiagnosticTest, String, String, String, String)>,
+    pub diagnostics: Vec<DiseaseDiagnosticRow>,
     pub ddx: Vec<(Disease, String)>,
 }
 
@@ -211,7 +215,7 @@ pub async fn get_disease_compare(
     };
 
     let group_tests = |rows: Vec<sqlx::sqlite::SqliteRow>| {
-        let mut map: std::collections::HashMap<String, Vec<(DiagnosticTest, String, String, String, String)>> = std::collections::HashMap::new();
+        let mut map: std::collections::HashMap<String, Vec<DiseaseDiagnosticRow>> = std::collections::HashMap::new();
         for r in &rows {
             let did: String = r.get("disease_id");
             let entry = map.entry(did).or_default();

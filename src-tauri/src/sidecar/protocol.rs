@@ -10,16 +10,27 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 // ── JSON-RPC 标准错误码 ──
+// 预留：以下未直接使用的光标准码镜像 JSON-RPC 2.0 规范与兄弟项目 virtual-vet 的协议，
+// sidecar 侧会实际返回这些 code，常量保留供命令层后续按码分支使用。
 pub const ERR_PARSE_ERROR: i32 = -32700;
+#[allow(dead_code)]
 pub const ERR_INVALID_REQUEST: i32 = -32600;
+#[allow(dead_code)]
 pub const ERR_METHOD_NOT_FOUND: i32 = -32601;
+#[allow(dead_code)]
 pub const ERR_INVALID_PARAMS: i32 = -32602;
 pub const ERR_INTERNAL: i32 = -32603;
 
 // ── 服务端自定义错误码（-32000 ~ -32099）──
+// 预留：与兄弟项目 virtual-vet 的 sidecar 协议一一对应（会话/病例/动作/对局状态错误），
+// 当前错误按 RpcError.code 透传给前端，常量保留供命令层后续判断使用。
+#[allow(dead_code)]
 pub const ERR_SESSION_NOT_FOUND: i32 = -32001;
+#[allow(dead_code)]
 pub const ERR_CASE_NOT_FOUND: i32 = -32002;
+#[allow(dead_code)]
 pub const ERR_INVALID_ACTION: i32 = -32003;
+#[allow(dead_code)]
 pub const ERR_GAME_ENDED: i32 = -32004;
 
 /// JSON-RPC 错误对象
@@ -40,7 +51,11 @@ impl std::fmt::Display for RpcError {
 impl std::error::Error for RpcError {}
 
 /// 标准错误码常量集合，供命令层判断
+// 预留：命名空间入口镜像 virtual-vet 协议（协议常量以模块级 ERR_* 为准），命令层按码分支时从这里取。
+#[allow(dead_code)]
 pub struct RpcErrorCode;
+// 预留：同上，关联常量当前未使用。
+#[allow(dead_code)]
 impl RpcErrorCode {
     pub const SESSION_NOT_FOUND: i32 = ERR_SESSION_NOT_FOUND;
     pub const CASE_NOT_FOUND: i32 = ERR_CASE_NOT_FOUND;

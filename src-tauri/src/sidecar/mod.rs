@@ -14,5 +14,6 @@ pub mod root;
 pub mod manager;
 
 pub use manager::SidecarManager;
-pub use protocol::{RpcError, RpcErrorCode};
+// RpcErrorCode 为协议预留命名空间，未对外再导出，需要时走 sidecar::protocol::RpcErrorCode。
+pub use protocol::RpcError;
 pub use root::resolve_virtual_vet_root;

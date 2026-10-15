@@ -24,6 +24,7 @@ pub struct Sm2Result {
 ///
 /// # 算法
 /// - EF 更新：`EF' = max(1.3, EF + (0.1 - (5-q)*(0.08 + (5-q)*0.02)))`
+/// - 首次复习（old_interval/old_ef 任一为 None）：quality≤3 interval=1，quality≥4 interval=6，difficulty=0.5
 /// - quality < 3：重置 interval=1，difficulty=0.8
 /// - 非首次且 old_interval < 1.5：interval=6，difficulty=0.5
 /// - 其他：interval = old_interval × new_ef，difficulty=0.3
@@ -53,13 +54,9 @@ pub fn calculate_sm2(
         }
         _ => {
             // 首次复习（old_interval 或 old_ef 任一为 None）
-            let interval = if quality < 3 {
-                1.0
-            } else if quality == 3 {
-                1.0
-            } else {
-                6.0
-            };
+            // 语义与化简前的三分支（q<3→1.0 / q==3→1.0 / 其他→6.0）逐值等价，
+            // 由 test_sm2_first_review_all_qualities_table 钉住 quality 0-5 的 interval/ef。
+            let interval = if quality <= 3 { 1.0 } else { 6.0 };
             let ef = (2.5 + (0.1 - (5.0 - q) * (0.08 + (5.0 - q) * 0.02))).max(1.3);
             Sm2Result {
                 interval_days: interval,
@@ -452,6 +449,83 @@ mod tests {
         assert!((result.interval_days - 6.0).abs() < 0.001);
         // q=4: ef = max(1.3, 2.5 + 0) = 2.5
         assert!((result.ease_factor - 2.5).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_sm2_first_review_quality_1() {
+        let result = calculate_sm2(1, None, None);
+        assert!((result.interval_days - 1.0).abs() < 0.001);
+        // q=1: ef = max(1.3, 2.5 + (0.1 - 4*(0.08+4*0.02))) = max(1.3, 2.5 - 0.54) = 1.96
+        assert!((result.ease_factor - 1.96).abs() < 0.001);
+        assert!((result.difficulty - 0.5).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_sm2_first_review_quality_2() {
+        let result = calculate_sm2(2, None, None);
+        assert!((result.interval_days - 1.0).abs() < 0.001);
+        // q=2: ef = max(1.3, 2.5 + (0.1 - 3*(0.08+3*0.02))) = max(1.3, 2.5 - 0.32) = 2.18
+        assert!((result.ease_factor - 2.18).abs() < 0.001);
+        assert!((result.difficulty - 0.5).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_sm2_first_review_all_qualities_table() {
+        // 钉住行为：首次复习 quality 0-5 各值的 (interval, ef)。
+        // 当前语义 = quality<=3 → 1 天；quality>=4 → 6 天。分支化简重构前后此表必须全绿。
+        let cases: Vec<(i64, f64, f64)> = vec![
+            (0, 1.0, 1.7),
+            (1, 1.0, 1.96),
+            (2, 1.0, 2.18),
+            (3, 1.0, 2.36),
+            (4, 6.0, 2.5),
+            (5, 6.0, 2.6),
+        ];
+        for (q, interval, ef) in cases {
+            let r = calculate_sm2(q, None, None);
+            assert!(
+                (r.interval_days - interval).abs() < 0.001,
+                "q={} interval 应为 {}",
+                q,
+                interval
+            );
+            assert!((r.ease_factor - ef).abs() < 0.001, "q={} ef 应为 {}", q, ef);
+            assert!(
+                (r.difficulty - 0.5).abs() < 0.001,
+                "q={} difficulty 首次复习固定 0.5",
+                q
+            );
+        }
+    }
+
+    #[test]
+    fn test_sm2_repeat_all_qualities_table() {
+        // 钉住行为：已有间隔分支（old_interval=10.0, old_ef=2.5）quality 0-5 各值代表值。
+        // q<3 重置 interval=1、difficulty=0.8；q>=3 走 interval=old*ef、difficulty=0.3。
+        let cases: Vec<(i64, f64, f64, f64)> = vec![
+            (0, 1.0, 1.7, 0.8),
+            (1, 1.0, 1.96, 0.8),
+            (2, 1.0, 2.18, 0.8),
+            (3, 23.6, 2.36, 0.3), // 10 * 2.36
+            (4, 25.0, 2.5, 0.3),  // 10 * 2.5
+            (5, 26.0, 2.6, 0.3),  // 10 * 2.6
+        ];
+        for (q, interval, ef, diff) in cases {
+            let r = calculate_sm2(q, Some(10.0), Some(2.5));
+            assert!(
+                (r.interval_days - interval).abs() < 0.001,
+                "q={} interval 应为 {}",
+                q,
+                interval
+            );
+            assert!((r.ease_factor - ef).abs() < 0.001, "q={} ef 应为 {}", q, ef);
+            assert!(
+                (r.difficulty - diff).abs() < 0.001,
+                "q={} difficulty 应为 {}",
+                q,
+                diff
+            );
+        }
     }
 
     // === 非首次复习：quality < 3 重置 ===

@@ -39,13 +39,17 @@ impl SqlBuilder {
         self
     }
 
+    // 预留：有意的构建器 API 面（生产查询暂未用到，由 test_multiple_conditions 测试覆盖），后续动态查询直接可用。
     /// 加入固定 WHERE 条件
+    #[allow(dead_code)]
     pub fn and_where(mut self, cond: impl Into<String>) -> Self {
         self.conditions.push(cond.into());
         self
     }
 
+    // 预留：有意的构建器 API 面（生产查询暂未用到，由 test_and_in* 测试覆盖），后续批量 id 查询直接可用。
     /// 加入 IN 子句，自动生成 "col IN (?,?,?)"，count 个占位符
+    #[allow(dead_code)]
     pub fn and_in(mut self, col: &str, count: usize) -> Self {
         if count > 0 {
             self.conditions.push(format!("{} IN ({})", col, placeholders(count)));
@@ -58,6 +62,8 @@ impl SqlBuilder {
         self
     }
 
+    // 预留：有意的构建器 API 面（生产查询暂未用到，由 test_multiple_conditions 测试覆盖），后续分页/限流查询直接可用。
+    #[allow(dead_code)]
     pub fn limit(mut self, n: i64) -> Self {
         self.limit = Some(n);
         self
@@ -86,7 +92,7 @@ pub fn placeholders(count: usize) -> String {
     if count == 0 {
         String::new()
     } else {
-        std::iter::repeat("?").take(count).collect::<Vec<_>>().join(",")
+        std::iter::repeat_n("?", count).collect::<Vec<_>>().join(",")
     }
 }
 

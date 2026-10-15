@@ -495,7 +495,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     }
 
     // ── v9: tags.name_zh 去掉 UNIQUE，允许不同维度使用相同中文标签名 ──
-    if current >= 7 && current < 9 {
+    if (7..9).contains(&current) {
         // 关外键 → 重建 → 开外键，三步必须发生在**同一条连接**上：PRAGMA 是按连接的，
         // 原先用 `execute(pool)` 会把 PRAGMA 打到另一条连接，事务所在连接仍开着外键，
         // `DROP TABLE tags` 便因 entity_tags 引用它而报 FOREIGN KEY constraint failed，

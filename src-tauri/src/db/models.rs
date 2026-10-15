@@ -184,22 +184,6 @@ pub fn row_from_treatment(r: &SqliteRow) -> Treatment {
     }
 }
 
-#[inline]
-pub fn row_from_tag(r: &SqliteRow) -> Tag {
-    Tag {
-        id: r.get("id"),
-        name_zh: r.get("name_zh"),
-        name_en: r.get("name_en"),
-        tag_group: r.get("tag_group"),
-        emergency_level: r.get("emergency_level"),
-        clinical_action: r.get("clinical_action"),
-        textbook_logic: r.get("textbook_logic"),
-        typical_scenario: r.get("typical_scenario"),
-        color: r.get("color"),
-        created_at: r.get("created_at"),
-    }
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Disease {
     pub id: String,
