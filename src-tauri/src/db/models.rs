@@ -9,8 +9,9 @@ use sqlx::Row;
 //
 // tags 字段的约定：
 //   查询用 sql_builder::tags_subquery() 附加一个关联子查询，
-//   把 entity_tags → tags.name_zh 聚合为 JSON 数组文本，列别名固定为 `tags`；
+//   把 entity_tags → tags.id 聚合为 JSON 数组文本，列别名固定为 `tags`；
 //   这里由 row_tags() 统一解析成 Vec<String>（序列化为 JSON 数组，前端 tags: string[]）。
+//   元素是标签 id 而非显示名：前端要拿它回查 get_tags() 取 color / tag_group。
 //   没有 tags 列的查询（历史 SQL / `SELECT *`）回退成空数组，不报错。
 //
 // 为什么 Disease/Symptom/Drug/Treatment 手写 FromRow 而不用 #[derive(FromRow)]：
@@ -20,7 +21,7 @@ use sqlx::Row;
 /// 把 json_group_array 产出的 JSON 文本解析为 Vec<String>。
 ///
 /// - `None` / 空串 / `[]` → 空 Vec
-/// - 数组里的 `null`（标签名缺失）→ 跳过
+/// - 数组里的 `null`（标签 id 缺失）→ 跳过
 /// - 非数组或非法 JSON → 空 Vec 并在 stderr 记录（依据 E-08：不允许完全静默吞错）
 pub fn parse_tags_json(raw: Option<&str>) -> Vec<String> {
     let Some(text) = raw else {
@@ -50,7 +51,7 @@ pub fn parse_tags_json(raw: Option<&str>) -> Vec<String> {
     }
 }
 
-/// 读取行里的 `tags` 列并解析为标签名列表；列不存在时返回空 Vec。
+/// 读取行里的 `tags` 列并解析为标签 id 列表；列不存在时返回空 Vec。
 ///
 /// 列不存在是合法场景：不是每条查询都附加了 tags_subquery（例如只用 `SELECT *` 的历史 SQL）。
 #[inline]
@@ -192,7 +193,7 @@ pub struct Disease {
     pub urgency_level: Option<i64>,
     pub created_at: Option<String>,
     pub updated_at: Option<String>,
-    /// 标签名列表（entity_tags JOIN tags.name_zh），与前端 Disease.tags: string[] 对应。
+    /// 标签 id 列表（entity_tags JOIN tags.id），与前端 Disease.tags: string[] 对应。
     /// 由 tags_subquery() 附加的 `tags` 列提供；缺列时为空数组。
     pub tags: Vec<String>,
 }
@@ -205,7 +206,7 @@ pub struct Symptom {
     pub definition: Option<String>,
     pub species_notes: Option<String>,
     pub physiological_basis: Option<String>,
-    /// 标签名列表，与前端 Symptom.tags: string[] 对应。
+    /// 标签 id 列表，与前端 Symptom.tags: string[] 对应。
     pub tags: Vec<String>,
 }
 
@@ -228,7 +229,7 @@ pub struct Drug {
     pub smiles: Option<String>,
     pub inchikey: Option<String>,
     pub iupac_name: Option<String>,
-    /// 标签名列表，与前端 Drug.tags: string[] 对应。
+    /// 标签 id 列表，与前端 Drug.tags: string[] 对应。
     pub tags: Vec<String>,
 }
 
@@ -274,7 +275,7 @@ pub struct Treatment {
     pub physiological_basis: Option<String>,
     pub prognosis_assessment: Option<String>,
     pub created_at: Option<String>,
-    /// 标签名列表，与前端 Treatment.tags: string[] 对应。
+    /// 标签 id 列表，与前端 Treatment.tags: string[] 对应。
     pub tags: Vec<String>,
 }
 
@@ -378,7 +379,7 @@ mod tests {
     // ── 纯解析测试 ──
 
     #[test]
-    fn test_parse_tags_json_array_of_names() {
+    fn test_parse_tags_json_array_of_strings() {
         assert_eq!(parse(Some(r#"["呼吸系统","感染"]"#)), strings(&["呼吸系统", "感染"]));
     }
 
@@ -587,29 +588,31 @@ mod tests {
             .fetch_one(&pool)
             .await
             .unwrap();
-        // 排序：tag_group, name_zh → 呼吸系统(body_system) 在 感染(mechanism) 前
-        assert_eq!(row_from_disease(&row).tags, strings(&["呼吸系统", "感染"]));
+        // 排序：tag_group, name_zh → body_system 在 mechanism 前
+        // 元素是 tags.id（不是 name_zh）：前端要拿它回查 get_tags() 取 color/tag_group，
+        // 下发显示名会让那次回查永远落空、标签区照旧空白。
+        assert_eq!(row_from_disease(&row).tags, strings(&["body_resp", "mech_inf"]));
 
         let row = sqlx::query(&select_one("symptoms", "s", "symptom"))
             .bind("sym_t1")
             .fetch_one(&pool)
             .await
             .unwrap();
-        assert_eq!(row_from_symptom(&row).tags, strings(&["呼吸系统"]));
+        assert_eq!(row_from_symptom(&row).tags, strings(&["body_resp"]));
 
         let row = sqlx::query(&select_one("drugs", "dr", "drug"))
             .bind("drug_t1")
             .fetch_one(&pool)
             .await
             .unwrap();
-        assert_eq!(row_from_drug(&row).tags, strings(&["感染"]));
+        assert_eq!(row_from_drug(&row).tags, strings(&["mech_inf"]));
 
         let row = sqlx::query(&select_one("treatments", "t", "treatment"))
             .bind("trt_t1")
             .fetch_one(&pool)
             .await
             .unwrap();
-        assert_eq!(row_from_treatment(&row).tags, strings(&["呼吸系统"]));
+        assert_eq!(row_from_treatment(&row).tags, strings(&["body_resp"]));
     }
 
     #[tokio::test]
@@ -650,7 +653,7 @@ mod tests {
             .fetch_one(&pool)
             .await
             .unwrap();
-        assert_eq!(d.tags, strings(&["呼吸系统", "感染"]));
+        assert_eq!(d.tags, strings(&["body_resp", "mech_inf"]));
     }
 
     #[tokio::test]

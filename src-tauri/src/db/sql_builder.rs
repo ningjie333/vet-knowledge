@@ -90,36 +90,45 @@ pub fn placeholders(count: usize) -> String {
     }
 }
 
-/// entity_tags 关联子查询：把某个实体的标签名聚合成 JSON 数组文本，列别名固定为 `tags`。
+/// entity_tags 关联子查询：把某个实体的**标签 id** 聚合成 JSON 数组文本，列别名固定为 `tags`。
 ///
 /// 与 `models::row_tags()` / `models::parse_tags_json()` 配套使用：
 /// SQL 只负责产出 JSON 文本，Rust 侧统一解析成 `Vec<String>`，
 /// 序列化给前端就是 `tags: string[]`（而不是逗号分隔字符串）。
+///
+/// 为什么下发 id 而不是 tags.name_zh：前端拿到后要回查 `get_tags()` 建的映射表去取
+/// color / tag_group / 急诊等级（见 DrugHandbook.vue 的 mechanismTags 与 tag.color、
+/// DiseaseDetail.vue 的 tagMap.get(tagId)）。下发名字会让那次回查永远落空，
+/// 标签区依旧空白 —— 这是本次修复里踩到并纠正的契约错位。
 ///
 /// 排序与 `commands::treatments::get_entity_tags` 保持一致：`tag_group, name_zh`。
 /// 实体没有任何标签时，`json_group_array` 返回 `[]`（不是 NULL）。
 ///
 /// # 参数
 /// - `row_alias`：主表在查询里的别名，其主键列必须叫 `id`（如 `"d"` → `d.id`）
-/// - `entity_type`：必须来自 `entity_types::ENTITY_TYPES`。非法值返回空字符串，
-///   拼接后的 SQL 会因语法错误立即失败 —— 宁可报错也不静默返回空标签。
+/// - `entity_type`：必须来自 `entity_types::ENTITY_TYPES`，调用点全部是代码里的字面量。
+///   debug 构建下非法值直接 panic；release 下退化成"查不到行 → 空标签"。
+///   刻意不返回空字符串：空串会拼出 `SELECT d.*,  FROM ...` 这种语法错误，把 programmer
+///   error 推给运行期的数据库。
 ///
 /// # 示例（同样是 text 围栏）
 /// ```text
 /// let sel = tags_subquery("d", "disease");
-/// // => "(SELECT json_group_array(name_zh) FROM (SELECT tg.name_zh AS name_zh
+/// // => "(SELECT json_group_array(tag_id) FROM (SELECT tg.id AS tag_id
 /// //     FROM entity_tags et JOIN tags tg ON tg.id = et.tag_id
 /// //     WHERE et.entity_type = 'disease' AND et.entity_id = d.id
 /// //     ORDER BY tg.tag_group, tg.name_zh)) AS tags"
 /// let sql = format!("SELECT d.*, {} FROM diseases d", sel);
 /// ```
 pub fn tags_subquery(row_alias: &str, entity_type: &str) -> String {
-    if !crate::db::entity_types::is_valid_entity_type(entity_type) {
-        return String::new();
-    }
+    debug_assert!(
+        crate::db::entity_types::is_valid_entity_type(entity_type),
+        "tags_subquery 收到未注册的 entity_type: {}",
+        entity_type
+    );
     format!(
-        "(SELECT json_group_array(name_zh) FROM \
-         (SELECT tg.name_zh AS name_zh FROM entity_tags et JOIN tags tg ON tg.id = et.tag_id \
+        "(SELECT json_group_array(tag_id) FROM \
+         (SELECT tg.id AS tag_id FROM entity_tags et JOIN tags tg ON tg.id = et.tag_id \
           WHERE et.entity_type = '{}' AND et.entity_id = {}.id \
           ORDER BY tg.tag_group, tg.name_zh)) AS tags",
         entity_type, row_alias
@@ -189,7 +198,7 @@ mod tests {
         assert_eq!(placeholders(3), "?,?,?");
     }
 
-    // ── tags_subquery：标签链路（entity_tags → tags.name_zh → JSON 文本） ──
+    // ── tags_subquery：标签链路（entity_tags → tags.id → JSON 文本） ──
 
     #[test]
     fn test_tags_subquery_all_entity_types() {
@@ -206,14 +215,27 @@ mod tests {
             assert!(sel.contains(&format!("et.entity_id = {}.id", alias)));
             assert!(sel.ends_with(") AS tags"), "{} → {}", entity_type, sel);
             assert!(sel.contains("json_group_array"));
+            // 前端契约：下发 tags.id 供回查 color/tag_group，绝不能是 name_zh
+            assert!(
+                sel.contains("json_group_array(tag_id)") && sel.contains("tg.id AS tag_id"),
+                "{} → {} 必须聚合标签 id",
+                entity_type,
+                sel
+            );
+            assert!(
+                !sel.contains("json_group_array(name_zh)"),
+                "{} → {} 聚合了显示名，前端 tagMap.get() 会永远落空",
+                entity_type,
+                sel
+            );
         }
     }
 
     #[test]
-    fn test_tags_subquery_rejects_unknown_entity_type() {
-        // 自创命名会撞上 schema.sql 的 CHECK 约束，这里直接拒绝
-        assert_eq!(tags_subquery("d", "vaccine"), "");
-        assert_eq!(tags_subquery("d", ""), "");
+    #[should_panic(expected = "未注册的 entity_type")]
+    fn test_tags_subquery_panics_on_unknown_entity_type() {
+        // 自创命名会撞上 schema.sql 的 entity_tags CHECK 约束，debug 构建下立刻炸
+        tags_subquery("d", "vaccine");
     }
 
     #[test]

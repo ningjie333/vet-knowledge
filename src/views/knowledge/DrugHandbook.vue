@@ -60,18 +60,6 @@ function openDetail(drug: Drug) {
 function closeDetail() {
   selectedDrug.value = null
 }
-
-function severityColor(severity: string): string {
-  if (severity === 'major') return '#dc2626'
-  if (severity === 'moderate') return '#f59e0b'
-  return '#10b981'
-}
-
-function severityLabel(severity: string): string {
-  if (severity === 'major') return '严重'
-  if (severity === 'moderate') return '中等'
-  return '轻微'
-}
 </script>
 
 <template>

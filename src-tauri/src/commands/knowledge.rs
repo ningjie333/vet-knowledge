@@ -3,8 +3,9 @@ use crate::db::models::{row_from_disease, row_from_drug, row_from_symptom, row_f
 use crate::db::sql_builder::tags_subquery;
 use sqlx::Row;
 
-// 标签链路约定：tags_subquery() 在 SQL 侧把 entity_tags → tags.name_zh 聚合成 JSON 文本，
-// 由 models::row_from_*() 解析成 Vec<String> 后返回前端（前端 tags: string[]）。
+// 标签链路约定：tags_subquery() 在 SQL 侧把 entity_tags → tags.id 聚合成 JSON 文本，
+// 由 models::row_from_*() 解析成 Vec<String> 后返回前端（前端 tags: string[]，元素是标签 id，
+// 供页面回查 get_tags() 取 color / tag_group）。
 // 凡是返回 Disease / Symptom / Drug / Treatment 的查询都要带上对应的 tags 子查询，
 // 否则前端的标签区域就是空白。
 
