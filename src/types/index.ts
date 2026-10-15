@@ -31,6 +31,16 @@ export interface Disease {
 }
 
 /**
+ * 症状的物种差异备注条目。
+ * 对应 Rust `pub struct SpeciesNote`（models.rs）。DB 列原本是 JSON 对象
+ * `{"犬": "...", "猫": "..."}`，后端 `parse_species_notes` 已解析为结构化数组下发。
+ */
+export interface SpeciesNote {
+  species: string
+  note: string
+}
+
+/**
  * 症状实体（后端 src-tauri/src/db/models.rs 的 `pub struct Symptom` + row_from_symptom()）。
  * 字段名与 serde 默认输出一致（snake_case，无 rename_all）。
  */
@@ -39,11 +49,8 @@ export interface Symptom {
   name_zh: string
   name_en: string | null
   definition: string | null
-  /**
-   * 当前为原始 JSON 字符串（DB 直接透传，未解析），界面按纯文本渲染。
-   * 后端结构化改造（与 species / category 同层的 parse_string_list 修法）由主会话另行处理，见 G7。
-   */
-  species_notes: string | null
+  /** 物种差异备注，后端已解析为结构化列表（空数组表示无），前端逐条渲染 */
+  species_notes: SpeciesNote[]
   physiological_basis: string | null
   /** 标签 id 列表（不是标签名），由 tags_subquery() 提供，需回查 get_tags() 取显示名/颜色 */
   tags: string[]

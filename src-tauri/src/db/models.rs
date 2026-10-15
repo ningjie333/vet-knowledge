@@ -90,6 +90,45 @@ pub fn parse_string_list(raw: Option<&str>) -> Vec<String> {
         .collect()
 }
 
+/// 症状的物种差异备注条目。
+///
+/// DB 列 `species_notes` 以 JSON 对象存储（`{"犬": "...", "猫": "..."}`，由
+/// `tools/gen_from_json.py` 从 knowledge.json 的 markdown 文本转来）。与 species/category
+/// 同一层修法：在 Rust 侧解析成结构化列表再下发，前端直接渲染，不再看到原始 JSON。
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct SpeciesNote {
+    pub species: String,
+    pub note: String,
+}
+
+/// 解析 `species_notes` 列：JSON 对象 → 条目列表；NULL/空串 → 空列表。
+/// 解析失败时把**原文**保留为单条无物种前缀的备注——临床内容绝不静默丢弃。
+pub fn parse_species_notes(raw: Option<&str>) -> Vec<SpeciesNote> {
+    let Some(text) = raw.map(str::trim).filter(|t| !t.is_empty()) else {
+        return Vec::new();
+    };
+    if let Ok(serde_json::Value::Object(map)) = serde_json::from_str::<serde_json::Value>(text) {
+        return map
+            .into_iter()
+            .map(|(species, v)| SpeciesNote {
+                species,
+                note: match v {
+                    serde_json::Value::String(s) => s,
+                    other => other.to_string(),
+                },
+            })
+            .collect();
+    }
+    eprintln!(
+        "[parse_species_notes] 不是合法 JSON 对象，按原文保留: {}",
+        text
+    );
+    vec![SpeciesNote {
+        species: String::new(),
+        note: text.to_string(),
+    }]
+}
+
 /// 读取行里的 `tags` 列并解析为标签 id 列表；列不存在时返回空 Vec。
 ///
 /// 列不存在是合法场景：不是每条查询都附加了 tags_subquery（例如只用 `SELECT *` 的历史 SQL）。
@@ -137,7 +176,7 @@ pub fn row_from_symptom(r: &SqliteRow) -> Symptom {
         name_zh: r.get("name_zh"),
         name_en: r.get("name_en"),
         definition: r.get("definition"),
-        species_notes: r.get("species_notes"),
+        species_notes: parse_species_notes(r.get::<Option<String>, _>("species_notes").as_deref()),
         physiological_basis: r.get("physiological_basis"),
         tags: row_tags(r),
     }
@@ -229,7 +268,8 @@ pub struct Symptom {
     pub name_zh: String,
     pub name_en: Option<String>,
     pub definition: Option<String>,
-    pub species_notes: Option<String>,
+    /// 物种差异备注，DB 里是 JSON 对象字符串，经 `parse_species_notes` 解析为结构化列表。
+    pub species_notes: Vec<SpeciesNote>,
     pub physiological_basis: Option<String>,
     /// 标签 id 列表，与前端 Symptom.tags: string[] 对应。
     pub tags: Vec<String>,
@@ -435,6 +475,47 @@ mod tests {
         assert_eq!(parse_string_list(Some(r#"["犬","""#)), strings(&["犬"]));
     }
 
+    // ── species_notes 解析测试 ──
+
+    fn note(species: &str, note: &str) -> SpeciesNote {
+        SpeciesNote {
+            species: species.into(),
+            note: note.into(),
+        }
+    }
+
+    #[test]
+    fn test_parse_species_notes_object_becomes_structured_list() {
+        // 正常形状：DB 存 JSON 对象 {"犬": "...", "猫": "..."}，serde 默认按 key 排序（BTreeMap）。
+        let got = parse_species_notes(Some(r#"{"犬": "干咳提示气管", "猫": "张口呼吸为急症"}"#));
+        assert_eq!(
+            got,
+            vec![note("犬", "干咳提示气管"), note("猫", "张口呼吸为急症")]
+        );
+    }
+
+    #[test]
+    fn test_parse_species_notes_empty_cases() {
+        assert!(parse_species_notes(None).is_empty());
+        assert!(parse_species_notes(Some("   ")).is_empty());
+    }
+
+    #[test]
+    fn test_parse_species_notes_malformed_preserves_raw_text() {
+        // 关键契约：解析失败绝不能静默丢弃临床内容，原文必须作为一条 note 保留（species 留空）。
+        let got = parse_species_notes(Some("犬: 干咳提示气管"));
+        assert_eq!(got.len(), 1);
+        assert_eq!(got[0].species, "");
+        assert_eq!(got[0].note, "犬: 干咳提示气管");
+    }
+
+    #[test]
+    fn test_parse_species_notes_non_string_value_stringified() {
+        // 值不是字符串（异常数据）时转成文本，不 panic、不丢条目。
+        let got = parse_species_notes(Some(r#"{"犬": 3}"#));
+        assert_eq!(got, vec![note("犬", "3")]);
+    }
+
     // ── 纯解析测试 ──
 
     #[test]
@@ -500,7 +581,7 @@ mod tests {
             name_zh: "咳嗽".into(),
             name_en: None,
             definition: None,
-            species_notes: None,
+            species_notes: Vec::new(),
             physiological_basis: None,
             tags,
         }

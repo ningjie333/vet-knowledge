@@ -160,10 +160,13 @@ function urgencyBadge(level: number | null) {
             <p>{{ selectedSymptom.definition }}</p>
           </div>
 
-          <!-- 物种特异性 -->
-          <div v-if="selectedSymptom.species_notes" class="symptom-definition species-notes">
+          <!-- 物种特异性：后端已解析为结构化列表，逐条渲染，不再直出 JSON -->
+          <div v-if="selectedSymptom.species_notes.length" class="symptom-definition species-notes">
             <h3>物种特异性</h3>
-            <p>{{ selectedSymptom.species_notes }}</p>
+            <p v-for="(sn, i) in selectedSymptom.species_notes" :key="i" class="species-note-item">
+              <span v-if="sn.species" class="species-note-tag">{{ sn.species }}</span>
+              <span>{{ sn.note }}</span>
+            </p>
           </div>
 
           <div v-if="speciesOptions.length > 1" class="species-filter">
@@ -409,6 +412,24 @@ function urgencyBadge(level: number | null) {
   line-height: 1.6;
   color: var(--color-text);
   margin: 0;
+}
+.species-note-item {
+  margin-bottom: 6px;
+}
+.species-note-item:last-child {
+  margin-bottom: 0;
+}
+.species-note-tag {
+  display: inline-block;
+  min-width: 28px;
+  text-align: center;
+  padding: 1px 8px;
+  margin-right: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #15803d;
+  background: #dcfce7;
+  border-radius: 10px;
 }
 
 .species-filter {
