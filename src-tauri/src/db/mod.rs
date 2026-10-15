@@ -2,11 +2,49 @@ pub mod models;
 pub mod sql_builder;
 pub mod entity_types;
 
-use sqlx::{sqlite::SqlitePoolOptions, Pool, Sqlite};
+use sqlx::{
+    sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePoolOptions, SqliteSynchronous},
+    Pool, Sqlite,
+};
 use std::path::PathBuf;
+use std::str::FromStr;
 use tauri::{AppHandle, Manager};
 
 pub type DbPool = Pool<Sqlite>;
+
+/// 连接选项：所有 PRAGMA 都在这里声明，而不是连上之后 `execute(pool)`。
+///
+/// 为什么必须这样：SQLite 的 PRAGMA 是**按连接**生效的，而池里有 2 条连接。启动后用
+/// `execute(&pool)` 设 PRAGMA，只会命中当时被借出的那一条，另一条仍是默认值 —— 于是同一份
+/// 配置在两条连接上并不一致（`cache_size`、`temp_store` 这类性能参数会静默只对一半生效）。
+///
+/// 外键这一项 sqlx 的连接选项本来就默认开启（实测退回旧写法也不会丢），所以真正的事故点是
+/// v9 迁移：`PRAGMA foreign_keys = OFF` 打在一条连接上，`pool.begin()` 的事务却跑在另一条
+/// 仍开启外键的连接上，`DROP TABLE tags` 直接 "FOREIGN KEY constraint failed"，
+/// 凡是数据库停在 v9 之前的用户升级后都启动不了（现场证据：app_data_dir/seed_import_error.log）。
+///
+/// 测试也走这个函数，保证被测库的外键行为与生产一致。
+pub fn sqlite_options(db_url: &str) -> anyhow::Result<SqliteConnectOptions> {
+    Ok(SqliteConnectOptions::from_str(db_url)?
+        .create_if_missing(true)
+        // 用 DELETE 而非 WAL：WAL 需要 .db-shm 共享内存文件，沙箱化环境会拦截它导致
+        // disk I/O error；DELETE 无 SHM 依赖，单用户桌面应用足够。
+        .journal_mode(SqliteJournalMode::Delete)
+        // DELETE 模式下 NORMAL 在断电时有损坏全库风险，用 FULL 保崩溃安全。
+        .synchronous(SqliteSynchronous::Full)
+        .foreign_keys(true)
+        .pragma("cache_size", "-64000")
+        .pragma("temp_store", "MEMORY"))
+}
+
+/// 建立连接池。生产与测试共用这一条构造路径 —— 否则测试只钉住了 PRAGMA 本身，
+/// 却钉不住"init 到底有没有用它"。
+pub async fn create_pool(db_url: &str) -> anyhow::Result<DbPool> {
+    Ok(SqlitePoolOptions::new()
+        .max_connections(2)
+        .connect_with(sqlite_options(db_url)?)
+        .await?)
+}
 
 /// 按分号分割 SQL 脚本，正确处理引号字符串内的分号。
 /// 简单状态机：跟踪单引号/双引号状态，只在引号外部分割。
@@ -99,22 +137,11 @@ pub async fn init(app: &AppHandle) -> anyhow::Result<DbPool> {
     let db_path = app_dir.join("vet_knowledge.db");
     let db_url = format!("sqlite://{}?mode=rwc", db_path.display()).replace('\\', "/");
 
-    let pool = SqlitePoolOptions::new()
-        .max_connections(2)
-        .connect(&db_url)
-        .await?;
+    let pool = create_pool(&db_url).await?;
 
-    // SQLite PRAGMA 优化（桌面端最佳实践）
-    // 用 DELETE 而非 WAL：WAL 模式需要 .db-shm 共享内存文件，
-    // 在沙箱化环境（如 TRAE Sandbox）中该文件访问会被拦截导致 disk I/O error。
-    // DELETE 模式是 SQLite 默认回滚日志，无 SHM 依赖，单用户桌面应用足够。
-    sqlx::query("PRAGMA journal_mode = DELETE").execute(&pool).await?;
-    // DELETE 模式下 synchronous=NORMAL 在断电时有损坏全库风险，用 FULL 保崩溃安全。
-    // 单用户桌面应用写频率低，FULL 的性能损失可接受。
-    sqlx::query("PRAGMA synchronous = FULL").execute(&pool).await?;
-    sqlx::query("PRAGMA cache_size = -64000").execute(&pool).await?;
-    sqlx::query("PRAGMA foreign_keys = ON").execute(&pool).await?;
-    sqlx::query("PRAGMA temp_store = MEMORY").execute(&pool).await?;
+    // SQLite PRAGMA（外键 / journal_mode / synchronous / cache_size / temp_store）全部在
+    // sqlite_options() 里按连接声明 —— 见该函数注释：用 execute(&pool) 设 PRAGMA 只会命中
+    // 池里被借出的那一条连接，另一条仍是默认值，约束强度不确定。
 
     // 建表（使用安全的 SQL 分割）
     // 关键：先 strip_sql_comments 把 `--` 单行注释剥掉，
@@ -186,6 +213,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             (10, "Drop unused FTS5 virtual tables (diseases_fts, symptoms_fts, drugs_fts, cases_fts)"),
             (11, "Drop unused learning_progress table"),
             (12, "Add drug_interactions table"),
+            (13, "Add PubChem columns to drugs (were only ever in schema.sql)"),
         ] {
             sqlx::query(
                 "INSERT OR IGNORE INTO schema_migrations (version, description)
@@ -468,8 +496,14 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
 
     // ── v9: tags.name_zh 去掉 UNIQUE，允许不同维度使用相同中文标签名 ──
     if current >= 7 && current < 9 {
-        sqlx::query("PRAGMA foreign_keys = OFF").execute(pool).await?;
-        let mut tx = pool.begin().await?;
+        // 关外键 → 重建 → 开外键，三步必须发生在**同一条连接**上：PRAGMA 是按连接的，
+        // 原先用 `execute(pool)` 会把 PRAGMA 打到另一条连接，事务所在连接仍开着外键，
+        // `DROP TABLE tags` 便因 entity_tags 引用它而报 FOREIGN KEY constraint failed，
+        // 结果是所有停留在 v9 之前的存量库升级后启动即崩。
+        use sqlx::Connection as _;
+        let mut conn = pool.acquire().await?;
+        sqlx::query("PRAGMA foreign_keys = OFF").execute(&mut *conn).await?;
+        let mut tx = conn.begin().await?;
         sqlx::query(
             "CREATE TABLE tags_v2 (
                 id TEXT PRIMARY KEY,
@@ -512,7 +546,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         .execute(&mut *tx)
         .await?;
         tx.commit().await?;
-        sqlx::query("PRAGMA foreign_keys = ON").execute(pool).await?;
+        sqlx::query("PRAGMA foreign_keys = ON").execute(&mut *conn).await?;
     }
 
     // ── v12: 药物相互作用表 ──
@@ -535,6 +569,49 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
              VALUES (12, 'Add drug_interactions table')"
+        )
+        .execute(pool)
+        .await?;
+    }
+
+    // ── v13: drugs 补齐 PubChem 化学性质列 ──
+    // 这 6 列只写在 schema.sql 里，历史上没有任何迁移补过 → 全新库有、存量库没有。
+    // 而种子 SQL 是按当前列名 INSERT 的，于是老库升级后导入直接失败
+    // （"table drugs has no column named pubchem_cid"），应用弹错误框后退出。
+    if current < 13 {
+        use sqlx::Row;
+        // pragma_table_info() 对不存在的表会直接报错，先确认表在
+        let has_drugs: i64 = sqlx::query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='drugs'")
+            .fetch_one(pool)
+            .await?
+            .get::<i64, _>(0);
+        if has_drugs > 0 {
+            for (col, ty) in [
+                ("pubchem_cid", "INTEGER"),
+                ("molecular_formula", "TEXT"),
+                ("molecular_weight", "REAL"),
+                ("smiles", "TEXT"),
+                ("inchikey", "TEXT"),
+                ("iupac_name", "TEXT"),
+            ] {
+                let have: i64 = sqlx::query(
+                    "SELECT COUNT(*) FROM pragma_table_info('drugs') WHERE name = ?",
+                )
+                .bind(col)
+                .fetch_one(pool)
+                .await?
+                .get::<i64, _>(0);
+                if have == 0 {
+                    sqlx::query(&format!("ALTER TABLE drugs ADD COLUMN {} {}", col, ty))
+                        .execute(pool)
+                        .await?;
+                }
+            }
+        }
+        // 版本号无条件落表：否则表缺失的库每次启动都重跑一遍
+        sqlx::query(
+            "INSERT OR IGNORE INTO schema_migrations (version, description)
+             VALUES (13, 'Add PubChem columns to drugs (were only ever in schema.sql)')"
         )
         .execute(pool)
         .await?;
@@ -709,6 +786,234 @@ mod tests {
         let stmts = split_sql_statements(sql);
         // 只有 `;` 前的内容算一个 statement，注释和空行不会单独分割
         assert_eq!(stmts.len(), 1);
+    }
+
+    /// 在临时目录里开一个文件库的 URL（内存库每条连接是各自独立的库，测不了跨连接行为）。
+    fn temp_db_url(tag: &str) -> (PathBuf, String) {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        static SEQ: AtomicUsize = AtomicUsize::new(0);
+        let dir = std::env::temp_dir().join(format!(
+            "vet-knowledge-dbtest-{}-{}-{}",
+            tag,
+            std::process::id(),
+            SEQ.fetch_add(1, Ordering::SeqCst)
+        ));
+        std::fs::create_dir_all(&dir).expect("创建临时目录");
+        let url = format!(
+            "sqlite://{}?mode=rwc",
+            dir.join("vet_knowledge.db").display()
+        )
+        .replace('\\', "/");
+        (dir, url)
+    }
+
+    /// 池里**每一条**连接都必须开启外键。
+    ///
+    /// 旧写法是连上库之后 `execute(&pool)` 发 PRAGMA —— 那只会命中当时被借出的那一条连接，
+    /// 另一条仍是 SQLite 默认的"外键关闭"。于是同一个库里哪些写入受约束，取决于这次借到哪条
+    /// 连接；v9 迁移的 `PRAGMA foreign_keys = OFF` 也正是这样打在空处，导致老库升级即崩。
+    #[tokio::test]
+    async fn test_every_pool_connection_gets_the_same_pragmas() {
+        use sqlx::Row;
+        let (dir, url) = temp_db_url("fk-per-conn");
+        let pool = create_pool(&url).await.expect("连接失败");
+
+        // 同时持有两条连接，确保检查的是两个不同连接而不是同一个借了两次
+        let mut held = Vec::new();
+        for _ in 0..2 {
+            held.push(pool.acquire().await.expect("获取连接"));
+        }
+        assert_eq!(held.len(), 2, "池子没有真正开出 2 条连接，测试会失去意义");
+
+        let mut per_conn = Vec::new();
+        for conn in held.iter_mut() {
+            let fk_row = sqlx::query("PRAGMA foreign_keys")
+                .fetch_one(&mut **conn).await.expect("读取 foreign_keys 失败");
+            let fk = fk_row.try_get::<i64, _>(0).unwrap_or(-999);
+            let cache_row = sqlx::query("PRAGMA cache_size")
+                .fetch_one(&mut **conn).await.expect("读取 cache_size 失败");
+            let cache = cache_row.try_get::<i64, _>(0).unwrap_or(-999);
+            per_conn.push((fk, cache));
+        }
+        // 外键：sqlx 默认开，这里只是守住"别被谁关掉"
+        // cache_size：非 sqlx 默认值，只有走连接选项才会两条连接都是 -64000
+        for (fk, cache) in &per_conn {
+            assert_eq!(*fk, 1, "该连接没开外键: {:?}", per_conn);
+            assert_eq!(
+                *cache, -64000,
+                "该连接的 cache_size 不是配置值，说明按连接的 PRAGMA 又只落到了一条连接上: {:?}",
+                per_conn
+            );
+        }
+
+        drop(held);
+        pool.close().await;
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// 存量库升级回归：停在 v8 的库（tags 带 UNIQUE(name_zh)、entity_tags 有引用行）
+    /// 必须能一路迁移到最新版本且不丢标签数据。
+    ///
+    /// 回归的正是线上真实故障：v9 重建 tags 时 `DROP TABLE tags` 报
+    /// FOREIGN KEY constraint failed，凡数据库早于 v9 的安装包升级后启动即崩
+    /// （现场证据是 app_data_dir 里的 seed_import_error.log）。
+    #[tokio::test]
+    async fn test_upgrade_from_pre_v9_database_keeps_tag_rows() {
+        let (dir, url) = temp_db_url("pre-v9");
+
+        {
+            let setup = SqlitePoolOptions::new()
+                .max_connections(1)
+                .connect_with(sqlite_options(&url).expect("构造连接选项失败"))
+                .await
+                .expect("建旧库失败");
+            sqlx::query(
+                "CREATE TABLE schema_migrations (version INTEGER PRIMARY KEY, applied_at TEXT, description TEXT)",
+            )
+            .execute(&setup)
+            .await
+            .unwrap();
+            for v in 1..=8 {
+                sqlx::query("INSERT INTO schema_migrations (version) VALUES (?)")
+                    .bind(v)
+                    .execute(&setup)
+                    .await
+                    .unwrap();
+            }
+            // v8 形态：列齐全，但 name_zh 带 UNIQUE —— 这正是 v9 要拆掉的约束
+            sqlx::query(
+                "CREATE TABLE tags (
+                    id TEXT PRIMARY KEY,
+                    name_zh TEXT NOT NULL UNIQUE,
+                    name_en TEXT,
+                    tag_group TEXT NOT NULL DEFAULT 'custom',
+                    emergency_level TEXT CHECK(emergency_level IS NULL OR emergency_level IN ('red','orange','yellow','green')),
+                    clinical_action TEXT,
+                    textbook_logic TEXT,
+                    typical_scenario TEXT,
+                    color TEXT,
+                    created_at TEXT DEFAULT (datetime('now'))
+                )",
+            )
+            .execute(&setup)
+            .await
+            .unwrap();
+            sqlx::query(
+                "CREATE TABLE entity_tags (entity_type TEXT NOT NULL, entity_id TEXT NOT NULL, \
+                 tag_id TEXT NOT NULL REFERENCES tags(id), PRIMARY KEY (entity_type, entity_id, tag_id))",
+            )
+            .execute(&setup)
+            .await
+            .unwrap();
+            sqlx::query("INSERT INTO tags (id, name_zh, tag_group) VALUES ('body_resp', '呼吸系统', 'body_system')")
+                .execute(&setup)
+                .await
+                .unwrap();
+            sqlx::query("INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_001', 'body_resp')")
+                .execute(&setup)
+                .await
+                .unwrap();
+            setup.close().await;
+        }
+
+        let pool = create_pool(&url).await.expect("连接旧库失败");
+
+        apply_migrations(&pool).await.expect("从 v8 迁移到最新版本失败（回归）");
+
+        use sqlx::Row;
+        let version: i64 = sqlx::query("SELECT MAX(version) FROM schema_migrations")
+            .fetch_one(&pool)
+            .await
+            .unwrap()
+            .get(0);
+        assert_eq!(version, 13, "迁移没有走到最新版本");
+
+        let tags: i64 = sqlx::query("SELECT COUNT(*) FROM tags")
+            .fetch_one(&pool)
+            .await
+            .unwrap()
+            .get(0);
+        let links: i64 = sqlx::query("SELECT COUNT(*) FROM entity_tags")
+            .fetch_one(&pool)
+            .await
+            .unwrap()
+            .get(0);
+        assert_eq!((tags, links), (1, 1), "重建 tags 表时丢了用户已有的标签数据");
+
+        // 迁移结束后外键必须恢复生效（PRAGMA OFF 不能泄漏到后续使用）
+        let bad = sqlx::query("INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_x', 'nope')")
+            .execute(&pool)
+            .await;
+        assert!(bad.is_err(), "迁移后外键没有恢复，坏数据可以写进库");
+
+        pool.close().await;
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// 存量库升级后必须能真正吃下当前种子 SQL。
+    ///
+    /// 回归的是线上第二个"升级即崩"：drugs 的 6 个 PubChem 列只写在 schema.sql 里、
+    /// 从来没有任何迁移补过，于是老库结构缺列，而种子按当前列名 INSERT →
+    /// "table drugs has no column named pubchem_cid"，应用弹错误框后退出。
+    /// 光比对 schema.sql 与种子是查不出来的（两边都有这些列），必须真的从老结构走一遍。
+    #[tokio::test]
+    async fn test_legacy_drugs_schema_upgrades_then_accepts_seed() {
+        use sqlx::Row;
+        let pool = SqlitePoolOptions::new()
+            .max_connections(1)
+            .connect("sqlite::memory:")
+            .await
+            .expect("内存库连接失败");
+        sqlx::query("PRAGMA foreign_keys = ON").execute(&pool).await.unwrap();
+
+        for stmt in split_sql_statements(&strip_sql_comments(include_str!(
+            "../../data/seed/schema.sql"
+        ))) {
+            let t = stmt.trim();
+            if !t.is_empty() {
+                sqlx::query(t).execute(&pool).await.expect("schema.sql 执行失败");
+            }
+        }
+
+        // 退回 v13 之前的 drugs 结构：没有那 6 个 PubChem 列
+        sqlx::query(
+            "CREATE TABLE drugs_legacy (
+                id TEXT PRIMARY KEY, name_zh TEXT NOT NULL, name_en TEXT, drug_class TEXT,
+                mechanism_of_action TEXT, pk_pd TEXT, indications TEXT, contraindications TEXT,
+                side_effects TEXT, adverse_mechanism TEXT, species_dosing TEXT
+            )",
+        )
+        .execute(&pool)
+        .await
+        .unwrap();
+        sqlx::query("DROP TABLE drugs").execute(&pool).await.unwrap();
+        sqlx::query("ALTER TABLE drugs_legacy RENAME TO drugs").execute(&pool).await.unwrap();
+
+        // 声明这是一个"迁移到 v8 为止"的存量库
+        for v in 1..=8 {
+            sqlx::query("INSERT OR IGNORE INTO schema_migrations (version) VALUES (?)")
+                .bind(v)
+                .execute(&pool)
+                .await
+                .unwrap();
+        }
+
+        apply_migrations(&pool).await.expect("存量库迁移失败（回归）");
+
+
+        // 最后一道：拿真实种子 SQL 里的第一条 drugs INSERT 打进去，必须成功
+        let seed = strip_sql_comments(include_str!("../../data/seed/001_initial.sql"));
+        let drugs_insert = split_sql_statements(&seed)
+            .into_iter()
+            .map(|s| s.trim().to_string())
+            .find(|s| s.starts_with("INSERT INTO drugs ("))
+            .expect("种子里找不到 drugs 的 INSERT");
+        sqlx::query(&drugs_insert)
+            .execute(&pool)
+            .await
+            .expect("迁移后的库仍然拒绝真实种子 INSERT（列不匹配）");
+
+        pool.close().await;
     }
 
     /// 种子 SQL 端到端冒烟测试：schema.sql + 001_initial.sql 全量执行，
