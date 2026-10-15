@@ -10,7 +10,9 @@
 // sidecar 启动后先发 ready 信号: {"jsonrpc":"2.0","method":"ready","params":{"version":1}}
 
 pub mod protocol;
+pub mod root;
 pub mod manager;
 
 pub use manager::SidecarManager;
 pub use protocol::{RpcError, RpcErrorCode};
+pub use root::resolve_virtual_vet_root;

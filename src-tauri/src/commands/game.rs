@@ -1,4 +1,4 @@
-// 游戏命令层：8 个 Tauri 命令。
+// 游戏命令层：9 个 Tauri 命令。
 //
 // 7 个转发到 virtual-vet sidecar（JSON-RPC over stdio）:
 //   game_list_cases / game_new_session / game_advance / game_administer_drug
@@ -10,17 +10,17 @@
 // 设计原则:
 //   - 症状层以 virtual-vet 为主: 前端展示 virtual-vet 的 display_name（原样），
 //     仅在调用 infer_diagnosis 时翻译为 vet-knowledge 的 name_zh
-//   - 映射表路径: {VET_VET_ROOT}/data/virtual_vet_to_vk_symptom_map.json
+//   - 映射表路径: {virtual-vet 根目录}/data/virtual_vet_to_vk_symptom_map.json
+//     根目录由 sidecar::resolve_virtual_vet_root() 统一解析（VET_VET_ROOT → 同级探测 → 降级）
 //   - 错误统一转 String（与 vet-knowledge 现有命令风格一致）
 
 use crate::db::DbPool;
 use crate::db::models::DiagnosisCandidate;
 use crate::engine::{infer, DiagnosisInput};
-use crate::sidecar::SidecarManager;
+use crate::sidecar::{resolve_virtual_vet_root, SidecarManager};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::Row;
-use std::env;
 use std::path::PathBuf;
 
 // ===== 数据类型（前端契约，对应 types/index.ts 的 Game* 接口）=====
@@ -69,6 +69,8 @@ pub struct GameSnapshot {
     pub time_cost_min: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub success: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -166,6 +168,37 @@ pub async fn game_advance(
     serde_json::from_value(result).map_err(|e| format!("deserialize snapshot: {}", e))
 }
 
+/// 异步推进时间——立即返回 job_id，后台推进，前端用 game_poll_status 轮询。
+/// 返回 {job_id, estimated_ms}。失败时前端应降级到 game_advance 同步路径。
+#[tauri::command]
+pub async fn game_advance_async(
+    sidecar: tauri::State<'_, SidecarManager>,
+    session_id: String,
+) -> Result<Value, String> {
+    let result = sidecar
+        .call(
+            "game.advance_async",
+            serde_json::json!({"session_id": session_id}),
+        )
+        .await
+        .map_err(rpc_to_string)?;
+    Ok(result)
+}
+
+/// 轮询异步推进任务状态。
+/// 返回 {done: bool, progress_pct: f64, snapshot: GameSnapshot|null, error: string|null}。
+#[tauri::command]
+pub async fn game_poll_status(
+    sidecar: tauri::State<'_, SidecarManager>,
+    job_id: String,
+) -> Result<Value, String> {
+    let result = sidecar
+        .call("game.poll_status", serde_json::json!({"job_id": job_id}))
+        .await
+        .map_err(rpc_to_string)?;
+    Ok(result)
+}
+
 /// 给药
 #[tauri::command]
 pub async fn game_administer_drug(
@@ -212,12 +245,30 @@ pub async fn game_examine(
 /// 读映射表翻译 disease_id（dis_XXX → virtual-vet snake_case key）。
 /// 查不到时返回 None（调用方原样提交，向后兼容自由文本输入）。
 fn translate_disease_id(disease_id: &str) -> Option<String> {
-    let vet_root = env::var("VET_VET_ROOT").ok()?;
+    let vet_root = match resolve_virtual_vet_root() {
+        Some(root) => root,
+        None => {
+            eprintln!("[game_diagnose] virtual-vet root unresolved, cannot translate disease_id (will submit as-is)");
+            return None;
+        }
+    };
     let map_path = PathBuf::from(vet_root)
         .join("data")
         .join("vk_to_virtual_vet_disease_map.json");
-    let content = std::fs::read_to_string(&map_path).ok()?;
-    let map: Value = serde_json::from_str(&content).ok()?;
+    let content = match std::fs::read_to_string(&map_path) {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("[game_diagnose] disease map not found ({}), submitting as-is", e);
+            return None;
+        }
+    };
+    let map: Value = match serde_json::from_str(&content) {
+        Ok(m) => m,
+        Err(e) => {
+            eprintln!("[game_diagnose] disease map parse error: {}", e);
+            return None;
+        }
+    };
     map.get("mappings")?
         .get(disease_id)?
         .as_str()
@@ -288,7 +339,8 @@ pub async fn game_list_drugs(
 /// 症状层以 virtual-vet 为主——前端展示用 display_name 原样，
 /// 仅在此处读映射表翻译为 vet-knowledge 的 name_zh 再推理。
 ///
-/// 映射表: {VET_VET_ROOT}/data/virtual_vet_to_vk_symptom_map.json
+/// 映射表: {virtual-vet 根目录}/data/virtual_vet_to_vk_symptom_map.json
+/// 根目录由 sidecar::resolve_virtual_vet_root() 解析。
 #[tauri::command]
 pub async fn game_diagnosis_hint(
     pool: tauri::State<'_, DbPool>,
@@ -380,8 +432,16 @@ pub async fn game_diagnosis_hint(
 // ===== 辅助函数 =====
 
 /// 将 RpcError 转为 String（vet-knowledge 命令层统一用 String 错误）
+/// RpcError 的 Display 已包含 [code] 前缀，因此 message 中天然带 code。
 fn rpc_to_string(e: crate::sidecar::RpcError) -> String {
     format!("sidecar RPC error: {}", e)
+}
+
+/// 与 rpc_to_string 类似，但只保留 [code] message 格式（不带 "sidecar RPC error:" 前缀）。
+/// 供需要直接透传结构化错误码的场景使用。
+#[allow(dead_code)]
+fn rpc_to_string_with_code(e: crate::sidecar::RpcError) -> String {
+    format!("[{}] {}", e.code, e.message)
 }
 
 /// 读 virtual_vet_to_vk_symptom_map.json 翻译症状。
@@ -389,10 +449,14 @@ fn rpc_to_string(e: crate::sidecar::RpcError) -> String {
 /// 未匹配的症状静默跳过（vet-knowledge infer_diagnosis 本就容错）。
 /// 映射表读取失败时返回原始症状（降级：直接喂 display_name，匹配率低但不崩溃）。
 fn translate_symptoms(virtual_vet_symptoms: &[String]) -> Result<Vec<String>, String> {
-    let project_root =
-        env::var("VET_VET_ROOT").unwrap_or_else(|_| {
-            r"C:\Users\ZhuanZ（无密码）\Desktop\Claudecode\01_代码实验\virtual-vet".to_string()
-        });
+    let project_root = match resolve_virtual_vet_root() {
+        Some(root) => root,
+        None => {
+            // 根目录解析不出：降级为直接传原始症状
+            eprintln!("[game_diagnosis_hint] virtual-vet root unresolved, using raw symptoms");
+            return Ok(virtual_vet_symptoms.to_vec());
+        }
+    };
     let map_path = PathBuf::from(&project_root)
         .join("data")
         .join("virtual_vet_to_vk_symptom_map.json");
