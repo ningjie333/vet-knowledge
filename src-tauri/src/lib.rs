@@ -1,4 +1,7 @@
-mod commands; mod db; mod engine; mod sidecar;
+mod commands;
+mod db;
+mod engine;
+mod sidecar;
 use tauri::Manager;
 use tauri_plugin_dialog::DialogExt;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

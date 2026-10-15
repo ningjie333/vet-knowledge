@@ -65,18 +65,21 @@ impl SidecarManager {
         if let Some(child) = inner.child.as_mut() {
             match child.try_wait() {
                 Ok(Some(_)) => inner.invalidate().await, // 已退出
-                Ok(None) => {}                            // 仍在运行
+                Ok(None) => {}                           // 仍在运行
                 Err(_) => inner.invalidate().await,
             }
         }
 
         // 懒启动（带重启频率限制）
         if inner.child.is_none() {
-            inner.spawn_with_rate_limit(method).await.map_err(|e| RpcError {
-                code: ERR_INTERNAL,
-                message: format!("Failed to start sidecar: {}", e),
-                data: None,
-            })?;
+            inner
+                .spawn_with_rate_limit(method)
+                .await
+                .map_err(|e| RpcError {
+                    code: ERR_INTERNAL,
+                    message: format!("Failed to start sidecar: {}", e),
+                    data: None,
+                })?;
         }
 
         inner.call_counter += 1;
@@ -209,7 +212,12 @@ impl Inner {
             .kill_on_drop(true)
             .current_dir(&project_root)
             .spawn()
-            .map_err(|e| format!("spawn failed (python='{}' script='{}'): {}", python, script, e))?;
+            .map_err(|e| {
+                format!(
+                    "spawn failed (python='{}' script='{}'): {}",
+                    python, script, e
+                )
+            })?;
 
         let stdin = child.stdin.take().ok_or("stdin take failed")?;
         let stdout = child.stdout.take().ok_or("stdout take failed")?;

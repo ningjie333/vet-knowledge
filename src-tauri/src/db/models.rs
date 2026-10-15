@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
 use sqlx::sqlite::SqliteRow;
+use sqlx::FromRow;
 use sqlx::Row;
 
 // ── Row 构造函数 ──
@@ -45,7 +45,10 @@ pub fn parse_tags_json(raw: Option<&str>) -> Vec<String> {
             Vec::new()
         }
         Err(e) => {
-            eprintln!("[parse_tags_json] tags 列 JSON 解析失败: {} | raw: {}", e, text);
+            eprintln!(
+                "[parse_tags_json] tags 列 JSON 解析失败: {} | raw: {}",
+                e, text
+            );
             Vec::new()
         }
     }
@@ -62,17 +65,26 @@ pub fn parse_string_list(raw: Option<&str>) -> Vec<String> {
         return Vec::new();
     };
     if text.starts_with('[') {
-        if let Ok(serde_json::Value::Array(items)) = serde_json::from_str::<serde_json::Value>(text) {
+        if let Ok(serde_json::Value::Array(items)) = serde_json::from_str::<serde_json::Value>(text)
+        {
             return items
                 .into_iter()
-                .filter_map(|v| v.as_str().map(str::to_string).or_else(|| Some(v.to_string())))
+                .filter_map(|v| {
+                    v.as_str()
+                        .map(str::to_string)
+                        .or_else(|| Some(v.to_string()))
+                })
                 .filter(|s| !s.trim().is_empty())
                 .collect();
         }
         eprintln!("[parse_string_list] 不是合法 JSON 数组: {}", text);
     }
     text.split(',')
-        .map(|s| s.trim().trim_matches(|c| c == '"' || c == '[' || c == ']').trim())
+        .map(|s| {
+            s.trim()
+                .trim_matches(|c| c == '"' || c == '[' || c == ']')
+                .trim()
+        })
         .filter(|s| !s.is_empty())
         .map(str::to_string)
         .collect()
@@ -393,7 +405,10 @@ mod tests {
 
     #[test]
     fn test_parse_string_list_accepts_json_array_and_legacy_shapes() {
-        assert_eq!(parse_string_list(Some(r#"["犬", "猫"]"#)), strings(&["犬", "猫"]));
+        assert_eq!(
+            parse_string_list(Some(r#"["犬", "猫"]"#)),
+            strings(&["犬", "猫"])
+        );
         assert_eq!(parse_string_list(Some(r#"["犬"]"#)), strings(&["犬"]));
         assert_eq!(parse_string_list(Some("犬,猫")), strings(&["犬", "猫"]));
         assert_eq!(parse_string_list(Some("犬")), strings(&["犬"]));
@@ -424,7 +439,10 @@ mod tests {
 
     #[test]
     fn test_parse_tags_json_array_of_strings() {
-        assert_eq!(parse(Some(r#"["呼吸系统","感染"]"#)), strings(&["呼吸系统", "感染"]));
+        assert_eq!(
+            parse(Some(r#"["呼吸系统","感染"]"#)),
+            strings(&["呼吸系统", "感染"])
+        );
     }
 
     #[test]
@@ -540,7 +558,10 @@ mod tests {
             assert!(v["tags"].is_array(), "tags 不是 JSON 数组: {}", v["tags"]);
             assert_ne!(v["tags"], serde_json::json!("呼吸系统,感染"));
         }
-        assert_eq!(with_tags[0]["tags"], serde_json::json!(["呼吸系统", "感染"]));
+        assert_eq!(
+            with_tags[0]["tags"],
+            serde_json::json!(["呼吸系统", "感染"])
+        );
 
         // 无标签实体 → "tags": []（前端直接渲染空数组，不会出现 undefined）
         let empty = [
@@ -570,8 +591,15 @@ mod tests {
                 "INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('{}',",
                 entity_type
             );
-            let n = rows.iter().filter(|r| r.starts_with(prefix.as_str())).count();
-            assert!(n > 0, "种子 SQL 里没有 {} 的 entity_tags 行（标签区会永远空白）", entity_type);
+            let n = rows
+                .iter()
+                .filter(|r| r.starts_with(prefix.as_str()))
+                .count();
+            assert!(
+                n > 0,
+                "种子 SQL 里没有 {} 的 entity_tags 行（标签区会永远空白）",
+                entity_type
+            );
             total += n;
         }
         assert_eq!(total, rows.len(), "entity_tags 出现了未预期的 entity_type");
@@ -589,7 +617,10 @@ mod tests {
         for stmt in split_sql_statements(&schema) {
             let t = stmt.trim();
             if !t.is_empty() {
-                sqlx::query(t).execute(&pool).await.expect("schema.sql 执行失败");
+                sqlx::query(t)
+                    .execute(&pool)
+                    .await
+                    .expect("schema.sql 执行失败");
             }
         }
         for stmt in [
@@ -635,7 +666,10 @@ mod tests {
         // 排序：tag_group, name_zh → body_system 在 mechanism 前
         // 元素是 tags.id（不是 name_zh）：前端要拿它回查 get_tags() 取 color/tag_group，
         // 下发显示名会让那次回查永远落空、标签区照旧空白。
-        assert_eq!(row_from_disease(&row).tags, strings(&["body_resp", "mech_inf"]));
+        assert_eq!(
+            row_from_disease(&row).tags,
+            strings(&["body_resp", "mech_inf"])
+        );
 
         let row = sqlx::query(&select_one("symptoms", "s", "symptom"))
             .bind("sym_t1")
@@ -670,7 +704,10 @@ mod tests {
                 .unwrap(),
         );
         assert!(d.tags.is_empty());
-        assert_eq!(serde_json::to_value(&d).unwrap()["tags"], serde_json::json!([]));
+        assert_eq!(
+            serde_json::to_value(&d).unwrap()["tags"],
+            serde_json::json!([])
+        );
     }
 
     #[tokio::test]

@@ -1,6 +1,6 @@
+pub mod entity_types;
 pub mod models;
 pub mod sql_builder;
-pub mod entity_types;
 
 use sqlx::{
     sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePoolOptions, SqliteSynchronous},
@@ -173,7 +173,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             version INTEGER PRIMARY KEY,
             applied_at TEXT DEFAULT (datetime('now')),
             description TEXT
-        )"
+        )",
     )
     .execute(pool)
     .await?;
@@ -183,17 +183,15 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         "CREATE TABLE IF NOT EXISTS app_meta (
             key TEXT PRIMARY KEY,
             value TEXT NOT NULL
-        )"
+        )",
     )
     .execute(pool)
     .await?;
 
-    let current: Option<i64> = sqlx::query_scalar(
-        "SELECT MAX(version) FROM schema_migrations"
-    )
-    .fetch_one(pool)
-    .await
-    .unwrap_or(None);
+    let current: Option<i64> = sqlx::query_scalar("SELECT MAX(version) FROM schema_migrations")
+        .fetch_one(pool)
+        .await
+        .unwrap_or(None);
 
     let current = current.unwrap_or(0);
 
@@ -231,7 +229,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     if current < 1 {
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (1, 'Initial schema: all tables + indexes + FTS + learning_progress')"
+             VALUES (1, 'Initial schema: all tables + indexes + FTS + learning_progress')",
         )
         .execute(pool)
         .await?;
@@ -253,7 +251,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         ).await;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (2, 'Add urgency_level to diseases, is_pathognomonic to disease_symptom')"
+             VALUES (2, 'Add urgency_level to diseases, is_pathognomonic to disease_symptom')",
         )
         .execute(pool)
         .await?;
@@ -291,11 +289,12 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         execute_tolerant(
             pool,
             "ALTER TABLE disease_diagnostic_v2 RENAME TO disease_diagnostic",
-            "v3: rename disease_diagnostic_v2"
-        ).await;
+            "v3: rename disease_diagnostic_v2",
+        )
+        .await;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (3, 'Rebuild disease_diagnostic with species in PK')"
+             VALUES (3, 'Rebuild disease_diagnostic with species in PK')",
         )
         .execute(pool)
         .await?;
@@ -312,7 +311,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
                 species TEXT,
                 notes TEXT,
                 PRIMARY KEY (disease_id, drug_id, species)
-            )"
+            )",
         )
         .execute(pool)
         .await?;
@@ -320,19 +319,21 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             pool,
             "INSERT INTO disease_treatment_v2 (disease_id, drug_id, line, species, notes)
              SELECT disease_id, drug_id, line, NULL, notes FROM disease_treatment",
-            "v4: migrate disease_treatment data"
-        ).await;
+            "v4: migrate disease_treatment data",
+        )
+        .await;
         sqlx::query("DROP TABLE IF EXISTS disease_treatment")
             .execute(pool)
             .await?;
         execute_tolerant(
             pool,
             "ALTER TABLE disease_treatment_v2 RENAME TO disease_treatment",
-            "v4: rename disease_treatment_v2"
-        ).await;
+            "v4: rename disease_treatment_v2",
+        )
+        .await;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (4, 'Rebuild disease_treatment with species in PK')"
+             VALUES (4, 'Rebuild disease_treatment with species in PK')",
         )
         .execute(pool)
         .await?;
@@ -363,7 +364,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
                 interval_days REAL DEFAULT 0,
                 ease_factor REAL DEFAULT 2.5,
                 next_review TEXT NOT NULL
-            )"
+            )",
         )
         .execute(pool)
         .await?;
@@ -374,7 +375,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         .await?;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (5, 'Add flashcard system tables')"
+             VALUES (5, 'Add flashcard system tables')",
         )
         .execute(pool)
         .await?;
@@ -391,11 +392,12 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         execute_tolerant(
             pool,
             "ALTER TABLE diseases ADD COLUMN is_deleted INTEGER DEFAULT 0",
-            "v6: diseases.is_deleted"
-        ).await;
+            "v6: diseases.is_deleted",
+        )
+        .await;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (6, 'Add data_source and is_deleted to diseases')"
+             VALUES (6, 'Add data_source and is_deleted to diseases')",
         )
         .execute(pool)
         .await?;
@@ -404,19 +406,64 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     // ── v7: 标签系统 + 四维度增强 + 治疗模块 ──
     if current < 7 {
         // diseases 新增字段（ALTER TABLE ADD COLUMN 用 execute_tolerant）
-        execute_tolerant(pool, "ALTER TABLE diseases ADD COLUMN name_latin TEXT", "v7: diseases.name_latin").await;
-        execute_tolerant(pool, "ALTER TABLE diseases ADD COLUMN pathogenic_type TEXT", "v7: diseases.pathogenic_type").await;
-        execute_tolerant(pool, "ALTER TABLE diseases ADD COLUMN epidemiology TEXT", "v7: diseases.epidemiology").await;
-        execute_tolerant(pool, "ALTER TABLE diseases ADD COLUMN body_system TEXT", "v7: diseases.body_system").await;
-        execute_tolerant(pool, "ALTER TABLE diseases ADD COLUMN physiological_basis TEXT", "v7: diseases.physiological_basis").await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE diseases ADD COLUMN name_latin TEXT",
+            "v7: diseases.name_latin",
+        )
+        .await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE diseases ADD COLUMN pathogenic_type TEXT",
+            "v7: diseases.pathogenic_type",
+        )
+        .await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE diseases ADD COLUMN epidemiology TEXT",
+            "v7: diseases.epidemiology",
+        )
+        .await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE diseases ADD COLUMN body_system TEXT",
+            "v7: diseases.body_system",
+        )
+        .await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE diseases ADD COLUMN physiological_basis TEXT",
+            "v7: diseases.physiological_basis",
+        )
+        .await;
 
         // symptoms 新增字段
-        execute_tolerant(pool, "ALTER TABLE symptoms ADD COLUMN physiological_basis TEXT", "v7: symptoms.physiological_basis").await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE symptoms ADD COLUMN physiological_basis TEXT",
+            "v7: symptoms.physiological_basis",
+        )
+        .await;
 
         // drugs 新增字段
-        execute_tolerant(pool, "ALTER TABLE drugs ADD COLUMN mechanism_of_action TEXT", "v7: drugs.mechanism_of_action").await;
-        execute_tolerant(pool, "ALTER TABLE drugs ADD COLUMN pk_pd TEXT", "v7: drugs.pk_pd").await;
-        execute_tolerant(pool, "ALTER TABLE drugs ADD COLUMN adverse_mechanism TEXT", "v7: drugs.adverse_mechanism").await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE drugs ADD COLUMN mechanism_of_action TEXT",
+            "v7: drugs.mechanism_of_action",
+        )
+        .await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE drugs ADD COLUMN pk_pd TEXT",
+            "v7: drugs.pk_pd",
+        )
+        .await;
+        execute_tolerant(
+            pool,
+            "ALTER TABLE drugs ADD COLUMN adverse_mechanism TEXT",
+            "v7: drugs.adverse_mechanism",
+        )
+        .await;
 
         // 标签系统（CREATE TABLE IF NOT EXISTS 已幂等 → 错误传播）
         sqlx::query(
@@ -466,17 +513,23 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
                 species TEXT,
                 notes TEXT,
                 PRIMARY KEY (disease_id, treatment_id, species)
-            )"
-        ).execute(pool).await?;
+            )",
+        )
+        .execute(pool)
+        .await?;
 
         // 索引（CREATE INDEX IF NOT EXISTS 已幂等 → 错误传播）
         sqlx::query("CREATE INDEX IF NOT EXISTS idx_entity_tags_type ON entity_tags(entity_type, entity_id)").execute(pool).await?;
-        sqlx::query("CREATE INDEX IF NOT EXISTS idx_entity_tags_tag ON entity_tags(tag_id)").execute(pool).await?;
-        sqlx::query("CREATE INDEX IF NOT EXISTS idx_tags_group ON tags(tag_group)").execute(pool).await?;
+        sqlx::query("CREATE INDEX IF NOT EXISTS idx_entity_tags_tag ON entity_tags(tag_id)")
+            .execute(pool)
+            .await?;
+        sqlx::query("CREATE INDEX IF NOT EXISTS idx_tags_group ON tags(tag_group)")
+            .execute(pool)
+            .await?;
 
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (7, 'Tag system + disease/symptom/drug enhancements + treatments module')"
+             VALUES (7, 'Tag system + disease/symptom/drug enhancements + treatments module')",
         )
         .execute(pool)
         .await?;
@@ -488,7 +541,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     if current < 8 {
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (8, 'Add cases_fts for full-text search on cases (deprecated in v10)')"
+             VALUES (8, 'Add cases_fts for full-text search on cases (deprecated in v10)')",
         )
         .execute(pool)
         .await?;
@@ -502,7 +555,9 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         // 结果是所有停留在 v9 之前的存量库升级后启动即崩。
         use sqlx::Connection as _;
         let mut conn = pool.acquire().await?;
-        sqlx::query("PRAGMA foreign_keys = OFF").execute(&mut *conn).await?;
+        sqlx::query("PRAGMA foreign_keys = OFF")
+            .execute(&mut *conn)
+            .await?;
         let mut tx = conn.begin().await?;
         sqlx::query(
             "CREATE TABLE tags_v2 (
@@ -528,7 +583,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             SELECT
                 id, name_zh, name_en, tag_group, emergency_level,
                 clinical_action, textbook_logic, typical_scenario, color, created_at
-            FROM tags"
+            FROM tags",
         )
         .execute(&mut *tx)
         .await?;
@@ -541,12 +596,14 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
             .await?;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (9, 'Rebuild tags table without UNIQUE(name_zh)')"
+             VALUES (9, 'Rebuild tags table without UNIQUE(name_zh)')",
         )
         .execute(&mut *tx)
         .await?;
         tx.commit().await?;
-        sqlx::query("PRAGMA foreign_keys = ON").execute(&mut *conn).await?;
+        sqlx::query("PRAGMA foreign_keys = ON")
+            .execute(&mut *conn)
+            .await?;
     }
 
     // ── v12: 药物相互作用表 ──
@@ -558,17 +615,23 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
                 severity TEXT NOT NULL CHECK(severity IN ('major','moderate','mild')),
                 description TEXT,
                 PRIMARY KEY (drug_a_id, drug_b_id)
-            )"
-        ).execute(pool).await?;
+            )",
+        )
+        .execute(pool)
+        .await?;
         sqlx::query(
-            "CREATE INDEX IF NOT EXISTS idx_drug_interactions_a ON drug_interactions(drug_a_id)"
-        ).execute(pool).await?;
+            "CREATE INDEX IF NOT EXISTS idx_drug_interactions_a ON drug_interactions(drug_a_id)",
+        )
+        .execute(pool)
+        .await?;
         sqlx::query(
-            "CREATE INDEX IF NOT EXISTS idx_drug_interactions_b ON drug_interactions(drug_b_id)"
-        ).execute(pool).await?;
+            "CREATE INDEX IF NOT EXISTS idx_drug_interactions_b ON drug_interactions(drug_b_id)",
+        )
+        .execute(pool)
+        .await?;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (12, 'Add drug_interactions table')"
+             VALUES (12, 'Add drug_interactions table')",
         )
         .execute(pool)
         .await?;
@@ -581,10 +644,11 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     if current < 13 {
         use sqlx::Row;
         // pragma_table_info() 对不存在的表会直接报错，先确认表在
-        let has_drugs: i64 = sqlx::query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='drugs'")
-            .fetch_one(pool)
-            .await?
-            .get::<i64, _>(0);
+        let has_drugs: i64 =
+            sqlx::query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='drugs'")
+                .fetch_one(pool)
+                .await?
+                .get::<i64, _>(0);
         if has_drugs > 0 {
             for (col, ty) in [
                 ("pubchem_cid", "INTEGER"),
@@ -594,13 +658,12 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
                 ("inchikey", "TEXT"),
                 ("iupac_name", "TEXT"),
             ] {
-                let have: i64 = sqlx::query(
-                    "SELECT COUNT(*) FROM pragma_table_info('drugs') WHERE name = ?",
-                )
-                .bind(col)
-                .fetch_one(pool)
-                .await?
-                .get::<i64, _>(0);
+                let have: i64 =
+                    sqlx::query("SELECT COUNT(*) FROM pragma_table_info('drugs') WHERE name = ?")
+                        .bind(col)
+                        .fetch_one(pool)
+                        .await?
+                        .get::<i64, _>(0);
                 if have == 0 {
                     sqlx::query(&format!("ALTER TABLE drugs ADD COLUMN {} {}", col, ty))
                         .execute(pool)
@@ -611,7 +674,7 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
         // 版本号无条件落表：否则表缺失的库每次启动都重跑一遍
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (13, 'Add PubChem columns to drugs (were only ever in schema.sql)')"
+             VALUES (13, 'Add PubChem columns to drugs (were only ever in schema.sql)')",
         )
         .execute(pool)
         .await?;
@@ -621,10 +684,12 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     // schema.sql 中曾定义 learning_progress 表，但没有任何命令读写它，属于死表。
     // DROP TABLE IF EXISTS 已幂等，错误应传播。
     if current < 11 {
-        sqlx::query("DROP TABLE IF EXISTS learning_progress").execute(pool).await?;
+        sqlx::query("DROP TABLE IF EXISTS learning_progress")
+            .execute(pool)
+            .await?;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
-             VALUES (11, 'Drop unused learning_progress table')"
+             VALUES (11, 'Drop unused learning_progress table')",
         )
         .execute(pool)
         .await?;
@@ -636,10 +701,18 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
     // FTS5 虚表占用存储空间且需要 rebuild 维护，属于资源浪费，予以删除。
     // DROP TABLE IF EXISTS 已幂等，错误应传播。
     if current < 10 {
-        sqlx::query("DROP TABLE IF EXISTS diseases_fts").execute(pool).await?;
-        sqlx::query("DROP TABLE IF EXISTS symptoms_fts").execute(pool).await?;
-        sqlx::query("DROP TABLE IF EXISTS drugs_fts").execute(pool).await?;
-        sqlx::query("DROP TABLE IF EXISTS cases_fts").execute(pool).await?;
+        sqlx::query("DROP TABLE IF EXISTS diseases_fts")
+            .execute(pool)
+            .await?;
+        sqlx::query("DROP TABLE IF EXISTS symptoms_fts")
+            .execute(pool)
+            .await?;
+        sqlx::query("DROP TABLE IF EXISTS drugs_fts")
+            .execute(pool)
+            .await?;
+        sqlx::query("DROP TABLE IF EXISTS cases_fts")
+            .execute(pool)
+            .await?;
         sqlx::query(
             "INSERT OR IGNORE INTO schema_migrations (version, description)
              VALUES (10, 'Drop unused FTS5 virtual tables (diseases_fts, symptoms_fts, drugs_fts, cases_fts)')"
@@ -653,12 +726,11 @@ async fn apply_migrations(pool: &DbPool) -> anyhow::Result<()> {
 
 /// 种子数据导入：版本不匹配时全量重建。
 async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
-    let stored: Option<i64> = sqlx::query_scalar(
-        "SELECT value FROM app_meta WHERE key = 'seed_data_version'"
-    )
-    .fetch_one(pool)
-    .await
-    .unwrap_or(None);
+    let stored: Option<i64> =
+        sqlx::query_scalar("SELECT value FROM app_meta WHERE key = 'seed_data_version'")
+            .fetch_one(pool)
+            .await
+            .unwrap_or(None);
 
     let needs_import = match stored {
         None => true,
@@ -687,15 +759,20 @@ async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
         "disease_symptom",
         "disease_ddx",
         "drug_interactions",
-        "cases", "diagnostic_tests", "drugs", "symptoms", "diseases",
-        "treatments", "tags",
+        "cases",
+        "diagnostic_tests",
+        "drugs",
+        "symptoms",
+        "diseases",
+        "treatments",
+        "tags",
     ] {
         let r = sqlx::query(&format!("DELETE FROM {}", tbl))
             .execute(&mut *tx)
             .await;
         match r {
-            Ok(_) => {},
-            Err(e) if e.to_string().contains("no such table") => {},
+            Ok(_) => {}
+            Err(e) if e.to_string().contains("no such table") => {}
             Err(e) => anyhow::bail!("DELETE FROM {} failed: {}", tbl, e),
         }
     }
@@ -708,7 +785,12 @@ async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
         }
         sqlx::query(t).execute(&mut *tx).await.map_err(|e| {
             let snippet: String = t.chars().take(200).collect();
-            anyhow::anyhow!("seed import failed at stmt #{}: {} | sql: {}", idx, e, snippet)
+            anyhow::anyhow!(
+                "seed import failed at stmt #{}: {} | sql: {}",
+                idx,
+                e,
+                snippet
+            )
         })?;
     }
 
@@ -716,12 +798,10 @@ async fn import_seed_data(pool: &DbPool) -> anyhow::Result<()> {
     // （search.rs 始终使用 LIKE 查询，FTS5 虚表属于资源浪费），此处无需再 rebuild。
 
     // 记录数据版本（最后一步：只有在前面全部成功的前提下才执行）
-    sqlx::query(
-        "INSERT OR REPLACE INTO app_meta (key, value) VALUES ('seed_data_version', ?)"
-    )
-    .bind(SEED_DATA_VERSION)
-    .execute(&mut *tx)
-    .await?;
+    sqlx::query("INSERT OR REPLACE INTO app_meta (key, value) VALUES ('seed_data_version', ?)")
+        .bind(SEED_DATA_VERSION)
+        .execute(&mut *tx)
+        .await?;
 
     tx.commit().await?;
 
@@ -745,7 +825,10 @@ pub fn write_import_error_log(app: &tauri::AppHandle, err: &anyhow::Error) {
          - 若问题持续，请把本文件提交到 GitHub issue\n",
         chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
         SEED_DATA_VERSION,
-        err.chain().map(|e| format!("  - {}", e)).collect::<Vec<_>>().join("\n"),
+        err.chain()
+            .map(|e| format!("  - {}", e))
+            .collect::<Vec<_>>()
+            .join("\n"),
         dir.display(),
     );
     let _ = std::fs::write(&path, body);
@@ -828,10 +911,14 @@ mod tests {
         let mut per_conn = Vec::new();
         for conn in held.iter_mut() {
             let fk_row = sqlx::query("PRAGMA foreign_keys")
-                .fetch_one(&mut **conn).await.expect("读取 foreign_keys 失败");
+                .fetch_one(&mut **conn)
+                .await
+                .expect("读取 foreign_keys 失败");
             let fk = fk_row.try_get::<i64, _>(0).unwrap_or(-999);
             let cache_row = sqlx::query("PRAGMA cache_size")
-                .fetch_one(&mut **conn).await.expect("读取 cache_size 失败");
+                .fetch_one(&mut **conn)
+                .await
+                .expect("读取 cache_size 失败");
             let cache = cache_row.try_get::<i64, _>(0).unwrap_or(-999);
             per_conn.push((fk, cache));
         }
@@ -918,7 +1005,9 @@ mod tests {
 
         let pool = create_pool(&url).await.expect("连接旧库失败");
 
-        apply_migrations(&pool).await.expect("从 v8 迁移到最新版本失败（回归）");
+        apply_migrations(&pool)
+            .await
+            .expect("从 v8 迁移到最新版本失败（回归）");
 
         use sqlx::Row;
         let version: i64 = sqlx::query("SELECT MAX(version) FROM schema_migrations")
@@ -938,7 +1027,11 @@ mod tests {
             .await
             .unwrap()
             .get(0);
-        assert_eq!((tags, links), (1, 1), "重建 tags 表时丢了用户已有的标签数据");
+        assert_eq!(
+            (tags, links),
+            (1, 1),
+            "重建 tags 表时丢了用户已有的标签数据"
+        );
 
         // 迁移结束后外键必须恢复生效（PRAGMA OFF 不能泄漏到后续使用）
         let bad = sqlx::query("INSERT INTO entity_tags (entity_type, entity_id, tag_id) VALUES ('disease', 'dis_x', 'nope')")
@@ -963,14 +1056,20 @@ mod tests {
             .connect("sqlite::memory:")
             .await
             .expect("内存库连接失败");
-        sqlx::query("PRAGMA foreign_keys = ON").execute(&pool).await.unwrap();
+        sqlx::query("PRAGMA foreign_keys = ON")
+            .execute(&pool)
+            .await
+            .unwrap();
 
         for stmt in split_sql_statements(&strip_sql_comments(include_str!(
             "../../data/seed/schema.sql"
         ))) {
             let t = stmt.trim();
             if !t.is_empty() {
-                sqlx::query(t).execute(&pool).await.expect("schema.sql 执行失败");
+                sqlx::query(t)
+                    .execute(&pool)
+                    .await
+                    .expect("schema.sql 执行失败");
             }
         }
 
@@ -985,8 +1084,14 @@ mod tests {
         .execute(&pool)
         .await
         .unwrap();
-        sqlx::query("DROP TABLE drugs").execute(&pool).await.unwrap();
-        sqlx::query("ALTER TABLE drugs_legacy RENAME TO drugs").execute(&pool).await.unwrap();
+        sqlx::query("DROP TABLE drugs")
+            .execute(&pool)
+            .await
+            .unwrap();
+        sqlx::query("ALTER TABLE drugs_legacy RENAME TO drugs")
+            .execute(&pool)
+            .await
+            .unwrap();
 
         // 声明这是一个"迁移到 v8 为止"的存量库
         for v in 1..=8 {
@@ -997,8 +1102,9 @@ mod tests {
                 .unwrap();
         }
 
-        apply_migrations(&pool).await.expect("存量库迁移失败（回归）");
-
+        apply_migrations(&pool)
+            .await
+            .expect("存量库迁移失败（回归）");
 
         // 最后一道：拿真实种子 SQL 里的第一条 drugs INSERT 打进去，必须成功
         let seed = strip_sql_comments(include_str!("../../data/seed/001_initial.sql"));
@@ -1054,12 +1160,17 @@ mod tests {
             .fetch_all(&pool)
             .await
             .expect("foreign_key_check 查询失败");
-        assert!(violations.is_empty(), "种子数据存在外键违规: {} 条", violations.len());
+        assert!(
+            violations.is_empty(),
+            "种子数据存在外键违规: {} 条",
+            violations.len()
+        );
 
-        let rows = sqlx::query("SELECT entity_type, COUNT(*) FROM entity_tags GROUP BY entity_type")
-            .fetch_all(&pool)
-            .await
-            .expect("entity_tags 统计失败");
+        let rows =
+            sqlx::query("SELECT entity_type, COUNT(*) FROM entity_tags GROUP BY entity_type")
+                .fetch_all(&pool)
+                .await
+                .expect("entity_tags 统计失败");
         let counts: std::collections::HashMap<String, i64> = rows
             .iter()
             .map(|r| (r.get::<String, _>(0), r.get::<i64, _>(1)))

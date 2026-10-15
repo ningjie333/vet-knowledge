@@ -89,11 +89,9 @@ pub fn parse_response(line: &str) -> Result<Value, RpcError> {
         return Err(err);
     }
 
-    v.get("result")
-        .cloned()
-        .ok_or_else(|| RpcError {
-            code: ERR_INTERNAL,
-            message: "Response missing result field".to_string(),
-            data: None,
-        })
+    v.get("result").cloned().ok_or_else(|| RpcError {
+        code: ERR_INTERNAL,
+        message: "Response missing result field".to_string(),
+        data: None,
+    })
 }

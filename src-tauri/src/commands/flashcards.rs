@@ -1,6 +1,6 @@
 use crate::db::DbPool;
-use sqlx::Row;
 use serde::Serialize;
+use sqlx::Row;
 
 /// SM-2 算法计算结果
 #[derive(Debug, PartialEq)]
@@ -28,11 +28,7 @@ pub struct Sm2Result {
 /// - quality < 3：重置 interval=1，difficulty=0.8
 /// - 非首次且 old_interval < 1.5：interval=6，difficulty=0.5
 /// - 其他：interval = old_interval × new_ef，difficulty=0.3
-pub fn calculate_sm2(
-    quality: i64,
-    old_interval: Option<f64>,
-    old_ef: Option<f64>,
-) -> Sm2Result {
+pub fn calculate_sm2(quality: i64, old_interval: Option<f64>, old_ef: Option<f64>) -> Sm2Result {
     let q = quality as f64;
 
     match (old_interval, old_ef) {
@@ -115,25 +111,28 @@ pub async fn get_due_flashcards(
          ) rev ON rev.card_id = f.id
          WHERE fr.next_review IS NULL OR fr.next_review <= datetime('now')
          ORDER BY fr.next_review ASC
-         LIMIT ?"
+         LIMIT ?",
     )
     .bind(limit)
     .fetch_all(&*pool)
     .await
     .map_err(|e| e.to_string())?;
 
-    Ok(rows.iter().map(|r| Flashcard {
-        id: r.get("id"),
-        front: r.get("front"),
-        back: r.get("back"),
-        card_type: r.get("card_type"),
-        entity_id: r.get("entity_id"),
-        difficulty: r.get("difficulty"),
-        created_at: r.get("created_at"),
-        next_review: r.get("next_review"),
-        review_count: r.get("review_count"),
-        ease_factor: r.get("ease_factor"),
-    }).collect())
+    Ok(rows
+        .iter()
+        .map(|r| Flashcard {
+            id: r.get("id"),
+            front: r.get("front"),
+            back: r.get("back"),
+            card_type: r.get("card_type"),
+            entity_id: r.get("entity_id"),
+            difficulty: r.get("difficulty"),
+            created_at: r.get("created_at"),
+            next_review: r.get("next_review"),
+            review_count: r.get("review_count"),
+            ease_factor: r.get("ease_factor"),
+        })
+        .collect())
 }
 
 /// 获取所有闪卡（管理用）
@@ -159,7 +158,7 @@ pub async fn get_all_flashcards(
              FROM flashcard_reviews
              GROUP BY card_id
          ) rev ON rev.card_id = f.id
-         WHERE 1=1"
+         WHERE 1=1",
     );
     if card_type.is_some() {
         query.push_str(" AND f.card_type = ?");
@@ -172,18 +171,21 @@ pub async fn get_all_flashcards(
     }
 
     let rows = q.fetch_all(&*pool).await.map_err(|e| e.to_string())?;
-    Ok(rows.iter().map(|r| Flashcard {
-        id: r.get("id"),
-        front: r.get("front"),
-        back: r.get("back"),
-        card_type: r.get("card_type"),
-        entity_id: r.get("entity_id"),
-        difficulty: r.get("difficulty"),
-        created_at: r.get("created_at"),
-        next_review: r.get("next_review"),
-        review_count: r.get("review_count"),
-        ease_factor: r.get("ease_factor"),
-    }).collect())
+    Ok(rows
+        .iter()
+        .map(|r| Flashcard {
+            id: r.get("id"),
+            front: r.get("front"),
+            back: r.get("back"),
+            card_type: r.get("card_type"),
+            entity_id: r.get("entity_id"),
+            difficulty: r.get("difficulty"),
+            created_at: r.get("created_at"),
+            next_review: r.get("next_review"),
+            review_count: r.get("review_count"),
+            ease_factor: r.get("ease_factor"),
+        })
+        .collect())
 }
 
 /// 从知识库自动生成闪卡（疾病、症状、药物）
@@ -212,7 +214,9 @@ pub async fn generate_flashcards_from_knowledge(
                 let back = format!(
                     "分类：{}\n紧急程度：{}\n\n{}",
                     category.as_deref().unwrap_or("未知"),
-                    urgency.map(|u| format!("{}/5", u)).unwrap_or_else(|| "未知".to_string()),
+                    urgency
+                        .map(|u| format!("{}/5", u))
+                        .unwrap_or_else(|| "未知".to_string()),
                     overview.as_deref().unwrap_or("暂无概述")
                 );
                 sqlx::query("INSERT OR IGNORE INTO flashcards (id, front, back, card_type, entity_id, difficulty) VALUES (?, ?, ?, 'disease', ?, 0.5)")
@@ -303,10 +307,7 @@ pub async fn create_flashcard(
 
 /// 删除闪卡
 #[tauri::command]
-pub async fn delete_flashcard(
-    pool: tauri::State<'_, DbPool>,
-    id: String,
-) -> Result<(), String> {
+pub async fn delete_flashcard(pool: tauri::State<'_, DbPool>, id: String) -> Result<(), String> {
     sqlx::query("DELETE FROM flashcards WHERE id = ?")
         .bind(&id)
         .execute(&*pool)
@@ -330,7 +331,7 @@ pub async fn review_flashcard(
     // 获取上一次复习记录
     let last_review = sqlx::query(
         "SELECT interval_days, ease_factor FROM flashcard_reviews
-         WHERE card_id = ? ORDER BY id DESC LIMIT 1"
+         WHERE card_id = ? ORDER BY id DESC LIMIT 1",
     )
     .bind(&card_id)
     .fetch_optional(&*pool)
@@ -351,7 +352,8 @@ pub async fn review_flashcard(
     let new_ef = result.ease_factor;
     let new_difficulty = result.difficulty;
 
-    let next_review = chrono::Utc::now() + chrono::Duration::milliseconds((new_interval * 86400000.0) as i64);
+    let next_review =
+        chrono::Utc::now() + chrono::Duration::milliseconds((new_interval * 86400000.0) as i64);
     let next_review_str = next_review.format("%Y-%m-%d %H:%M:%S").to_string();
 
     // 更新闪卡难度
@@ -365,7 +367,7 @@ pub async fn review_flashcard(
     // 插入复习记录
     sqlx::query(
         "INSERT INTO flashcard_reviews (card_id, quality, interval_days, ease_factor, next_review)
-         VALUES (?, ?, ?, ?, ?)"
+         VALUES (?, ?, ?, ?, ?)",
     )
     .bind(&card_id)
     .bind(quality)
@@ -381,9 +383,7 @@ pub async fn review_flashcard(
 
 /// 获取复习统计
 #[tauri::command]
-pub async fn get_review_stats(
-    pool: tauri::State<'_, DbPool>,
-) -> Result<ReviewStats, String> {
+pub async fn get_review_stats(pool: tauri::State<'_, DbPool>) -> Result<ReviewStats, String> {
     let row = sqlx::query(
         "SELECT
           (SELECT COUNT(*) FROM flashcards) AS total_cards,
@@ -591,7 +591,10 @@ mod tests {
     fn test_sm2_ef_floor_negative_ef() {
         // old_ef=1.0（低于下限，模拟异常数据），q=0 → ef = max(1.3, 1.0 - 0.8) = 1.3
         let result = calculate_sm2(0, Some(10.0), Some(1.0));
-        assert!((result.ease_factor - 1.3).abs() < 0.001, "异常低 EF 应被提升到 1.3");
+        assert!(
+            (result.ease_factor - 1.3).abs() < 0.001,
+            "异常低 EF 应被提升到 1.3"
+        );
     }
 
     // === EF 计算验证 ===

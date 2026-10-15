@@ -9,9 +9,9 @@
 // 协议: 单向请求-响应（无通知、无批量）；每行一个请求，每行一个响应。
 // sidecar 启动后先发 ready 信号: {"jsonrpc":"2.0","method":"ready","params":{"version":1}}
 
+pub mod manager;
 pub mod protocol;
 pub mod root;
-pub mod manager;
 
 pub use manager::SidecarManager;
 // RpcErrorCode 为协议预留命名空间，未对外再导出，需要时走 sidecar::protocol::RpcErrorCode。

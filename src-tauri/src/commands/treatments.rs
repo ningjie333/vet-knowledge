@@ -1,6 +1,6 @@
-use crate::db::{DbPool, models::*};
 use crate::db::models::row_from_treatment;
 use crate::db::sql_builder::tags_subquery;
+use crate::db::{models::*, DbPool};
 use sqlx::Row;
 
 // ===== 治疗 =====
@@ -10,14 +10,26 @@ pub async fn get_treatments(
     pool: tauri::State<'_, DbPool>,
     therapy_type: Option<String>,
 ) -> Result<Vec<Treatment>, String> {
-    let base = format!("SELECT t.*, {} FROM treatments t", tags_subquery("t", "treatment"));
+    let base = format!(
+        "SELECT t.*, {} FROM treatments t",
+        tags_subquery("t", "treatment")
+    );
     let sql = crate::db::sql_builder::SqlBuilder::select(base)
-        .optional_where(therapy_type.as_ref().filter(|t| !t.is_empty()).map(|_| "therapy_type = ?"))
+        .optional_where(
+            therapy_type
+                .as_ref()
+                .filter(|t| !t.is_empty())
+                .map(|_| "therapy_type = ?"),
+        )
         .order_by("name_zh")
         .build();
 
     let mut q = sqlx::query(&sql);
-    if let Some(t) = &therapy_type { if !t.is_empty() { q = q.bind(t); } }
+    if let Some(t) = &therapy_type {
+        if !t.is_empty() {
+            q = q.bind(t);
+        }
+    }
 
     let rows = q.fetch_all(&*pool).await.map_err(|e| e.to_string())?;
     Ok(rows.iter().map(row_from_treatment).collect())
@@ -57,13 +69,16 @@ pub async fn get_disease_treatment_map(
         .fetch_all(&*pool)
         .await
         .map_err(|e| e.to_string())?;
-    Ok(rows.iter().map(|r| {
-        let treatment = row_from_treatment(r);
-        let line: String = r.get("line");
-        let species: String = r.get("species");
-        let notes: String = r.get("notes");
-        (treatment, line, species, notes)
-    }).collect())
+    Ok(rows
+        .iter()
+        .map(|r| {
+            let treatment = row_from_treatment(r);
+            let line: String = r.get("line");
+            let species: String = r.get("species");
+            let notes: String = r.get("notes");
+            (treatment, line, species, notes)
+        })
+        .collect())
 }
 
 // ===== 标签 =====
@@ -74,12 +89,21 @@ pub async fn get_tags(
     tag_group: Option<String>,
 ) -> Result<Vec<Tag>, String> {
     let sql = crate::db::sql_builder::SqlBuilder::select("SELECT * FROM tags")
-        .optional_where(tag_group.as_ref().filter(|g| !g.is_empty()).map(|_| "tag_group = ?"))
+        .optional_where(
+            tag_group
+                .as_ref()
+                .filter(|g| !g.is_empty())
+                .map(|_| "tag_group = ?"),
+        )
         .order_by("tag_group, name_zh")
         .build();
 
     let mut q = sqlx::query_as::<_, Tag>(&sql);
-    if let Some(g) = &tag_group { if !g.is_empty() { q = q.bind(g); } }
+    if let Some(g) = &tag_group {
+        if !g.is_empty() {
+            q = q.bind(g);
+        }
+    }
 
     q.fetch_all(&*pool).await.map_err(|e| e.to_string())
 }
@@ -98,7 +122,7 @@ pub async fn get_entity_tags(
         "SELECT t.* FROM entity_tags et
          JOIN tags t ON et.tag_id = t.id
          WHERE et.entity_type = ? AND et.entity_id = ?
-         ORDER BY t.tag_group, t.name_zh"
+         ORDER BY t.tag_group, t.name_zh",
     )
     .bind(&entity_type)
     .bind(&entity_id)
@@ -115,7 +139,7 @@ pub async fn get_entities_by_tag(
 ) -> Result<Vec<String>, String> {
     sqlx::query_scalar::<_, String>(
         "SELECT entity_id FROM entity_tags
-         WHERE tag_id = ? AND entity_type = ?"
+         WHERE tag_id = ? AND entity_type = ?",
     )
     .bind(&tag_id)
     .bind(&entity_type)
@@ -136,7 +160,7 @@ pub async fn add_entity_tag(
     }
     sqlx::query(
         "INSERT OR IGNORE INTO entity_tags (entity_type, entity_id, tag_id)
-         VALUES (?, ?, ?)"
+         VALUES (?, ?, ?)",
     )
     .bind(&entity_type)
     .bind(&entity_id)
@@ -159,7 +183,7 @@ pub async fn remove_entity_tag(
     }
     sqlx::query(
         "DELETE FROM entity_tags
-         WHERE entity_type = ? AND entity_id = ? AND tag_id = ?"
+         WHERE entity_type = ? AND entity_id = ? AND tag_id = ?",
     )
     .bind(&entity_type)
     .bind(&entity_id)

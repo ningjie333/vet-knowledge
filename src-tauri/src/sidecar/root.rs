@@ -64,7 +64,9 @@ mod tests {
     static PROCESS_STATE: Mutex<()> = Mutex::new(());
 
     fn lock_process_state() -> MutexGuard<'static, ()> {
-        PROCESS_STATE.lock().unwrap_or_else(|poisoned| poisoned.into_inner())
+        PROCESS_STATE
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
     }
 
     /// 在 temp 下建一个唯一的空目录并返回路径（自带清理前缀）。
@@ -72,7 +74,12 @@ mod tests {
         static SEQ: AtomicUsize = AtomicUsize::new(0);
         let dir = env::temp_dir()
             .join("vet-knowledge-root-tests")
-            .join(format!("{}-{}-{}", tag, std::process::id(), SEQ.fetch_add(1, Ordering::SeqCst)));
+            .join(format!(
+                "{}-{}-{}",
+                tag,
+                std::process::id(),
+                SEQ.fetch_add(1, Ordering::SeqCst)
+            ));
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).expect("create sandbox");
         dir
@@ -153,10 +160,7 @@ mod tests {
             assert!(root.ends_with(SIBLING_DIR), "unexpected root: {}", root);
         }
         // 与纯函数形态在同一 cwd 下必须一致（证明没有第二份实现）
-        assert_eq!(
-            got,
-            resolve_from(None, env::current_dir().ok().as_deref())
-        );
+        assert_eq!(got, resolve_from(None, env::current_dir().ok().as_deref()));
     }
 
     #[test]

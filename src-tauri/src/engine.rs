@@ -1,6 +1,6 @@
+use crate::db::models::{DiagnosisCandidate, TestSuggestion};
 use serde::Serialize;
 use std::collections::HashMap;
-use crate::db::models::{DiagnosisCandidate, TestSuggestion};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct DiagnosisInput {
@@ -154,10 +154,8 @@ mod tests {
     fn test_infer_basic_match() {
         let input = make_input(&["咳嗽", "发热"], "犬");
         let disease_list = make_disease_list(&[("dis_001", "肺炎")]);
-        let all_disease_symptoms = make_symptom_map(
-            "dis_001",
-            &[("咳嗽", "common", 0), ("发热", "common", 0)],
-        );
+        let all_disease_symptoms =
+            make_symptom_map("dis_001", &[("咳嗽", "common", 0), ("发热", "common", 0)]);
         let diagnostics = HashMap::new();
 
         let result = infer(&input, &disease_list, &all_disease_symptoms, &diagnostics);
@@ -180,7 +178,12 @@ mod tests {
         let disease_list = make_disease_list(&[("dis_001", "肺炎")]);
         let all_disease_symptoms = make_symptom_map("dis_001", &[("咳嗽", "common", 0)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert!(!result.is_empty());
         // common weight=1.0, 全匹配 disease_coverage=1.0, input_coverage=1.0
@@ -192,12 +195,15 @@ mod tests {
         let input = make_input(&["皮疹"], "犬");
         let disease_list = make_disease_list(&[("dis_001", "某病")]);
         // uncommon 症状匹配，但有 common 症状未匹配
-        let all_disease_symptoms = make_symptom_map(
-            "dis_001",
-            &[("发热", "common", 0), ("皮疹", "uncommon", 0)],
-        );
+        let all_disease_symptoms =
+            make_symptom_map("dis_001", &[("发热", "common", 0), ("皮疹", "uncommon", 0)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert!(!result.is_empty());
         // weighted_score = 0.6, total_weight = 1.6
@@ -219,7 +225,12 @@ mod tests {
         let disease_list = make_disease_list(&[("dis_001", "某病")]);
         let all_disease_symptoms = make_symptom_map("dis_001", &[("罕见症状", "rare", 0)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert!(!result.is_empty());
         // rare weight=0.3, 全匹配 disease_coverage=1.0, input_coverage=1.0
@@ -233,10 +244,14 @@ mod tests {
         let input = make_input(&["特征症状"], "犬");
         let disease_list = make_disease_list(&[("dis_001", "某病")]);
         // is_pathognomonic=1，应获得 1.5× 权重 + 0.05 加成
-        let all_disease_symptoms =
-            make_symptom_map("dis_001", &[("特征症状", "common", 1)]);
+        let all_disease_symptoms = make_symptom_map("dis_001", &[("特征症状", "common", 1)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert!(!result.is_empty());
         // weighted_score = 1.0 * 1.5 = 1.5
@@ -250,10 +265,7 @@ mod tests {
 
     #[test]
     fn test_infer_pathognomonic_bonus_cap() {
-        let input = make_input(
-            &["特征1", "特征2", "特征3", "特征4"],
-            "犬",
-        );
+        let input = make_input(&["特征1", "特征2", "特征3", "特征4"], "犬");
         let disease_list = make_disease_list(&[("dis_001", "某病")]);
         // 4 个核心症状，加成应被截断为 0.15
         let all_disease_symptoms = make_symptom_map(
@@ -266,7 +278,12 @@ mod tests {
             ],
         );
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert!(!result.is_empty());
         // 4 个 pathognomonic_matched，bonus = min(4*0.05, 0.15) = 0.15
@@ -296,7 +313,12 @@ mod tests {
             ],
         );
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert!(result.is_empty(), "score 低于 0.25 应被过滤");
     }
@@ -307,10 +329,14 @@ mod tests {
         let disease_list = make_disease_list(&[("dis_001", "某病")]);
         // 4 个输入症状，只匹配 1 个
         // input_coverage = 1/4 = 0.25 < 0.3 → 被过滤
-        let all_disease_symptoms =
-            make_symptom_map("dis_001", &[("症状A", "common", 0)]);
+        let all_disease_symptoms = make_symptom_map("dis_001", &[("症状A", "common", 0)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert!(result.is_empty(), "input_coverage 低于 0.3 应被过滤");
     }
@@ -320,8 +346,7 @@ mod tests {
     #[test]
     fn test_infer_sort_descending() {
         let input = make_input(&["咳嗽"], "犬");
-        let disease_list =
-            make_disease_list(&[("dis_low", "低分"), ("dis_high", "高分")]);
+        let disease_list = make_disease_list(&[("dis_low", "低分"), ("dis_high", "高分")]);
         let mut all_disease_symptoms = HashMap::new();
         // dis_high: 完全匹配
         all_disease_symptoms.insert(
@@ -337,7 +362,12 @@ mod tests {
             ],
         );
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert_eq!(result.len(), 2);
         assert_eq!(result[0].disease_id, "dis_high");
@@ -352,7 +382,12 @@ mod tests {
         let disease_list = make_disease_list(&[("dis_001", "肺炎")]);
         let all_disease_symptoms = make_symptom_map("dis_001", &[("咳嗽", "common", 0)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         // 空输入：input_set 为空，不会有 matched，应返回空
         assert!(result.is_empty());
@@ -366,7 +401,12 @@ mod tests {
         let disease_list = make_disease_list(&[("dis_001", "肺炎")]);
         let all_disease_symptoms = make_symptom_map("dis_001", &[("咳嗽", "common", 0)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert!(result.is_empty(), "无任何症状匹配时应返回空");
     }
@@ -379,7 +419,12 @@ mod tests {
         let disease_list = make_disease_list(&[("dis_001", "肺炎")]);
         let all_disease_symptoms = make_symptom_map("dis_001", &[("咳嗽", "common", 0)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert_eq!(result.len(), 1);
         assert_eq!(result[0].disease_id, "dis_001");
@@ -416,7 +461,12 @@ mod tests {
         let disease_list = make_disease_list(&[("dis_001", "肺炎")]);
         let all_disease_symptoms = make_symptom_map("dis_001", &[("咳嗽", "common", 0)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert!(!result.is_empty());
         assert!(result[0].suggested_tests.is_empty());
@@ -439,7 +489,12 @@ mod tests {
             );
         }
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert_eq!(result.len(), 10, "应截断为前 10 个候选");
     }
@@ -450,12 +505,15 @@ mod tests {
     fn test_infer_input_coverage() {
         let input = make_input(&["咳嗽", "发热", "呼吸困难"], "犬");
         let disease_list = make_disease_list(&[("dis_001", "肺炎")]);
-        let all_disease_symptoms = make_symptom_map(
-            "dis_001",
-            &[("咳嗽", "common", 0), ("发热", "common", 0)],
-        );
+        let all_disease_symptoms =
+            make_symptom_map("dis_001", &[("咳嗽", "common", 0), ("发热", "common", 0)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         assert!(!result.is_empty());
         // matched=2, input_set=3, input_coverage=2/3≈0.67
@@ -471,7 +529,12 @@ mod tests {
         // 只有 dis_001 有症状数据
         let all_disease_symptoms = make_symptom_map("dis_001", &[("咳嗽", "common", 0)]);
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         // dis_002 不在 map 中应被跳过
         assert_eq!(result.len(), 1);
@@ -495,7 +558,12 @@ mod tests {
             vec![("咳嗽".to_string(), "common".to_string(), 0)],
         );
 
-        let result = infer(&input, &disease_list, &all_disease_symptoms, &HashMap::new());
+        let result = infer(
+            &input,
+            &disease_list,
+            &all_disease_symptoms,
+            &HashMap::new(),
+        );
 
         // 不应 panic，结果应为 2 个
         assert_eq!(result.len(), 2);

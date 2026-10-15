@@ -52,7 +52,8 @@ impl SqlBuilder {
     #[allow(dead_code)]
     pub fn and_in(mut self, col: &str, count: usize) -> Self {
         if count > 0 {
-            self.conditions.push(format!("{} IN ({})", col, placeholders(count)));
+            self.conditions
+                .push(format!("{} IN ({})", col, placeholders(count)));
         }
         self
     }
@@ -92,7 +93,9 @@ pub fn placeholders(count: usize) -> String {
     if count == 0 {
         String::new()
     } else {
-        std::iter::repeat_n("?", count).collect::<Vec<_>>().join(",")
+        std::iter::repeat_n("?", count)
+            .collect::<Vec<_>>()
+            .join(",")
     }
 }
 

@@ -14,8 +14,8 @@
 //     根目录由 sidecar::resolve_virtual_vet_root() 统一解析（VET_VET_ROOT → 同级探测 → 降级）
 //   - 错误统一转 String（与 vet-knowledge 现有命令风格一致）
 
-use crate::db::DbPool;
 use crate::db::models::DiagnosisCandidate;
+use crate::db::DbPool;
 use crate::engine::{infer, DiagnosisInput};
 use crate::sidecar::{resolve_virtual_vet_root, SidecarManager};
 use serde::{Deserialize, Serialize};
@@ -137,8 +137,7 @@ pub async fn game_list_cases(
         .await
         .map_err(rpc_to_string)?;
     let cases_val = result.get("cases").ok_or("missing cases field")?;
-    serde_json::from_value(cases_val.clone())
-        .map_err(|e| format!("deserialize cases: {}", e))
+    serde_json::from_value(cases_val.clone()).map_err(|e| format!("deserialize cases: {}", e))
 }
 
 /// 开新会话（开病历选项卡）
@@ -151,8 +150,7 @@ pub async fn game_new_session(
         .call("game.new_session", serde_json::json!({"case_id": case_id}))
         .await
         .map_err(rpc_to_string)?;
-    serde_json::from_value(result)
-        .map_err(|e| format!("deserialize new_session: {}", e))
+    serde_json::from_value(result).map_err(|e| format!("deserialize new_session: {}", e))
 }
 
 /// 推进时间（wait 10 分钟，消耗游戏内时间）
@@ -162,7 +160,10 @@ pub async fn game_advance(
     session_id: String,
 ) -> Result<GameSnapshot, String> {
     let result = sidecar
-        .call("game.advance", serde_json::json!({"session_id": session_id}))
+        .call(
+            "game.advance",
+            serde_json::json!({"session_id": session_id}),
+        )
         .await
         .map_err(rpc_to_string)?;
     serde_json::from_value(result).map_err(|e| format!("deserialize snapshot: {}", e))
@@ -258,7 +259,10 @@ fn translate_disease_id(disease_id: &str) -> Option<String> {
     let content = match std::fs::read_to_string(&map_path) {
         Ok(c) => c,
         Err(e) => {
-            eprintln!("[game_diagnose] disease map not found ({}), submitting as-is", e);
+            eprintln!(
+                "[game_diagnose] disease map not found ({}), submitting as-is",
+                e
+            );
             return None;
         }
     };
@@ -473,8 +477,8 @@ fn translate_symptoms(virtual_vet_symptoms: &[String]) -> Result<Vec<String>, St
         }
     };
 
-    let map: Value = serde_json::from_str(&map_text)
-        .map_err(|e| format!("parse symptom map: {}", e))?;
+    let map: Value =
+        serde_json::from_str(&map_text).map_err(|e| format!("parse symptom map: {}", e))?;
     let mappings = map
         .get("mappings")
         .ok_or("symptom map missing 'mappings' field")?;
@@ -556,7 +560,10 @@ mod tests {
         // severity 是字符串枚举（mild/moderate/severe/critical）
         assert_eq!(snap.active_signs[0].severity, "mild");
         // localizing_value 是字符串枚举（organ_localizing/highly_localizing/...）
-        assert_eq!(snap.active_signs[0].localizing_value.as_deref(), Some("organ_localizing"));
+        assert_eq!(
+            snap.active_signs[0].localizing_value.as_deref(),
+            Some("organ_localizing")
+        );
         // new_reports 透传（Vec<Value>）
         assert_eq!(snap.new_reports.len(), 1);
         assert_eq!(snap.new_reports[0]["test_type"], "blood_routine");

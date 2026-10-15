@@ -1,5 +1,5 @@
-use crate::db::DbPool;
 use crate::db::models::DiagnosisCandidate;
+use crate::db::DbPool;
 use crate::engine::{infer, DiagnosisInput};
 use sqlx::Row;
 
@@ -22,20 +22,18 @@ pub async fn infer_diagnosis(
         "SELECT DISTINCT d.id, d.name_zh
          FROM diseases d
          INNER JOIN disease_symptom ds ON ds.disease_id = d.id
-         WHERE d.species LIKE ?"
+         WHERE d.species LIKE ?",
     )
     .bind(format!("%{}%", species))
     .fetch_all(&*pool)
     .await
     .map_err(|e| e.to_string())?
     .iter()
-    .map(|r| (
-        r.get::<String, _>("id"),
-        r.get::<String, _>("name_zh"),
-    ))
+    .map(|r| (r.get::<String, _>("id"), r.get::<String, _>("name_zh")))
     .collect();
 
-    let mut all_disease_symptoms: std::collections::HashMap<String, Vec<(String, String, i64)>> = std::collections::HashMap::new();
+    let mut all_disease_symptoms: std::collections::HashMap<String, Vec<(String, String, i64)>> =
+        std::collections::HashMap::new();
     if !disease_list.is_empty() {
         let placeholders: Vec<String> = disease_list.iter().map(|_| "?".to_string()).collect();
         let query = format!(
@@ -56,11 +54,15 @@ pub async fn infer_diagnosis(
             let sym_name: String = r.get("name_zh");
             let freq: String = r.get("frequency");
             let is_patho: i64 = r.get("is_pathognomonic");
-            all_disease_symptoms.entry(did).or_default().push((sym_name, freq, is_patho));
+            all_disease_symptoms
+                .entry(did)
+                .or_default()
+                .push((sym_name, freq, is_patho));
         }
     }
 
-    let mut diagnostics: std::collections::HashMap<String, Vec<(String, String)>> = std::collections::HashMap::new();
+    let mut diagnostics: std::collections::HashMap<String, Vec<(String, String)>> =
+        std::collections::HashMap::new();
     if !disease_list.is_empty() {
         let placeholders: Vec<String> = disease_list.iter().map(|_| "?".to_string()).collect();
         let query = format!(
