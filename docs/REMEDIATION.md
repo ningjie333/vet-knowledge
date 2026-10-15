@@ -49,18 +49,20 @@
 
 | 优先级 | 事项 | 说明 |
 |---|---|---|
-| **P0** | 装回 Rust 工具链 | 上面所有 Rust 改动（含第 1、3、4 项的后端部分）都**没有编译器验证过**。这是"8 个坏提交能存在"的真正根因；不装回来，下一轮同样风险。 |
-| **P0** | 推送决策 | 本地领先远端 13 个提交，两个半月的工作目前只在这块磁盘上。推送需要你授权。 |
+| ~~P0~~ | ~~装回 Rust 工具链~~ | **已完成**（2026-10-15）：rustc 1.99.0 + VS Build Tools 14.44 + SDK 10.0.26100。装完立刻暴露出下面两个"存量库升级即崩"，见第四节。 |
+| **P0** | 推送决策 | 本地领先远端 **20 个提交**，两个半月的工作目前只在这块磁盘上。推送需要你授权。 |
+| **P0** | 新版安装包 | 主程序已能构建成功，但 NSIS 打包器要从 GitHub 下载而本机取不到（与 raw.githubusercontent 被墙同源）。安装包尚未产出，见第四节。 |
 | **P1** | 历史里的私人路径 | 需要改写历史 + 强推才能让公开仓库彻底查不到，属破坏性操作，需你授权。 |
 | **P1** | 10 组重复药物合并 | 见 `docs/drug-dup-unique-content.md`，需要你的专业判断。 |
-| **P1** | README 的三处失实 | 仍写着"数据导入/导出"（该功能整个不存在，`import_export.rs` 没有文件）、"SQLite WAL + FTS5"（实际是 `journal_mode=DELETE`，FTS5 已被迁移 v10 删除，搜索走 `LIKE`）、"Pinia"（已注册但 `src/stores/`、`src/composables/` 是空目录）。本轮只改了代码，文档没动。 |
+| **P1** | README 的三处失实 | 仍写着"数据导入/导出"（该功能整个不存在，`import_export.rs` 没有文件）、"SQLite WAL + FTS5"（实际是 `journal_mode=DELETE`，FTS5 已被迁移 v10 删除，搜索走 `LIKE`）、"Pinia"（已注册但 `src/stores/`、`src/composables/` 是空目录）。 |
+| **P2** | 视图各自复制实体类型 | `DiseaseCompare.vue` / `SymptomExplorer.vue` 里各有一份局部 `interface Disease`，字段类型与 `src/types/index.ts` 脱节 —— 这正是 species/category 那类不一致反复出现的温床。应改为复用共享类型（本轮只把值改对，没做这个重构）。 |
 | **P2** | `CODE_WIKI.md` 整体过期 | 1425 行里没有一处 `sidecar`/`virtual-vet`/`VET_VET_ROOT`，仍描述已删的 FTS 重建、`gen_from_yaml.py`、`SEED_DATA_VERSION=18`。`CLAUDE.md` 引用的两个工作流文档不存在。 |
-| **P2** | 界面实测 | 标签区、给药警告都只在数据/SQL/类型层验证过，**应用没跑起来过**（无工具链）。需要你在能编译的机器上打开界面目视确认。 |
-| **P2** | 测试覆盖集中在纯算法 | 53 个 Rust 单测全在评分/SM-2/SQL 构造；`sidecar/manager.rs`(约 300 行)、`protocol.rs`、迁移链、两个 translate 函数原先零覆盖。本轮新增了标签与根目录解析的测试，对接层仍薄。前端零测试。 |
-| **P3** | 27 个注册命令前端从不调用 | 约 60% 的命令面是冗余表面积。`db/models.rs` 的 `row_from_tag()` 零调用者。 |
+| **P2** | 症状备注仍以 JSON 文本显示 | `symptoms.species_notes` 存的是 `{"犬": "…", "猫": "…"}`，症状检索页把原文直接打成一段文本。本轮只统一了 species / category 两个多值列，这个字段需要配套的展示方式，未动。 |
+| **P3** | 27 个注册命令前端从不调用 | 编译器也确认了死代码：13 条 warning（`row_from_tag`、`entity_tags_check_constraint`、7 个未用错误码常量等）。 |
 | **P3** | 仓库杂物 | 远端仍带着约 0.97 MB 的 `gen/schemas` 生成物、3 MB `vendor/` 补丁 crate、9 个 `__pycache__/*.pyc`（其中 `gen_sql.cpython-314.pyc` 的源文件已不存在）、259 份已废弃的 Markdown 数据文件。 |
 | **P3** | 两处待清理 | `src-tauri/.cargo/config.toml` 是未跟踪的全注释文件（零配置项）；`tools/convert_to_json.py` 有 2 处硬编码自检告警（一次性迁移脚本，非本轮引入，是 `python _tools/dev/check.py` 目前唯一 remaining FAIL）。 |
 | **P3** | `.gitignore` 新加的 `/data/` | `knowledge.json` 等已跟踪所以照常提交，但今后 `data/` 下**新**文件不带 `-f` 是加不进去的，容易哪天把事实源漏在库外。 |
+| **P3** | 发布包文件名 | 唯一发布的安装包名为 `_0.1.0_x64-setup.exe`，开头多一个下划线 —— 打包时应用名没进文件名。 |
 
 ---
 
