@@ -53,8 +53,8 @@
 | 优先级 | 事项 | 说明 |
 |---|---|---|
 | ~~P0~~ | ~~装回 Rust 工具链~~ | **已完成**（2026-10-15）：rustc 1.99.0 + VS Build Tools 14.44 + SDK 10.0.26100。装完立刻暴露出下面两个"存量库升级即崩"，见第四节。 |
-| **P0** | 推送决策 | 本地领先远端 **20 个提交**，两个半月的工作目前只在这块磁盘上。推送需要你授权。 |
-| **P0** | 新版安装包 | 主程序已能构建成功，但 NSIS 打包器要从 GitHub 下载而本机取不到（与 raw.githubusercontent 被墙同源）。安装包尚未产出，见第四节。 |
+| ~~P0~~ | ~~推送决策~~ | **已推送**（2026-10-15，`93d6a5b..6786cd3`，20 个提交）。推送前做过隐私审计，见第四节末。 |
+| ~~P0~~ | ~~新版安装包~~ | **已产出并核验**（见第四节第 4 条）。但版本号仍是 0.1.0 —— 对外发布前需要你确认是否提版本号。 |
 | **P1** | 历史里的私人路径 | 需要改写历史 + 强推才能让公开仓库彻底查不到，属破坏性操作，需你授权。 |
 | **P1** | 10 组重复药物合并 | 见 `docs/drug-dup-unique-content.md`，需要你的专业判断。 |
 | **P1** | README 的三处失实 | 仍写着"数据导入/导出"（该功能整个不存在，`import_export.rs` 没有文件）、"SQLite WAL + FTS5"（实际是 `journal_mode=DELETE`，FTS5 已被迁移 v10 删除，搜索走 `LIKE`）、"Pinia"（已注册但 `src/stores/`、`src/composables/` 是空目录）。 |
@@ -105,10 +105,26 @@
 标签从 `["免疫系统"]` 变成干净的"免疫系统"。首页统计 85 疾病 / 44 症状 / 80 药物。
 截图留在 `.ui-probe/`（未入库，内含数据库副本，可删）。
 
-### 4. 安装包还差一步
-`npx tauri build` 主程序构建成功，但 NSIS 打包器需要联网从 GitHub 下载，本机取不到
-（与 `raw.githubusercontent.com` 被墙同源），报 `failed to bundle project: timeout: global`。
-可选解法：换网络重试、手工把 NSIS 放到 `%LOCALAPPDATA%\tauri\NSIS`、或先以"绿色版 exe + zip"交付。
+### 4. 安装包：已产出（离线补齐 NSIS 工具链）
+`npx tauri build` 主程序构建一直正常，卡点是打包器要联网取 NSIS，而本机访问不到 GitHub 的
+release 资源（`failed to bundle project: timeout: global`）。解法记录如下，下次直接照做：
+
+1. Tauri CLI 校验 `%LOCALAPPDATA%\tauri\NSIS` 下 **17 个固定路径**是否存在，缺任一项就
+   **删掉整个目录**再重新下载 —— 所以"只补一个文件"必然失败，必须一次铺满。
+2. 需要两份官方产物：
+   - `nsis-3.11.zip`（`github.com/tauri-apps/binary-releases/releases/download/nsis-3.11/`）
+   - `Plugins/x86-unicode/additional/nsis_tauri_utils.dll`（`github.com/tauri-apps/nsis-tauri-utils`
+     的 `nsis_tauri_utils-v0.5.3` release；这个插件不在 NSIS 包里，是单独发布的）
+3. 两者都可通过可达的 GitHub 代理下载。完整性用 **CLI 二进制里硬编码的 SHA-1** 校验，比任何
+   第三方来源都权威：在 `node_modules/@tauri-apps/cli-win32-x64-msvc/*.node` 里搜 URL 即可看到
+   紧跟其后的期望哈希（本次两文件均逐字节吻合）。
+4. 一次性解压 zip（去掉 `nsis-3.11/` 前缀）+ 放入插件，再跑 `npx tauri build --bundles nsis`。
+5. 产物：`src-tauri/target/release/bundle/nsis/兽医知识库_0.1.0_x64-setup.exe`（4.02 MB）。
+   文件名带上了产品名，顺带修掉了旧发布包 `_0.1.0_x64-setup.exe` 前导下划线的问题。
+
+核验：静默安装后，安装目录里的 exe 与构建产物**仅差 3 字节**（`UNK` → `NSS`，即 Tauri 写入的
+打包类型标记），版本号 0.1.0；从安装位置启动后疾病详情页的标签与物种胶囊显示正常。
+注意：打包前必须完全退出应用，否则 exe 被占用会报 `拒绝访问 (os error 5)`。
 
 ### 我先前判断错、后被实测推翻的三条（留档避免再犯）
 1. **"这台机器没有 WebView2"** —— 错。独立运行库在 `C:\Program Files (x86)\Microsoft\EdgeWebView\Application`
