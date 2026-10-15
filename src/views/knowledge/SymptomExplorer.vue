@@ -16,8 +16,8 @@ interface DiseaseResult {
     id: string
     name_zh: string
     name_en: string | null
-    category: string | null
-    species: string | null
+    category: string[]
+    species: string[]
     difficulty: string | null
     urgency_level: number | null
     overview: string | null
@@ -49,7 +49,7 @@ const speciesOptions = computed(() => {
   const speciesSet = new Set<string>()
   results.value.forEach(r => {
     if (r.disease.species) {
-      r.disease.species.split(',').forEach(s => speciesSet.add(s.trim()))
+      r.disease.species.forEach(s => speciesSet.add(s))
     }
   })
   return Array.from(speciesSet).sort()
@@ -222,7 +222,7 @@ function urgencyBadge(level: number | null) {
                       {{ frequencyLabel(r.frequency) }}
                     </span>
                     <span v-if="r.stage" class="stage-tag">{{ r.stage }}</span>
-                    <span v-if="r.disease.category" class="cat-tag">{{ r.disease.category }}</span>
+                    <span v-for="cat in r.disease.category" :key="cat" class="cat-tag">{{ cat }}</span>
                     <span v-if="r.disease.difficulty" :class="['diff-tag', r.disease.difficulty]">{{ r.disease.difficulty }}</span>
                   </div>
                   <div v-if="r.disease.overview" class="card-overview">

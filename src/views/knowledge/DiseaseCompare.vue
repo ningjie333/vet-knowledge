@@ -6,8 +6,8 @@ interface Disease {
   id: string
   name_zh: string
   name_en: string | null
-  category: string | null
-  species: string | null
+  category: string[]
+  species: string[]
   difficulty: string | null
   urgency_level: number | null
   overview: string | null
@@ -145,13 +145,13 @@ function evidenceLabel(e: string) {
           <tr>
             <td class="row-header">分类</td>
             <td v-for="d in compareData" :key="d.disease.id">
-              {{ d.disease.category || '—' }}
+              {{ d.disease.category.join('、') || '—' }}
             </td>
           </tr>
           <tr>
             <td class="row-header">物种</td>
             <td v-for="d in compareData" :key="d.disease.id">
-              {{ d.disease.species || '—' }}
+              {{ d.disease.species.join('、') || '—' }}
             </td>
           </tr>
           <tr>

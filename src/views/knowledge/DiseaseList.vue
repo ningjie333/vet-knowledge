@@ -67,7 +67,7 @@ watch([filterSpecies, filterCategory, filterDifficulty], load)
         </div>
         <div class="disease-en">{{ d.name_en }}</div>
         <div class="disease-species">
-          <span v-for="s in (JSON.parse(d.species || '[]'))" :key="s" class="species-tag">{{ s }}</span>
+          <span v-for="s in d.species" :key="s" class="species-tag">{{ s }}</span>
         </div>
         <div class="disease-overview">{{ (d.overview || '').slice(0, 80) }}...</div>
       </router-link>

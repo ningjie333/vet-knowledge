@@ -15,8 +15,8 @@ export interface Disease {
   name_zh: string
   name_en: string | null
   name_latin: string | null
-  category: string | null
-  species: string | null
+  category: string[]
+  species: string[]
   overview: string | null
   etiology: string | null
   pathophysiology: string | null

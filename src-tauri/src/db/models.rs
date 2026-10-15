@@ -51,6 +51,33 @@ pub fn parse_tags_json(raw: Option<&str>) -> Vec<String> {
     }
 }
 
+/// 把 diseases.species 这类"以 JSON 文本存放的多值列"解析成真数组。
+///
+/// 根因：后端一直下发 JSON 文本，前端各写各的 —— 列表页 JSON.parse 才对，
+/// 详情页直接 v-for 字符串（Vue 按字符迭代 → 一格一个引号），对比页把原文当文本打印，
+/// 症状检索页 split(',') 会切出 `["犬"` 这种脏值。统一在 Rust 侧解析掉。
+/// 退回顺序：JSON 数组 → 逗号分隔 → 单值 → 空。
+pub fn parse_string_list(raw: Option<&str>) -> Vec<String> {
+    let Some(text) = raw.map(str::trim).filter(|t| !t.is_empty()) else {
+        return Vec::new();
+    };
+    if text.starts_with('[') {
+        if let Ok(serde_json::Value::Array(items)) = serde_json::from_str::<serde_json::Value>(text) {
+            return items
+                .into_iter()
+                .filter_map(|v| v.as_str().map(str::to_string).or_else(|| Some(v.to_string())))
+                .filter(|s| !s.trim().is_empty())
+                .collect();
+        }
+        eprintln!("[parse_string_list] 不是合法 JSON 数组: {}", text);
+    }
+    text.split(',')
+        .map(|s| s.trim().trim_matches(|c| c == '"' || c == '[' || c == ']').trim())
+        .filter(|s| !s.is_empty())
+        .map(str::to_string)
+        .collect()
+}
+
 /// 读取行里的 `tags` 列并解析为标签 id 列表；列不存在时返回空 Vec。
 ///
 /// 列不存在是合法场景：不是每条查询都附加了 tags_subquery（例如只用 `SELECT *` 的历史 SQL）。
@@ -73,8 +100,8 @@ pub fn row_from_disease(r: &SqliteRow) -> Disease {
         name_zh: r.get("name_zh"),
         name_en: r.get("name_en"),
         name_latin: r.get("name_latin"),
-        category: r.get("category"),
-        species: r.get("species"),
+        category: parse_string_list(r.get::<Option<String>, _>("category").as_deref()),
+        species: parse_string_list(r.get::<Option<String>, _>("species").as_deref()),
         body_system: r.get("body_system"),
         pathogenic_type: r.get("pathogenic_type"),
         epidemiology: r.get("epidemiology"),
@@ -179,8 +206,10 @@ pub struct Disease {
     pub name_zh: String,
     pub name_en: Option<String>,
     pub name_latin: Option<String>,
-    pub category: Option<String>,
-    pub species: Option<String>,
+    /// 分类列表（DB 同样是 JSON 文本，如 ["泌尿系统", "急诊"]，见 parse_string_list）
+    pub category: Vec<String>,
+    /// 物种列表（DB 存 JSON 文本，这里解析成数组，见 parse_string_list）
+    pub species: Vec<String>,
     pub body_system: Option<String>,
     pub pathogenic_type: Option<String>,
     pub epidemiology: Option<String>,
@@ -376,6 +405,37 @@ mod tests {
         v.iter().map(|s| s.to_string()).collect()
     }
 
+    // ── 多值列（species 这类 JSON 文本）解析 ──
+
+    #[test]
+    fn test_parse_string_list_accepts_json_array_and_legacy_shapes() {
+        assert_eq!(parse_string_list(Some(r#"["犬", "猫"]"#)), strings(&["犬", "猫"]));
+        assert_eq!(parse_string_list(Some(r#"["犬"]"#)), strings(&["犬"]));
+        assert_eq!(parse_string_list(Some("犬,猫")), strings(&["犬", "猫"]));
+        assert_eq!(parse_string_list(Some("犬")), strings(&["犬"]));
+        assert!(parse_string_list(None).is_empty());
+        assert!(parse_string_list(Some("   ")).is_empty());
+        assert!(parse_string_list(Some("[]")).is_empty());
+    }
+
+    #[test]
+    fn test_parse_string_list_never_emits_json_punctuation() {
+        // 历史故障：详情页直接 v-for 这个字符串，Vue 按字符迭代 → 界面上出现
+        // 一格一个 `"` / `[` / `,` 的碎标签。半截 JSON 也不能吐出 `["犬"` 这种脏值。
+        for raw in [r#"["犬","""#, r#"["犬", "猫""#, r#""犬""#] {
+            let got = parse_string_list(Some(raw));
+            for item in &got {
+                assert!(
+                    !item.contains('[') && !item.contains(']') && !item.contains('"'),
+                    "解析结果残留 JSON 符号: {:?} ← {:?}",
+                    got,
+                    raw
+                );
+            }
+        }
+        assert_eq!(parse_string_list(Some(r#"["犬","""#)), strings(&["犬"]));
+    }
+
     // ── 纯解析测试 ──
 
     #[test]
@@ -414,8 +474,8 @@ mod tests {
             name_zh: "测试疾病".into(),
             name_en: None,
             name_latin: None,
-            category: None,
-            species: None,
+            category: Vec::new(),
+            species: Vec::new(),
             body_system: None,
             pathogenic_type: None,
             epidemiology: None,
