@@ -159,3 +159,61 @@ release 资源（`failed to bundle project: timeout: global`）。解法记录�
   "Pinia"）；`SymptomExplorer.vue` 的 `species_notes` 仍直出原始 JSON；`DiseaseCompare.vue` /
   `SymptomExplorer.vue` 各自复制的局部 `interface` 仍在；`CODE_WIKI.md` 仍整体过期；
   10 组重复药物仍待逐组定夺。
+
+## 2026-10-16 工程规范化验收（多 agent 并行 + 主会话集成）
+
+目标与文件所有权契约见 `docs/ENGINEERING_STANDARDS.md`。四个 agent 并行产出，主会话逐 diff 审读、
+集成、验收、提交。**结论：G1–G7 全部达成，其中挖出并修复了一个长期存在的用户可见 bug。**
+
+### 门禁实测（已验证）
+
+| 门禁 | 结果 |
+|------|------|
+| `cargo fmt --check` | PASS（清掉 158 处存量格式债后） |
+| `cargo clippy --all-targets -- -D warnings` | PASS（警告 19 → **0**） |
+| `cargo test` | **86 passed / 0 failed**（基线 77 + SM-2 语义 4 + species_notes 5） |
+| `npm run lint` | PASS（0 error / 0 warning） |
+| `npx vue-tsc --noEmit` | PASS（0 错误） |
+| `npm run build` | PASS |
+| **GitHub Actions 实跑** | run `38771461864`（sha `5742a59`）= **completed / success** |
+
+### 真实缺陷：疾病对比页四个区块一直空白（已验证并修复）
+
+后端 `get_disease_compare` 的 symptoms / treatments / diagnostics / ddx 是 Rust **元组 Vec**，serde 序列化
+为 JSON **数组的数组**；而前端视图里各自复制的局部 `interface` 把它们当**对象**取 `.name_zh`，取到
+`undefined` → 症状/治疗/检查/鉴别四个区块**从未渲染出内容**。同页另修三处：鉴别诊断链接误用疾病中文名
+当路由 id（点进去必然"未找到"）、空数据时 `Math.max(...[])` 产生 `-Infinity`、同药不同物种导致 `:key` 重复。
+根因是满屏 `any` 把类型链抹平，这类形状错误才能长期存活——已一并收编为 `@/types` 的显式元组契约类型。
+
+### 工具链自身的坑：prettier 拆坏多语句内联 handler（已验证并修复）
+
+`semi: false` 下 prettier 会把模板内 `@click="a(); b()"` 的分号删掉，Vue 模板解析器随即报错
+（`vite build` 实测复现：`Error parsing JavaScript expression`）。已提为具名方法 `backToCaseLibrary()`
+永久免疫，并验证重跑 format 幂等。
+
+### 变异测试（守卫确实会咬）
+
+- species_notes "解析失败保留原文" 分支改成丢弃 → `test_parse_species_notes_malformed_preserves_raw_text` **红** → 还原 → **绿**
+- 删除 `#[allow(dead_code)]` 豁免 → clippy **红**（注意：`ERR_SESSION_NOT_FOUND` 因被同样豁免的
+  `RpcErrorCode::SESSION_NOT_FOUND` 引用而不成红，属豁免链，故改用无内部引用的 `ERR_GAME_ENDED` 验证）
+- 视图退回局部 interface → vue-tsc **红**（10 条 `Property does not exist`）
+- `.vue` 加未用变量 / 删 `:key` → eslint **红**
+- CI 侧未做"故意推红提交"（会污染 master 历史）；改为本地对每条门禁注入违例验证其会红
+
+### 文档核对（逐条 grep 验证）
+
+CODE_WIKI 迁移表 v1–v13 与 `db/mod.rs` 实际数组**逐条一致**；"重导先删 15 张表"与实际数组元素**逐个对上**；
+CLAUDE.md 的 DEPRECATED 标记经核实目录内确实存在。README 三处失实已改为如实描述（含选 DELETE 而非 WAL 的原因）。
+
+### 未验证项（如实标注）
+
+- **物种特异性区块的视觉效果**未拿到截图：应用进程健康（Responding=True、DB 757KB、无导入错误日志），
+  但抓屏时该窗口被用户自己的浏览器窗口遮挡，被遮挡的 WebView2 对 PrintWindow 返回全黑。
+  数据路径已由端到端集成测试钉死（真实种子 sym_001 → ≥2 条结构化 SpeciesNote、断言无 JSON 标点残留），
+  渲染层由 vue-tsc + build 保证类型与编译正确；仅剩"徽标排版好不好看"这一项无视觉证据。
+- prettier 未纳入 CI 门禁（`format:check` 脚本已备，未接入 workflow），避免与 lint 噪音混在一起。
+
+### 仍未决（等用户定夺，与本轮无关）
+
+10 组重复药物的合并、git 历史里旧账户名剥离、`DiseaseDetail.vue` 治疗线方案仍显示英文原值
+（`first线方案`，属既有小瑕疵，本轮未扩大改动范围）。
