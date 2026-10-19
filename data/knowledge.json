@@ -9050,9 +9050,9 @@
         "mech_infectious"
       ],
       "indications": "- 尿路感染\n- 皮肤感染\n- 软组织感染\n- 牙周感染\n- 呼吸道感染",
-      "contraindications": "- 青霉素过敏\n- 严重肾功能不全（需调整剂量）",
+      "contraindications": "- 青霉素过敏\n- 严重肾功能不全（需调整剂量）\n- 严重肝功能不全",
       "side_effects": "- 胃肠道反应（呕吐、腹泻）\n- 过敏反应\n- 肠道菌群失调",
-      "species_dosing": "**犬**: dose=12.5-25 mg/kg, route=PO, frequency=q12h\n**猫**: dose=12.5-25 mg/kg, route=PO, frequency=q12h",
+      "species_dosing": "**犬**: dose=12.5-25 mg/kg, route=PO, frequency=q12h（连用 5-7 天）\n**猫**: dose=12.5-25 mg/kg, route=PO, frequency=q12h",
       "pubchem_cid": 33613,
       "molecular_formula": "C16H19N3O5S",
       "molecular_weight": "365.4",
@@ -9237,19 +9237,19 @@
       "iupac_name": "6-methoxy-2-[(4-methoxy-3,5-dimethyl-2-pyridinyl)methylsulfinyl]-1H-benzimidazole"
     },
     {
-      "adverse_mechanism": "注射部位疼痛因注射液pH偏低（约2.5）刺激皮下组织。流涎为犬特有反应，可能与药物对中枢呕吐相关核团的短暂刺激有关。腹泻因NK-1受体阻断影响胃肠道正常运动和分泌功能。食欲下降与中枢食欲调节通路受影响有关。严重肝功能不全时药物清除减慢，不良反应风险增加。",
+      "adverse_mechanism": "注射部位疼痛因注射液pH偏低（约2.5）刺激皮下组织。流涎为犬特有反应，可能与药物对中枢呕吐相关核团的短暂刺激有关。腹泻因NK-1受体阻断影响胃肠道正常运动和分泌功能。食欲下降与中枢食欲调节通路受影响有关。严重肝功能不全时药物清除减慢，不良反应风险增加。 罕见过敏反应（荨麻疹/面部肿胀）可见，发生率极低。",
       "drug_class": "NK-1受体拮抗剂（止吐药）",
       "id": "drug_010",
       "mechanism_of_action": "马罗匹坦为神经激肽-1（NK-1）受体高选择性拮抗剂，通过竞争性阻断P物质与NK-1受体结合，抑制呕吐中枢（孤束核和最后区）的激活。P物质是呕吐反射中关键的神经递质，在化学感受器触发区（CTZ）、胃肠道迷走神经传入纤维和中枢呕吐通路中均有分布。马罗匹坦可透过血脑屏障，在中枢和外周双重阻断呕吐信号传导，对中枢性和外周性呕吐均有效。",
       "name_en": "Maropitant (Cerenia)",
       "name_zh": "马罗匹坦",
-      "pk_pd": "口服生物利用度犬约25-30%（首过效应显著），皮下注射生物利用度>90%。血浆蛋白结合率>95%，主要分布于中枢神经系统。在肝脏经CYP3A4和CYP2D15（犬特异性）代谢，半衰期犬约8-12小时。主要经肝脏代谢后由胆汁排泄。犬可每日一次给药，中枢NK-1受体占据率高，止吐效果持续24小时。16周龄以下犬因血脑屏障发育不全禁用。",
+      "pk_pd": "口服生物利用度犬约25-30%（首过效应显著），皮下注射生物利用度>90%。血浆蛋白结合率>99%，主要分布于中枢神经系统。在肝脏经CYP3A4和CYP2D15（犬特异性）代谢，半衰期犬约 8 小时（皮下 1 mg/kg 后约 7.75 h，口服 2 mg/kg 后约 4 h）。主要经肝脏代谢后由胆汁排泄。犬可每日一次给药，中枢NK-1受体占据率高，止吐效果持续24小时。16周龄以下犬因血脑屏障发育不全禁用。",
       "tags": [
         "mech_pain"
       ],
       "indications": "- 急性呕吐\n- 晕动症（犬）\n- 化疗相关呕吐\n- 胰腺炎辅助止吐",
       "contraindications": "- 16周龄以下犬\n- 胃肠道梗阻\n- 严重肝功能不全",
-      "side_effects": "- 注射部位疼痛（SC）\n- 流涎（犬）\n- 腹泻\n- 食欲下降",
+      "side_effects": "- 注射部位疼痛（SC）\n- 流涎（犬）\n- 腹泻\n- 食欲下降\n- 一过性心动过缓（SC）",
       "species_dosing": "**犬**: dose=1 mg/kg SC 或 2 mg/kg PO, route=SC/PO, frequency=q24h（不超过5天连续SC）\n**猫**: dose=1 mg/kg, route=SC/PO, frequency=q24h（猫标签外使用）",
       "pubchem_cid": 204108,
       "molecular_formula": "C32H40N2O",
@@ -9269,10 +9269,10 @@
       "tags": [
         "mech_pain"
       ],
-      "indications": "- 中度疼痛\n- 术后疼痛\n- 骨关节炎疼痛\n- 慢性疼痛管理",
+      "indications": "- 轻至中度疼痛\n- 术后疼痛\n- 骨关节炎疼痛\n- 慢性疼痛管理",
       "contraindications": "- 癫痫病史\n- 与MAO抑制剂合用\n- 严重肝肾功能不全",
-      "side_effects": "- 镇静\n- 恶心/呕吐\n- 便秘\n- 瞳孔缩小\n- 唾液分泌增加（猫）",
-      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q8-12h\n**猫**: dose=2-4 mg/kg, route=PO, frequency=q12h（猫代谢个体差异大）",
+      "side_effects": "- 镇静\n- 恶心/呕吐\n- 便秘\n- 瞳孔缩小\n- 唾液分泌增加（猫）\n- 猫可能产生兴奋而非镇静（矛盾性兴奋）",
+      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q8-12h\n**猫**: dose=2-4 mg/kg, route=PO, frequency=q12h（猫代谢个体差异大，疗效不确切）",
       "pubchem_cid": 33741,
       "molecular_formula": "C16H25NO2",
       "molecular_weight": "263.37",
@@ -9379,10 +9379,10 @@
       "tags": [
         "mech_pain"
       ],
-      "indications": "- 癫痫（一线用药）\n- 特发性癫痫\n- 癫痫持续状态（IV地西泮控制后维持）",
-      "contraindications": "- 严重肝病\n- 严重呼吸抑制",
-      "side_effects": "- 镇静/共济失调（初期）\n- 多饮多尿多食\n- 肝毒性（长期）\n- 血液学毒性（罕见）",
-      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q12h（需监测血药浓度）\n**猫**: dose=2-3 mg/kg, route=PO, frequency=q12h",
+      "indications": "- 癫痫（一线用药）\n- 特发性癫痫\n- 癫痫持续状态（IV地西泮控制后维持）\n- 猫癫痫（二线用药）",
+      "contraindications": "- 严重肝病\n- 严重呼吸抑制\n- 妊娠\n- 与氯丙嗪合用（降低惊厥阈值）",
+      "side_effects": "- 镇静/共济失调（初期）\n- 多饮多尿多食\n- 肝毒性（长期）\n- 血液学毒性（罕见，含再生障碍性贫血）",
+      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q12h（需监测血药浓度）；癫痫持续状态 20 mg/kg IV\n**猫**: dose=2-3 mg/kg, route=PO, frequency=q12h（猫二线用药）",
       "pubchem_cid": 4763,
       "molecular_formula": "C12H12N2O3",
       "molecular_weight": "232.23",
@@ -9391,7 +9391,7 @@
       "iupac_name": "5-ethyl-5-phenyl-1,3-diazinane-2,4,6-trione"
     },
     {
-      "adverse_mechanism": "镇静和共济失调因中枢神经系统超极化抑制，多在治疗初期出现，通常数周后耐受。胃肠道刺激（恶心、呕吐）因溴离子直接刺激胃黏膜，与食物同服可减轻。溴中毒（精神错乱、肌阵挛、皮疹）因血清溴浓度超过250 mg/dL，肾脏排泄能力饱和。多饮多尿因溴离子干扰肾小管浓缩功能。",
+      "adverse_mechanism": "镇静和共济失调因中枢神经系统超极化抑制，多在治疗初期出现，通常数周后耐受。胃肠道刺激（恶心、呕吐）因溴离子直接刺激胃黏膜，与食物同服可减轻。溴中毒（精神错乱、肌阵挛、皮疹）因血清溴浓度超过250 mg/dL，肾脏排泄能力饱和。多饮多尿因溴离子干扰肾小管浓缩功能。 虚弱（初期常见，通常 1-2 周后耐受）与中枢抑制及电解质分布有关。",
       "drug_class": "抗癫痫药",
       "id": "drug_017",
       "mechanism_of_action": "溴化钾为无机溴化物抗癫痫药，溴离子（Br⁻）与氯离子（Cl⁻）竞争通过GABA_A受体相关的氯离子通道，因溴离子的电导率低于氯离子，导致神经元膜超极化程度增加，提高神经元兴奋性阈值，抑制异常放电的扩散。对癫痫灶本身无直接作用，主要通过提高发作阈值来减少癫痫发作频率和严重程度。作为苯巴比妥的辅助用药，两者机制互补，可减少苯巴比妥用量。",
@@ -9401,10 +9401,10 @@
       "tags": [
         "mech_pain"
       ],
-      "indications": "- 癫痫（单药或联合苯巴比妥）\n- 苯巴比妥不耐受的癫痫病例",
-      "contraindications": "- 肾功能不全\n- 对溴化物过敏",
-      "side_effects": "- 镇静/共济失调\n- 多饮多尿\n- 胰腺炎（犬）\n- 皮肤疹",
-      "species_dosing": "**犬**: dose=30-40 mg/kg, route=PO, frequency=q24h（负荷剂量可加倍）\n**猫**: dose=不适用（猫溴化物可致致命性肺炎）, route=-, frequency=-",
+      "indications": "- 癫痫（单药或联合苯巴比妥）\n- 苯巴比妥不耐受的癫痫病例\n- 犬难治性癫痫（与苯巴比妥联合）",
+      "contraindications": "- 肾功能不全\n- 对溴化物过敏\n- 妊娠\n- 与含溴药物合用",
+      "side_effects": "- 镇静/共济失调\n- 多饮多尿多食\n- 胰腺炎（犬）\n- 皮肤疹\n- 虚弱（初期，1-2 周后耐受）\n- 胃肠道反应（恶心、呕吐）",
+      "species_dosing": "**犬**: dose=30-40 mg/kg, route=PO, frequency=q24h（负荷剂量 200-300 mg/kg，分 5 天给予）\n**猫**: dose=不适用（猫溴化物可致致命性肺炎）, route=-, frequency=-",
       "pubchem_cid": 253877,
       "molecular_formula": "BrK",
       "molecular_weight": "119.00",
@@ -9490,9 +9490,9 @@
         "mech_infectious"
       ],
       "indications": "- 皮肤真菌病（癣菌）\n- 甲真菌病\n- 马拉色菌感染",
-      "contraindications": "- 严重肝功能不全",
+      "contraindications": "- 严重肝功能不全\n- 妊娠",
       "side_effects": "- 胃肠道反应\n- 肝酶升高\n- 味觉障碍（罕见）",
-      "species_dosing": "**犬**: dose=30 mg/kg, route=PO, frequency=q24h\n**猫**: dose=20-40 mg/kg, route=PO, frequency=q24h（猫对疗程要求更长）",
+      "species_dosing": "**犬**: dose=30 mg/kg, route=PO, frequency=q24h\n**猫**: dose=20-40 mg/kg, route=PO, frequency=q24h（猫对疗程要求更长）\n**疗程**: 4-12 周",
       "pubchem_cid": 1549008,
       "molecular_formula": "C21H25N",
       "molecular_weight": "291.4",
@@ -9934,50 +9934,6 @@
       "iupac_name": "ethyl 4-(13-chloro-4-azatricyclo[9.4.0.03,8]pentadeca-1(11),3(8),4,6,12,14-hexaen-2-ylidene)piperidine-1-carboxylate"
     },
     {
-      "adverse_mechanism": "镇静、多饮多尿、多食、体重增加（初期最常见）。肝毒性（长期使用需定期监测肝酶和血药浓度）。血液学毒性（罕见）。突然停药可诱发癫痫持续状态。",
-      "drug_class": "抗癫痫药（巴比妥类）",
-      "id": "drug_042",
-      "mechanism_of_action": "苯巴比妥为长效巴比妥类抗癫痫药，通过增强GABA_A受体介导的氯离子内流（延长氯通道开放时间），增强中枢抑制效应。同时抑制谷氨酸的AMPA受体活性，提高癫痫发作阈值。",
-      "name_en": "Phenobarbital",
-      "name_zh": "苯巴比妥",
-      "pk_pd": "口服吸收良好，生物利用度约80-90%。血浆蛋白结合率约45%，半衰期约37-73小时（犬个体差异大）。强效肝药酶诱导剂（CYP450），可加速自身和其他药物代谢。",
-      "tags": [
-        "mech_pain"
-      ],
-      "indications": "- 犬特发性癫痫\n- 癫痫持续状态（IV）\n- 猫癫痫（二线）",
-      "contraindications": "- 严重肝病\n- 妊娠\n- 与氯丙嗪合用（降低惊厥阈值）",
-      "side_effects": "- 镇静/共济失调（起始期常见）\n- 多饮多尿多食\n- 肝毒性（长期）\n- 再生障碍性贫血（罕见）",
-      "species_dosing": "**犬**: dose=2-5 mg/kg, route=PO, frequency=q12h（维持）；20 mg/kg IV（癫痫持续状态）\n**猫**: dose=2-3 mg/kg, route=PO, frequency=q12h（猫二线用药）",
-      "pubchem_cid": 4763,
-      "molecular_formula": "C12H12N2O3",
-      "molecular_weight": "232.23",
-      "smiles": null,
-      "inchikey": "DDBREPKUVSBGFI-UHFFFAOYSA-N",
-      "iupac_name": "5-ethyl-5-phenyl-1,3-diazinane-2,4,6-trione"
-    },
-    {
-      "adverse_mechanism": "镇静、共济失调、虚弱（初期，通常1-2周后耐受）。胃肠道反应（恶心、呕吐）。多饮多尿。溴中毒（极高剂量）：意识模糊、精神病样行为、皮疹。",
-      "drug_class": "抗癫痫药（溴化物）",
-      "id": "drug_043",
-      "mechanism_of_action": "溴化钾通过溴离子替代氯离子进入神经元，增加细胞膜超极化程度，降低神经元兴奋性，提高癫痫发作阈值。与苯巴比妥有协同作用，常作为二线或辅助抗癫痫药。不影响肝药酶。",
-      "name_en": "Potassium Bromide",
-      "name_zh": "溴化钾",
-      "pk_pd": "口服吸收良好，生物利用度约90%以上。不与血浆蛋白结合，半衰期极长（约24-46天），需给予负荷剂量加速达稳态。完全经肾脏排泄，肾功能不全时半衰期延长。",
-      "tags": [
-        "mech_pain"
-      ],
-      "indications": "- 犬难治性癫痫（联合苯巴比妥）\n- 苯巴比妥不耐受时的替代",
-      "contraindications": "- 肾功能不全\n- 妊娠\n- 与含溴药物合用",
-      "side_effects": "- 镇静/共济失调（起始期）\n- 多饮多尿多食\n- 胃肠道反应\n- 皮肤反应（罕见）",
-      "species_dosing": "**犬**: dose=30-40 mg/kg, route=PO, frequency=q24h（维持）；负荷剂量200-300 mg/kg 分5天给予\n**猫**: dose=不适用（猫溴化物耐受差，可致支气管痉挛）, route=-, frequency=-",
-      "pubchem_cid": 253877,
-      "molecular_formula": "BrK",
-      "molecular_weight": "119.00",
-      "smiles": null,
-      "inchikey": "IOLCXVTUBQKXJR-UHFFFAOYSA-M",
-      "iupac_name": "potassium bromide"
-    },
-    {
       "adverse_mechanism": "骨髓抑制（白细胞减少、血小板减少）是最严重不良反应。胃肠道反应（恶心、呕吐、腹泻）。肝毒性。胰腺炎（犬）。感染风险增加。",
       "drug_class": "免疫抑制剂（嘌呤类似物）",
       "id": "drug_044",
@@ -10131,69 +10087,6 @@
       "iupac_name": "1,4-bis(2-ethylhexoxy)-1,4-dioxobutane-2-sulfonic acid"
     },
     {
-      "adverse_mechanism": "注射部位疼痛。流涎、腹泻。罕见过敏反应。",
-      "drug_class": "止吐药",
-      "id": "drug_051",
-      "mechanism_of_action": "马罗匹坦为NK-1受体拮抗剂，通过阻断P物质与NK-1受体结合，抑制呕吐中枢激活。对中枢性和外周性呕吐均有抑制作用。",
-      "name_en": "Maropitant",
-      "name_zh": "马罗匹坦",
-      "pk_pd": "口服生物利用度约24-30%。皮下注射吸收更快。血浆蛋白结合率>99%，半衰期约8-9小时。主要经肝脏CYP450代谢。",
-      "tags": [
-        "mech_pain"
-      ],
-      "indications": "- 各种原因呕吐\n- 预防晕动症",
-      "contraindications": "- 16周龄以下犬",
-      "side_effects": "- 注射部位疼痛\n- 一过性心动过缓",
-      "species_dosing": "犬：口服2mg/kg q24h；皮下注射1mg/kg q24h（连用最多5天）；猫：口服1mg/kg q24h",
-      "pubchem_cid": 204108,
-      "molecular_formula": "C32H40N2O",
-      "molecular_weight": "468.7",
-      "smiles": null,
-      "inchikey": "OMPCVMLFFSQFIX-CONSDPRKSA-N",
-      "iupac_name": "(2S,3S)-2-benzhydryl-N-[(5-tert-butyl-2-methoxyphenyl)methyl]-1-azabicyclo[2.2.2]octan-3-amine"
-    },
-    {
-      "adverse_mechanism": "镇静、共济失调。外周水肿。",
-      "drug_class": "抗癫痫药/镇痛药",
-      "id": "drug_052",
-      "mechanism_of_action": "加巴喷丁与电压门控钙通道α2δ亚基结合，减少钙离子内流，抑制兴奋性神经递质释放。用于神经性疼痛和辅助抗癫痫。",
-      "name_en": "Gabapentin",
-      "name_zh": "加巴喷丁",
-      "pk_pd": "口服吸收良好但剂量依赖性饱和。不与血浆蛋白结合，半衰期约3-4小时。以原形经肾脏排泄。",
-      "tags": [
-        "mech_pain"
-      ],
-      "indications": "- 神经性疼痛\n- 癫痫辅助\n- 焦虑/应激",
-      "contraindications": "- 严重肾功能不全",
-      "side_effects": "- 镇静\n- 共济失调\n- 外周水肿",
-      "species_dosing": "犬：5-10mg/kg q8-12h；猫：5-10mg/kg q12h",
-      "pubchem_cid": 3446,
-      "molecular_formula": "C9H17NO2",
-      "molecular_weight": "171.24",
-      "smiles": null,
-      "inchikey": "UGJMXCAKCUNAIE-UHFFFAOYSA-N",
-      "iupac_name": "2-[1-(aminomethyl)cyclohexyl]acetic acid"
-    },
-    {
-      "adverse_mechanism": "镇静、恶心、便秘。高剂量可降低癫痫阈值。",
-      "drug_class": "镇痛药",
-      "id": "drug_053",
-      "mechanism_of_action": "曲马多为弱阿片类镇痛药，双重机制：弱μ受体激动+5-HT/NE再摄取抑制。适用于中度疼痛。",
-      "name_en": "Tramadol",
-      "name_zh": "曲马多",
-      "pk_pd": "口服生物利用度约70-80%。血浆蛋白结合率约20%，半衰期约4-6小时。主要经肝脏代谢。",
-      "indications": "- 轻至中度疼痛\n- 慢性疼痛",
-      "contraindications": "- MAO抑制剂合用\n- 癫痫患犬慎用",
-      "side_effects": "- 镇静\n- 恶心\n- 便秘\n- 猫可能产生兴奋而非镇静",
-      "species_dosing": "犬：2-5mg/kg q8-12h；猫：效果不确切，2-4mg/kg q12h",
-      "pubchem_cid": 33741,
-      "molecular_formula": "C16H25NO2",
-      "molecular_weight": "263.37",
-      "smiles": null,
-      "inchikey": "TVYLLZQTGLZFBW-ZBFHGGJFSA-N",
-      "iupac_name": "cis-(1R,2R)-2-[(dimethylamino)methyl]-1-(3-methoxyphenyl)cyclohexan-1-ol"
-    },
-    {
       "adverse_mechanism": "电解质紊乱（低钾、低钠、低氯性碱中毒）。脱水。耳毒性（罕见）。",
       "drug_class": "利尿剂",
       "id": "drug_054",
@@ -10216,28 +10109,6 @@
       "iupac_name": "1-[[4-(3-methylanilino)-3-pyridinyl]sulfonyl]-3-propan-2-ylurea"
     },
     {
-      "adverse_mechanism": "低血压。高钾血症。肾功能恶化。胃肠道反应。",
-      "drug_class": "ACE抑制剂",
-      "id": "drug_055",
-      "mechanism_of_action": "贝那普利为ACE抑制剂，抑制血管紧张素转换酶，减少血管紧张素II生成，扩张血管，降低心脏前后负荷。",
-      "name_en": "Benazepril",
-      "name_zh": "贝那普利",
-      "pk_pd": "口服后在肝脏水解为活性代谢物贝那普利拉。血浆蛋白结合率约95%，半衰期约10-12小时。",
-      "tags": [
-        "mech_vascular"
-      ],
-      "indications": "- CKD蛋白尿\n- 心力衰竭\n- 高血压",
-      "contraindications": "- 双侧肾动脉狭窄\n- 妊娠",
-      "side_effects": "- 低血压\n- 高钾血症\n- 肾功能恶化",
-      "species_dosing": "犬猫：0.25-0.5mg/kg q24h",
-      "pubchem_cid": 5362124,
-      "molecular_formula": "C24H28N2O5",
-      "molecular_weight": "424.5",
-      "smiles": null,
-      "inchikey": "XPCFTKFZXHTYIP-PMACEKPBSA-N",
-      "iupac_name": "2-[(3S)-3-[[(2S)-1-ethoxy-1-oxo-4-phenylbutan-2-yl]amino]-2-oxo-4,5-dihydro-3H-1-benzazepin-1-yl]acetic acid"
-    },
-    {
       "adverse_mechanism": "出血风险增加。胃肠道反应。罕见血栓性血小板减少性紫癜。",
       "drug_class": "抗血小板药",
       "id": "drug_056",
@@ -10258,27 +10129,6 @@
       "smiles": null,
       "inchikey": "GKTWGGQPFAXNFI-HNNXBMFYSA-N",
       "iupac_name": "methyl (2S)-2-(2-chlorophenyl)-2-(6,7-dihydro-4H-thieno[3,2-c]pyridin-5-yl)acetate"
-    },
-    {
-      "adverse_mechanism": "短暂性低血压或高血压。兴奋、震颤。",
-      "drug_class": "拮抗剂",
-      "id": "drug_057",
-      "mechanism_of_action": "阿替美唑为α-2受体拮抗剂，逆转美托咪定等α-2激动剂的镇静和心血管抑制效应。",
-      "name_en": "Atipamezole",
-      "name_zh": "阿替帕唑",
-      "pk_pd": "肌肉注射吸收迅速，5-10分钟起效。半衰期约1-2小时。",
-      "tags": [
-        "mech_pain"
-      ],
-      "indications": "- 逆转α2激动剂镇静",
-      "side_effects": "- 一过性低血压\n- 呕吐\n- 兴奋",
-      "species_dosing": "犬猫：给予美托咪定等量（mg:mg）IM",
-      "pubchem_cid": 71310,
-      "molecular_formula": "C14H16N2",
-      "molecular_weight": "212.29",
-      "smiles": null,
-      "inchikey": "HSWPZIDYAHLZDD-UHFFFAOYSA-N",
-      "iupac_name": "5-(2-ethyl-1,3-dihydroinden-2-yl)-1H-imidazole"
     },
     {
       "adverse_mechanism": "胃肠道反应（厌食、呕吐）。镇静或兴奋（初期）。与MAOI合用可致5-羟色胺综合征。",
@@ -10323,28 +10173,6 @@
       "smiles": null,
       "inchikey": "APKFDSVGJQXUKY-INPOYWNPSA-N",
       "iupac_name": "(1R,3S,5R,6R,9R,11R,15S,16R,17R,18S,19E,21E,23E,25E,27E,29E,31E,33R,35S,36R,37S)-33-[(2R,3S,4S,5S,6R)-4-amino-3,5-dihydroxy-6-methyloxan-2-yl]oxy-1,3,5,6,9,11,17,37-octahydroxy-15,16,18-trimethyl-13-oxo-14,39-dioxabicyclo[33.3.1]nonatriaconta-19,21,23,25,27,29,31-heptaene-36-carboxylic acid"
-    },
-    {
-      "adverse_mechanism": "胃肠道反应。肝毒性。药物相互作用（CYP450抑制）。",
-      "drug_class": "抗真菌药",
-      "id": "drug_060",
-      "mechanism_of_action": "伊曲康唑为三唑类抗真菌药，抑制14α-去甲基酶，阻断麦角固醇合成。对皮肤癣菌、念珠菌、曲霉菌等均有活性。",
-      "name_en": "Itraconazole",
-      "name_zh": "伊曲康唑",
-      "pk_pd": "口服吸收受胃酸和食物影响。高度亲脂性。血浆蛋白结合率>99%，半衰期约12-15小时。主要经肝脏CYP450代谢。",
-      "tags": [
-        "mech_infectious"
-      ],
-      "indications": "- 皮肤真菌病\n- 全身性真菌感染",
-      "contraindications": "- 严重肝病\n- 妊娠",
-      "side_effects": "- 肝毒性\n- 食欲下降\n- 呕吐",
-      "species_dosing": "犬：5-10mg/kg q24h；猫：5-10mg/kg q24h（口服液）",
-      "pubchem_cid": 55283,
-      "molecular_formula": "C35H38Cl2N8O4",
-      "molecular_weight": "705.6",
-      "smiles": null,
-      "inchikey": "VHVPQPYKVGDNFY-ZPGVKDDISA-N",
-      "iupac_name": "2-butan-2-yl-4-[4-[4-[4-[[(2R,4S)-2-(2,4-dichlorophenyl)-2-(1,2,4-triazol-1-ylmethyl)-1,3-dioxolan-4-yl]methoxy]phenyl]piperazin-1-yl]phenyl]-1,2,4-triazol-3-one"
     },
     {
       "adverse_mechanism": "长期使用可导致多饮多尿、胃肠道刺激、免疫抑制和医源性库欣样改变。突然停药可诱发肾上腺危象。",
@@ -10567,33 +10395,6 @@
       "iupac_name": "3-(2-chlorophenothiazin-10-yl)-N,N-dimethylpropan-1-amine"
     },
     {
-      "id": "drug_078",
-      "name_zh": "阿莫西林-克拉维酸",
-      "name_en": "Amoxicillin-Clavulanate",
-      "drug_class": "β-内酰胺类抗生素/β-内酰胺酶抑制剂",
-      "mechanism_of_action": "阿莫西林抑制细菌细胞壁合成，克拉维酸抑制β-内酰胺酶保护阿莫西林不被降解。",
-      "indications": [
-        "呼吸道感染",
-        "皮肤软组织感染",
-        "泌尿道感染",
-        "口腔感染"
-      ],
-      "contraindications": [
-        "青霉素过敏",
-        "严重肝功能不全"
-      ],
-      "side_effects": [
-        "胃肠道反应（呕吐、腹泻）",
-        "过敏反应"
-      ],
-      "species_dosing": "犬猫：12.5-25 mg/kg PO q12h，连用5-7天",
-      "pubchem_cid": 5280980,
-      "molecular_formula": "C8H9NO5",
-      "molecular_weight": "199.16",
-      "smiles": null,
-      "inchikey": "HZZVJAQRINQKSD-PBFISZAISA-N"
-    },
-    {
       "id": "drug_079",
       "name_zh": "头孢维星",
       "name_en": "Cefovecin",
@@ -10761,34 +10562,6 @@
       "smiles": null,
       "inchikey": "XMAYWYJOQHXEEK-ZEQKJWHPSA-N",
       "iupac_name": "1-[4-[4-[[(2S,4R)-2-(2,4-dichlorophenyl)-2-(imidazol-1-ylmethyl)-1,3-dioxolan-4-yl]methoxy]phenyl]piperazin-1-yl]ethanone"
-    },
-    {
-      "id": "drug_085",
-      "name_zh": "特比萘芬",
-      "name_en": "Terbinafine",
-      "drug_class": "烯丙胺类抗真菌药",
-      "mechanism_of_action": "抑制角鲨烯环氧化酶，阻断麦角固醇合成，导致角鲨烯蓄积和细胞膜破坏。",
-      "indications": [
-        "皮肤癣菌病",
-        "甲真菌病",
-        "马拉色菌感染"
-      ],
-      "contraindications": [
-        "肝功能不全",
-        "妊娠"
-      ],
-      "side_effects": [
-        "胃肠道反应",
-        "肝酶升高",
-        "味觉障碍"
-      ],
-      "species_dosing": "犬猫：30-40 mg/kg PO q24h，疗程4-12周",
-      "pubchem_cid": 1549008,
-      "molecular_formula": "C21H25N",
-      "molecular_weight": "291.4",
-      "smiles": null,
-      "inchikey": "DOMXUEMWDBAQBQ-WEVVVXLNSA-N",
-      "iupac_name": "(E)-N,6,6-trimethyl-N-(naphthalen-1-ylmethyl)hept-2-en-4-yn-1-amine"
     },
     {
       "id": "drug_086",

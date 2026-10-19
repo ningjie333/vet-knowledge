@@ -114,7 +114,7 @@ async fn execute_tolerant(pool: &DbPool, sql: &str, ctx: &str) {
 /// 当前种子数据版本。递增此值时，应用启动时会自动重新导入种子数据。
 /// v20: entity_tags 覆盖全部可打标签实体（disease/symptom/drug/treatment），
 ///      此前只有 disease 有标签行 → 症状/药物/治疗的标签区永远空白。
-const SEED_DATA_VERSION: i64 = 22;
+const SEED_DATA_VERSION: i64 = 23;
 
 pub async fn init(app: &AppHandle) -> anyhow::Result<DbPool> {
     // debug 构建用项目根目录下的 data/（src-tauri 的父目录），
